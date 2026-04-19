@@ -428,3 +428,765 @@ details > summary::-webkit-details-marker { display: none; }
 .site-footer p + p {
   margin-top: 0.375rem;
 }
+
+/* ================================================================
+   YEAR SELECTOR
+================================================================ */
+.year-section {
+  margin-bottom: 1.75rem;
+}
+
+.year-section > h2 {
+  font-size: 1.1875rem;
+  margin-bottom: 1rem;
+}
+
+/* ================================================================
+   FIELD ROWS — shared by year section + accordion body
+================================================================ */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.625rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.field-row:last-child {
+  border-bottom: none;
+}
+
+.field-row label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-800);
+  cursor: pointer;
+  flex-wrap: wrap;
+}
+
+/* Checkbox rows: label takes full width, checkbox on the right */
+.field-row--checkbox {
+  grid-template-columns: 1fr auto;
+}
+
+/* Radio rows: single column, label wraps input + text */
+.field-row--radio {
+  grid-template-columns: 1fr;
+}
+
+.field-row--radio label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ================================================================
+   INPUTS — text / number / select
+================================================================ */
+input[type="number"],
+input[type="text"],
+select {
+  width: 9rem;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  background-color: var(--white);
+  color: var(--gray-900);
+  font-size: 0.9375rem;
+  font-family: var(--font-mono);
+  text-align: right;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  appearance: none;
+}
+
+input[type="number"]::placeholder,
+input[type="text"]::placeholder {
+  color: var(--gray-400);
+  font-family: var(--font);
+}
+
+input[type="number"]:hover,
+select:hover {
+  border-color: var(--gray-400);
+}
+
+input[type="number"]:focus,
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: var(--shadow-focus);
+}
+
+select {
+  width: auto;
+  text-align: left;
+  font-family: var(--font);
+  padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236c757d' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  cursor: pointer;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-xs);
+  accent-color: var(--green);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color var(--t-fast);
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--green);
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* Radio */
+input[type="radio"] {
+  width: 1.0625rem;
+  height: 1.0625rem;
+  accent-color: var(--green);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+input[type="radio"]:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* Fieldset inside accordion body */
+.field-fieldset {
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.field-fieldset legend {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0 0.375rem;
+}
+
+/* ================================================================
+   TOOLTIP ? BUTTON
+================================================================ */
+.tooltip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  border-radius: var(--radius-full);
+  background-color: var(--green);
+  color: var(--white);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--t-fast), transform var(--t-fast);
+  vertical-align: middle;
+}
+
+.tooltip-btn:hover {
+  background-color: var(--green-dark);
+  transform: scale(1.15);
+}
+
+.tooltip-btn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* ================================================================
+   ACCORDION
+================================================================ */
+#tax-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-bottom: 1.75rem;
+}
+
+.accordion {
+  background-color: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+
+.accordion[open] {
+  border-color: var(--green);
+  box-shadow: var(--shadow-sm), 0 0 0 1px rgba(0, 168, 107, 0.12);
+}
+
+.accordion-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--t-fast);
+  position: relative;
+}
+
+.accordion-summary:hover {
+  background-color: var(--gray-50);
+}
+
+.accordion[open] > .accordion-summary {
+  background-color: var(--green-xlight);
+  border-bottom: 1.5px solid var(--green-light);
+}
+
+.accordion-summary:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+  border-radius: var(--radius-sm);
+}
+
+.accordion-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.accordion-title {
+  flex: 1;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.accordion[open] .accordion-title {
+  color: var(--green-dark);
+}
+
+.accordion-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--green-dark);
+  background-color: var(--green-light);
+  padding: 0.15em 0.6em;
+  border-radius: var(--radius-full);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.accordion-badge:empty {
+  display: none;
+}
+
+/* Chevron arrow via pseudo-element */
+.accordion-summary::after {
+  content: "";
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 2px solid var(--gray-500);
+  border-bottom: 2px solid var(--gray-500);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform var(--t-fast), border-color var(--t-fast);
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+}
+
+.accordion[open] > .accordion-summary::after {
+  transform: rotate(225deg) translateY(-2px);
+  border-color: var(--green-dark);
+}
+
+/* Body open animation */
+.accordion-body {
+  padding: 0.25rem 1rem 1rem;
+  animation: accordionIn 0.22s ease forwards;
+}
+
+@keyframes accordionIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================================
+   FORM ACTION BUTTONS
+================================================================ */
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.btn-calculate,
+.btn-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color var(--t-fast),
+    box-shadow       var(--t-fast),
+    transform        var(--t-fast);
+  border: 2px solid transparent;
+}
+
+.btn-calculate {
+  background-color: var(--green);
+  color: var(--white);
+  flex: 1;
+  min-width: 10rem;
+}
+
+.btn-calculate:hover {
+  background-color: var(--green-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-calculate:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.btn-calculate:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.btn-reset {
+  background-color: var(--white);
+  color: var(--gray-700);
+  border-color: var(--gray-300);
+}
+
+.btn-reset:hover {
+  border-color: var(--gray-500);
+  background-color: var(--gray-50);
+}
+
+.btn-reset:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+/* ================================================================
+   RESULTS PANEL
+================================================================ */
+.results-panel {
+  background-color: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* Desktop: sticky sidebar */
+@media (min-width: 1024px) {
+  .results-panel {
+    position: sticky;
+    top: calc(var(--header-h) + 1rem);
+    max-height: calc(100vh - var(--header-h) - 2rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-300) transparent;
+  }
+
+  .results-panel::-webkit-scrollbar { width: 4px; }
+  .results-panel::-webkit-scrollbar-track { background: transparent; }
+  .results-panel::-webkit-scrollbar-thumb { background-color: var(--gray-300); border-radius: 4px; }
+}
+
+/* Mobile: bottom sheet */
+@media (max-width: 1023px) {
+  .results-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 150;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    border-bottom: none;
+    box-shadow: 0 -6px 32px rgba(0, 0, 0, 0.14);
+    max-height: 82vh;
+    overflow-y: auto;
+    transform: translateY(calc(100% - 3.75rem));
+    transition: transform var(--t-slow);
+    overscroll-behavior: contain;
+  }
+
+  /* JS adds this class to expand the sheet */
+  .results-panel.is-open {
+    transform: translateY(0);
+  }
+
+  /* Drag handle */
+  .results-panel::before {
+    content: "";
+    display: block;
+    width: 2.5rem;
+    height: 0.25rem;
+    background-color: var(--gray-300);
+    border-radius: var(--radius-full);
+    margin: 0.625rem auto 0;
+  }
+
+  /* Push page content above the peeking sheet */
+  body {
+    padding-bottom: 4rem;
+  }
+}
+
+.results-panel > h2 {
+  font-size: 1rem;
+  padding: 1rem 1.125rem 0.625rem;
+  border-bottom: 1.5px solid var(--gray-100);
+  color: var(--navy);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.results-panel > h2::before {
+  content: "📊";
+  font-size: 1rem;
+}
+
+.results-disclaimer {
+  font-size: 0.75rem;
+  color: var(--gray-500);
+  padding: 0.5rem 1.125rem;
+  background-color: var(--amber-light);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.2);
+  line-height: 1.5;
+}
+
+/* Results list — nested DL */
+.results-list {
+  padding: 0.5rem 0 1rem;
+}
+
+.results-group {
+  padding: 0 0 0.25rem;
+  border-bottom: 1.5px solid var(--gray-100);
+  margin-bottom: 0.25rem;
+}
+
+.results-group:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.results-group-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-500);
+  padding: 0.625rem 1.125rem 0.25rem;
+}
+
+.results-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 1.125rem;
+}
+
+.results-row dt {
+  font-size: 0.8375rem;
+  color: var(--gray-700);
+  font-weight: 400;
+}
+
+.results-row--total {
+  background-color: var(--gray-50);
+  margin: 0.25rem 0;
+}
+
+.results-row--total dt {
+  font-weight: 600;
+  color: var(--gray-800);
+  font-size: 0.875rem;
+}
+
+.result-value {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.result-value--deduction { color: var(--red); }
+.result-value--highlight { color: var(--navy); font-size: 0.9375rem; }
+.result-value--credit    { color: var(--green-dark); }
+
+/* Final outcome row */
+.results-group--final {
+  padding: 0.75rem 1.125rem 0.5rem;
+  border-bottom: none;
+}
+
+.results-row--outcome {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--gray-100);
+  border: 2px solid var(--gray-200);
+  transition: background-color var(--t), border-color var(--t);
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.results-row--outcome dt {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.result-value--outcome {
+  font-size: 1.375rem;
+  font-weight: 800;
+  color: var(--gray-700);
+  letter-spacing: -0.02em;
+}
+
+/* Refund state — JS adds .is-refund to .results-group--final */
+.results-group--final.is-refund .results-row--outcome {
+  background-color: var(--green-xlight);
+  border-color: var(--green);
+}
+
+.results-group--final.is-refund .results-row--outcome dt { color: var(--green-dark); }
+.results-group--final.is-refund .result-value--outcome   { color: var(--green-dark); }
+
+/* Owing state — JS adds .is-owing */
+.results-group--final.is-owing .results-row--outcome {
+  background-color: var(--red-light);
+  border-color: var(--red);
+}
+
+.results-group--final.is-owing .results-row--outcome dt { color: var(--red-dark); }
+.results-group--final.is-owing .result-value--outcome   { color: var(--red); }
+
+.outcome-note {
+  font-size: 0.775rem;
+  color: var(--gray-500);
+  margin-top: 0.5rem;
+  line-height: 1.5;
+  min-height: 1em;
+}
+
+/* ================================================================
+   TOOLTIP MODAL
+================================================================ */
+.tooltip-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  margin: auto;
+  width: min(92vw, 28rem);
+  max-height: min(80vh, 32rem);
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: var(--white);
+  box-shadow: var(--shadow-xl);
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Backdrop */
+.tooltip-modal::backdrop {
+  background-color: rgba(26, 31, 54, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Fallback backdrop for browsers without ::backdrop */
+.tooltip-modal[open]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: rgba(26, 31, 54, 0.55);
+  z-index: -1;
+}
+
+.tooltip-modal-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tooltip-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0.875rem;
+  border-bottom: 1.5px solid var(--gray-100);
+  background-color: var(--green-xlight);
+  flex-shrink: 0;
+}
+
+.tooltip-modal-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+.tooltip-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-full);
+  font-size: 1rem;
+  color: var(--gray-600);
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+  line-height: 1;
+}
+
+.tooltip-modal-close:hover {
+  background-color: var(--red-light);
+  color: var(--red);
+  border-color: var(--red);
+}
+
+.tooltip-modal-close:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.tooltip-modal-body {
+  padding: 1.125rem 1.25rem 1.5rem;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  color: var(--gray-800);
+  line-height: 1.7;
+  flex: 1;
+}
+
+/* ================================================================
+   RESPONSIVE — MOBILE OVERRIDES  (max 639px)
+================================================================ */
+@media (max-width: 639px) {
+  .site-header h1 {
+    font-size: 0.875rem;
+  }
+
+  .lang-btn {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.75rem;
+  }
+
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  .card-icon {
+    font-size: 1.375rem;
+  }
+
+  .card-title {
+    font-size: 0.8125rem;
+  }
+
+  .card-desc {
+    display: none;
+  }
+
+  .accordion-summary {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .accordion-body {
+    padding: 0.25rem 0.875rem 0.875rem;
+  }
+
+  .field-row {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+  }
+
+  .field-row--checkbox,
+  .field-row--radio {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  input[type="number"],
+  input[type="text"] {
+    width: 100%;
+    text-align: left;
+  }
+
+  .btn-calculate,
+  .btn-reset {
+    width: 100%;
+    padding: 0.875rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+/* ================================================================
+   RESPONSIVE — TABLET  (640px – 1023px)
+================================================================ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .field-row {
+    grid-template-columns: 1fr 10rem;
+  }
+}
+
+/* ================================================================
+   REDUCED MOTION
+================================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
