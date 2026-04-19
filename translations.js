@@ -1,6 +1,6 @@
 'use strict';
 
-const translations = {
+var translations = {
 
   fr: {
     // Page
