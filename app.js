@@ -87,7 +87,12 @@ const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
 
 function openModal(key) {
-  if (modalBody) modalBody.textContent = key; // placeholder until translations land
+  const lang  = localStorage.getItem('lang') || 'fr';
+  const t     = (translations && translations[lang]) ? translations[lang] : translations.en;
+  const label = key.replace('.tooltip', '.label');
+  const titleEl = document.getElementById('tooltip-modal-title');
+  if (titleEl) titleEl.textContent = t[label] || t['modal.title'] || 'Info';
+  if (modalBody) modalBody.textContent = t[key] || key;
   modal?.showModal();
 }
 function closeModal() { modal?.close(); }
@@ -95,8 +100,10 @@ function closeModal() { modal?.close(); }
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-calculate')?.addEventListener('click', runCalculation);
-  document.querySelectorAll('#tax-form input, #tax-form select').forEach(el =>
-    el.addEventListener('change', runCalculation));
+  document.querySelectorAll('#tax-form input, #tax-form select').forEach(el => {
+    el.addEventListener('change', runCalculation);
+    el.addEventListener('input',  runCalculation);
+  });
 
   const savedLang = localStorage.getItem('lang') || 'fr';
   setLanguage(savedLang);
