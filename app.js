@@ -68,6 +68,20 @@ function runCalculation() {
   }
 }
 
+// ── Language ───────────────────────────────────────────────────────────────
+function setLanguage(lang) {
+  const t = (translations && translations[lang]) ? translations[lang] : translations.en;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('lang-btn--active', btn.dataset.lang === lang);
+  });
+  document.documentElement.lang = lang;
+  localStorage.setItem('lang', lang);
+}
+
 // ── Modal ──────────────────────────────────────────────────────────────────
 const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
@@ -84,8 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#tax-form input, #tax-form select').forEach(el =>
     el.addEventListener('change', runCalculation));
 
+  const savedLang = localStorage.getItem('lang') || 'fr';
+  setLanguage(savedLang);
+
   document.querySelectorAll('.lang-btn').forEach(btn =>
-    btn.addEventListener('click', () => console.log('lang:', btn.dataset.lang)));
+    btn.addEventListener('click', () => setLanguage(btn.dataset.lang)));
 
   document.querySelectorAll('.tooltip-btn').forEach(btn =>
     btn.addEventListener('click', () => openModal(btn.dataset.tooltip)));
