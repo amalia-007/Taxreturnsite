@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-i18n="page.title">Australian Tax Return Calculator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ======================================================
+       HEADER
+  ====================================================== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 data-i18n="header.title">Australian Tax Return Calculator</h1>
+      <nav class="lang-switcher" aria-label="Language switcher">
+        <button type="button" class="lang-btn" data-lang="fr" data-i18n="lang.fr">🇫🇷 FR</button>
+        <span class="lang-divider" aria-hidden="true">|</span>
+        <button type="button" class="lang-btn lang-btn--active" data-lang="en" data-i18n="lang.en">🇬🇧 EN</button>
+        <span class="lang-divider" aria-hidden="true">|</span>
+        <button type="button" class="lang-btn" data-lang="es" data-i18n="lang.es">🇪🇸 ES</button>
+        <span class="lang-divider" aria-hidden="true">|</span>
+        <button type="button" class="lang-btn" data-lang="it" data-i18n="lang.it">🇮🇹 IT</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+
+    <!-- ====================================================
+         RESIDENT TYPE CARDS
+    ==================================================== -->
+    <section class="resident-section" aria-labelledby="resident-heading">
+      <h2 id="resident-heading" data-i18n="resident.heading">Select Your Resident Type</h2>
+      <p class="resident-subtext" data-i18n="resident.subtext">
+        Your residency status determines which tax rates and rules apply to your return.
+      </p>
+
+      <div class="resident-cards" role="radiogroup" aria-labelledby="resident-heading">
+
+        <label class="resident-card" for="type-australian">
+          <input type="radio" id="type-australian" name="residentType" value="australian" />
+          <div class="card-body">
+            <span class="card-icon" aria-hidden="true">🏠</span>
+            <span class="card-title" data-i18n="resident.australian.title">Australian Resident</span>
+            <span class="card-desc" data-i18n="resident.australian.desc">
+              Taxed on worldwide income. Eligible for tax-free threshold.
+            </span>
+          </div>
+        </label>
+
+        <label class="resident-card" for="type-whm">
+          <input type="radio" id="type-whm" name="residentType" value="whm" />
+          <div class="card-body">
+            <span class="card-icon" aria-hidden="true">🎒</span>
+            <span class="card-title" data-i18n="resident.whm.title">Working Holiday Maker</span>
+            <span class="card-subtitle" data-i18n="resident.whm.subtitle">WHM 417 / 462</span>
+            <span class="card-desc" data-i18n="resident.whm.desc">
+              Flat 15% on first $45,000. Special rates apply above that threshold.
+            </span>
+          </div>
+        </label>
+
+        <label class="resident-card" for="type-foreign">
+          <input type="radio" id="type-foreign" name="residentType" value="foreign" />
+          <div class="card-body">
+            <span class="card-icon" aria-hidden="true">✈️</span>
+            <span class="card-title" data-i18n="resident.foreign.title">Foreign Resident</span>
+            <span class="card-desc" data-i18n="resident.foreign.desc">
+              Taxed on Australian-sourced income only. No tax-free threshold.
+            </span>
+          </div>
+        </label>
+
+        <label class="resident-card" for="type-nonresident">
+          <input type="radio" id="type-nonresident" name="residentType" value="nonresident" />
+          <div class="card-body">
+            <span class="card-icon" aria-hidden="true">🌐</span>
+            <span class="card-title" data-i18n="resident.nonresident.title">Non-Resident</span>
+            <span class="card-desc" data-i18n="resident.nonresident.desc">
+              Specific withholding tax rates. No Medicare levy applies.
+            </span>
+          </div>
+        </label>
+
+      </div>
+    </section>
+
+    <!-- ====================================================
+         TAX YEAR SELECTOR
+    ==================================================== -->
+    <section class="year-section" aria-labelledby="year-heading">
+      <h2 id="year-heading" data-i18n="year.heading">Financial Year</h2>
+      <div class="field-row">
+        <label for="tax-year">
+          <span data-i18n="year.label">Select financial year</span>
+          <button type="button" class="tooltip-btn" data-tooltip="year.tooltip" aria-label="Help for financial year">?</button>
+        </label>
+        <select id="tax-year" name="taxYear">
+          <option value="2025" data-i18n="year.option.2025">2024–25</option>
+          <option value="2024" data-i18n="year.option.2024">2023–24</option>
+          <option value="2023" data-i18n="year.option.2023">2022–23</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ====================================================
+         ACCORDION FORM
+    ==================================================== -->
+    <form id="tax-form" novalidate>
+
+      <!-- ------------------------------------------------
+           1. INCOME
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-income" open>
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">💼</span>
+          <span class="accordion-title" data-i18n="section.income">Income</span>
+          <span class="accordion-badge" id="badge-income" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <div class="field-row">
+            <label for="salary-wages">
+              <span data-i18n="income.salary.label">Salary &amp; Wages</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.salary.tooltip" aria-label="Help for salary and wages">?</button>
+            </label>
+            <input type="number" id="salary-wages" name="salaryWages" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="allowances">
+              <span data-i18n="income.allowances.label">Allowances</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.allowances.tooltip" aria-label="Help for allowances">?</button>
+            </label>
+            <input type="number" id="allowances" name="allowances" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tips-bonuses">
+              <span data-i18n="income.tips.label">Tips &amp; Bonuses</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.tips.tooltip" aria-label="Help for tips and bonuses">?</button>
+            </label>
+            <input type="number" id="tips-bonuses" name="tipsBonuses" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="interest-income">
+              <span data-i18n="income.interest.label">Interest Income</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.interest.tooltip" aria-label="Help for interest income">?</button>
+            </label>
+            <input type="number" id="interest-income" name="interestIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="dividends">
+              <span data-i18n="income.dividends.label">Dividends</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.dividends.tooltip" aria-label="Help for dividends">?</button>
+            </label>
+            <input type="number" id="dividends" name="dividends" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="franking-credits">
+              <span data-i18n="income.frankingCredits.label">Franking Credits</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.frankingCredits.tooltip" aria-label="Help for franking credits">?</button>
+            </label>
+            <input type="number" id="franking-credits" name="frankingCredits" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="rental-income">
+              <span data-i18n="income.rental.label">Rental Income</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.rental.tooltip" aria-label="Help for rental income">?</button>
+            </label>
+            <input type="number" id="rental-income" name="rentalIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="capital-gains">
+              <span data-i18n="income.capitalGains.label">Capital Gains</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.capitalGains.tooltip" aria-label="Help for capital gains">?</button>
+            </label>
+            <input type="number" id="capital-gains" name="capitalGains" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="foreign-income">
+              <span data-i18n="income.foreign.label">Foreign Income</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.foreign.tooltip" aria-label="Help for foreign income">?</button>
+            </label>
+            <input type="number" id="foreign-income" name="foreignIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="government-payments">
+              <span data-i18n="income.govPayments.label">Government Payments</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.govPayments.tooltip" aria-label="Help for government payments">?</button>
+            </label>
+            <input type="number" id="government-payments" name="governmentPayments" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="other-income">
+              <span data-i18n="income.other.label">Other Income</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.other.tooltip" aria-label="Help for other income">?</button>
+            </label>
+            <input type="number" id="other-income" name="otherIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           2. TAX PAID
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-taxpaid">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">🏦</span>
+          <span class="accordion-title" data-i18n="section.taxPaid">Tax Paid</span>
+          <span class="accordion-badge" id="badge-taxpaid" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <div class="field-row">
+            <label for="tax-withheld-salary">
+              <span data-i18n="taxPaid.withheldSalary.label">Tax Withheld from Salary</span>
+              <button type="button" class="tooltip-btn" data-tooltip="taxPaid.withheldSalary.tooltip" aria-label="Help for tax withheld from salary">?</button>
+            </label>
+            <input type="number" id="tax-withheld-salary" name="taxWithheldSalary" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tax-withheld-interest">
+              <span data-i18n="taxPaid.withheldInterest.label">Tax Withheld from Interest</span>
+              <button type="button" class="tooltip-btn" data-tooltip="taxPaid.withheldInterest.tooltip" aria-label="Help for tax withheld from interest">?</button>
+            </label>
+            <input type="number" id="tax-withheld-interest" name="taxWithheldInterest" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tax-withheld-dividends">
+              <span data-i18n="taxPaid.withheldDividends.label">Tax Withheld from Dividends</span>
+              <button type="button" class="tooltip-btn" data-tooltip="taxPaid.withheldDividends.tooltip" aria-label="Help for tax withheld from dividends">?</button>
+            </label>
+            <input type="number" id="tax-withheld-dividends" name="taxWithheldDividends" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tax-withheld-other">
+              <span data-i18n="taxPaid.withheldOther.label">Tax Withheld from Other Sources</span>
+              <button type="button" class="tooltip-btn" data-tooltip="taxPaid.withheldOther.tooltip" aria-label="Help for tax withheld from other sources">?</button>
+            </label>
+            <input type="number" id="tax-withheld-other" name="taxWithheldOther" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="instalment-credits">
+              <span data-i18n="taxPaid.instalmentCredits.label">PAYG Instalment Credits</span>
+              <button type="button" class="tooltip-btn" data-tooltip="taxPaid.instalmentCredits.tooltip" aria-label="Help for PAYG instalment credits">?</button>
+            </label>
+            <input type="number" id="instalment-credits" name="instalmentCredits" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           3. DEDUCTIONS
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-deductions">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">📋</span>
+          <span class="accordion-title" data-i18n="section.deductions">Deductions</span>
+          <span class="accordion-badge" id="badge-deductions" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <div class="field-row">
+            <label for="work-related-travel">
+              <span data-i18n="deductions.workTravel.label">Work-Related Travel</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.workTravel.tooltip" aria-label="Help for work-related travel">?</button>
+            </label>
+            <input type="number" id="work-related-travel" name="workRelatedTravel" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="uniform-clothing">
+              <span data-i18n="deductions.uniform.label">Uniform &amp; Clothing</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.uniform.tooltip" aria-label="Help for uniform and clothing">?</button>
+            </label>
+            <input type="number" id="uniform-clothing" name="uniformClothing" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="home-office">
+              <span data-i18n="deductions.homeOffice.label">Home Office Expenses</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.homeOffice.tooltip" aria-label="Help for home office expenses">?</button>
+            </label>
+            <input type="number" id="home-office" name="homeOffice" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="self-education">
+              <span data-i18n="deductions.selfEducation.label">Self-Education Expenses</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.selfEducation.tooltip" aria-label="Help for self-education expenses">?</button>
+            </label>
+            <input type="number" id="self-education" name="selfEducation" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tools-equipment">
+              <span data-i18n="deductions.tools.label">Tools &amp; Equipment</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.tools.tooltip" aria-label="Help for tools and equipment">?</button>
+            </label>
+            <input type="number" id="tools-equipment" name="toolsEquipment" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="union-fees">
+              <span data-i18n="deductions.unionFees.label">Union &amp; Professional Fees</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.unionFees.tooltip" aria-label="Help for union and professional fees">?</button>
+            </label>
+            <input type="number" id="union-fees" name="unionFees" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="income-protection">
+              <span data-i18n="deductions.incomeProtection.label">Income Protection Insurance</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.incomeProtection.tooltip" aria-label="Help for income protection insurance">?</button>
+            </label>
+            <input type="number" id="income-protection" name="incomeProtection" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="donations">
+              <span data-i18n="deductions.donations.label">Charitable Donations (DGR)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.donations.tooltip" aria-label="Help for charitable donations">?</button>
+            </label>
+            <input type="number" id="donations" name="donations" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="tax-agent-fees">
+              <span data-i18n="deductions.taxAgentFees.label">Tax Agent Fees</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.taxAgentFees.tooltip" aria-label="Help for tax agent fees">?</button>
+            </label>
+            <input type="number" id="tax-agent-fees" name="taxAgentFees" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="rental-deductions">
+              <span data-i18n="deductions.rental.label">Rental Property Expenses</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.rental.tooltip" aria-label="Help for rental property expenses">?</button>
+            </label>
+            <input type="number" id="rental-deductions" name="rentalDeductions" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="other-deductions">
+              <span data-i18n="deductions.other.label">Other Deductions</span>
+              <button type="button" class="tooltip-btn" data-tooltip="deductions.other.tooltip" aria-label="Help for other deductions">?</button>
+            </label>
+            <input type="number" id="other-deductions" name="otherDeductions" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           4. OFFSETS
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-offsets">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">⚖️</span>
+          <span class="accordion-title" data-i18n="section.offsets">Offsets</span>
+          <span class="accordion-badge" id="badge-offsets" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <div class="field-row field-row--checkbox">
+            <label for="lito-eligible">
+              <span data-i18n="offsets.lito.label">Low Income Tax Offset (LITO)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.lito.tooltip" aria-label="Help for LITO">?</button>
+            </label>
+            <input type="checkbox" id="lito-eligible" name="litoEligible" value="1" />
+          </div>
+
+          <div class="field-row field-row--checkbox">
+            <label for="lmito-eligible">
+              <span data-i18n="offsets.lmito.label">Low &amp; Middle Income Tax Offset (LMITO)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.lmito.tooltip" aria-label="Help for LMITO">?</button>
+            </label>
+            <input type="checkbox" id="lmito-eligible" name="lmitoEligible" value="1" />
+          </div>
+
+          <div class="field-row field-row--checkbox">
+            <label for="sapto-eligible">
+              <span data-i18n="offsets.sapto.label">Seniors &amp; Pensioners Offset (SAPTO)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.sapto.tooltip" aria-label="Help for SAPTO">?</button>
+            </label>
+            <input type="checkbox" id="sapto-eligible" name="saptoEligible" value="1" />
+          </div>
+
+          <div class="field-row">
+            <label for="foreign-tax-offset">
+              <span data-i18n="offsets.foreignTax.label">Foreign Income Tax Offset</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.foreignTax.tooltip" aria-label="Help for foreign income tax offset">?</button>
+            </label>
+            <input type="number" id="foreign-tax-offset" name="foreignTaxOffset" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="private-health-offset">
+              <span data-i18n="offsets.privateHealth.label">Private Health Insurance Offset</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.privateHealth.tooltip" aria-label="Help for private health insurance offset">?</button>
+            </label>
+            <input type="number" id="private-health-offset" name="privateHealthOffset" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="spouse-contributions-offset">
+              <span data-i18n="offsets.spouseContributions.label">Spouse Super Contributions Offset</span>
+              <button type="button" class="tooltip-btn" data-tooltip="offsets.spouseContributions.tooltip" aria-label="Help for spouse super contributions offset">?</button>
+            </label>
+            <input type="number" id="spouse-contributions-offset" name="spouseContributionsOffset" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           5. MEDICARE
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-medicare">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">🏥</span>
+          <span class="accordion-title" data-i18n="section.medicare">Medicare</span>
+          <span class="accordion-badge" id="badge-medicare" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <fieldset class="field-fieldset">
+            <legend data-i18n="medicare.levy.legend">Medicare Levy</legend>
+
+            <div class="field-row field-row--radio">
+              <label for="medicare-full">
+                <input type="radio" id="medicare-full" name="medicareStatus" value="full" />
+                <span data-i18n="medicare.levy.full">Full Medicare Levy (2%)</span>
+                <button type="button" class="tooltip-btn" data-tooltip="medicare.levy.full.tooltip" aria-label="Help for full Medicare levy">?</button>
+              </label>
+            </div>
+
+            <div class="field-row field-row--radio">
+              <label for="medicare-reduction">
+                <input type="radio" id="medicare-reduction" name="medicareStatus" value="reduction" />
+                <span data-i18n="medicare.levy.reduction">Reduction (low income)</span>
+                <button type="button" class="tooltip-btn" data-tooltip="medicare.levy.reduction.tooltip" aria-label="Help for Medicare levy reduction">?</button>
+              </label>
+            </div>
+
+            <div class="field-row field-row--radio">
+              <label for="medicare-exempt">
+                <input type="radio" id="medicare-exempt" name="medicareStatus" value="exempt" />
+                <span data-i18n="medicare.levy.exempt">Exempt</span>
+                <button type="button" class="tooltip-btn" data-tooltip="medicare.levy.exempt.tooltip" aria-label="Help for Medicare levy exemption">?</button>
+              </label>
+            </div>
+
+          </fieldset>
+
+          <div class="field-row field-row--checkbox">
+            <label for="medicare-surcharge">
+              <span data-i18n="medicare.surcharge.label">Medicare Levy Surcharge applies</span>
+              <button type="button" class="tooltip-btn" data-tooltip="medicare.surcharge.tooltip" aria-label="Help for Medicare levy surcharge">?</button>
+            </label>
+            <input type="checkbox" id="medicare-surcharge" name="medicareSurcharge" value="1" />
+          </div>
+
+          <div class="field-row">
+            <label for="private-hospital-cover">
+              <span data-i18n="medicare.privateHospital.label">Private Hospital Cover Days</span>
+              <button type="button" class="tooltip-btn" data-tooltip="medicare.privateHospital.tooltip" aria-label="Help for private hospital cover">?</button>
+            </label>
+            <input type="number" id="private-hospital-cover" name="privateHospitalCover" min="0" max="365" step="1" placeholder="0" inputmode="numeric" />
+          </div>
+
+          <div class="field-row field-row--checkbox">
+            <label for="dependants">
+              <span data-i18n="medicare.dependants.label">Have dependant children or students</span>
+              <button type="button" class="tooltip-btn" data-tooltip="medicare.dependants.tooltip" aria-label="Help for dependants">?</button>
+            </label>
+            <input type="checkbox" id="dependants" name="hasDependants" value="1" />
+          </div>
+
+          <div class="field-row">
+            <label for="dependants-count">
+              <span data-i18n="medicare.dependantsCount.label">Number of Dependants</span>
+              <button type="button" class="tooltip-btn" data-tooltip="medicare.dependantsCount.tooltip" aria-label="Help for number of dependants">?</button>
+            </label>
+            <input type="number" id="dependants-count" name="dependantsCount" min="0" step="1" placeholder="0" inputmode="numeric" />
+          </div>
+
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           6. HECS / HELP
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-hecs">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">🎓</span>
+          <span class="accordion-title" data-i18n="section.hecs">HECS / HELP</span>
+          <span class="accordion-badge" id="badge-hecs" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
+          <div class="field-row field-row--checkbox">
+            <label for="hecs-debt">
+              <span data-i18n="hecs.hasDebt.label">I have a HECS-HELP debt</span>
+              <button type="button" class="tooltip-btn" data-tooltip="hecs.hasDebt.tooltip" aria-label="Help for HECS-HELP debt">?</button>
+            </label>
+            <input type="checkbox" id="hecs-debt" name="hecsDebt" value="1" />
+          </div>
+
+          <div class="field-row">
+            <label for="hecs-balance">
+              <span data-i18n="hecs.balance.label">Outstanding HECS Balance</span>
+              <button type="button" class="tooltip-btn" data-tooltip="hecs.balance.tooltip" aria-label="Help for outstanding HECS balance">?</button>
+            </label>
+            <input type="number" id="hecs-balance" name="hecsBalance" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row field-row--checkbox">
+            <label for="ssl-debt">
+              <span data-i18n="hecs.ssl.label">I have a Student Start-up Loan (SSL)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="hecs.ssl.tooltip" aria-label="Help for SSL debt">?</button>
+            </label>
+            <input type="checkbox" id="ssl-debt" name="sslDebt" value="1" />
+          </div>
+
+          <div class="field-row field-row--checkbox">
+            <label for="vsl-debt">
+              <span data-i18n="hecs.vsl.label">I have a VET Student Loan (VSL)</span>
+              <button type="button" class="tooltip-btn" data-tooltip="hecs.vsl.tooltip" aria-label="Help for VSL debt">?</button>
+            </label>
+            <input type="checkbox" id="vsl-debt" name="vslDebt" value="1" />
+          </div>
+
+          <div class="field-row">
+            <label for="hecs-withheld">
+              <span data-i18n="hecs.withheld.label">HECS Amounts Already Withheld</span>
+              <button type="button" class="tooltip-btn" data-tooltip="hecs.withheld.tooltip" aria-label="Help for HECS amounts withheld">?</button>
+            </label>
+            <input type="number" id="hecs-withheld" name="hecsWithheld" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+        </div>
+      </details>
+
+      <div class="form-actions">
+        <button type="button" id="btn-calculate" class="btn-calculate">
+          <span data-i18n="form.calculate">Calculate</span>
+        </button>
+        <button type="reset" id="btn-reset" class="btn-reset">
+          <span data-i18n="form.reset">Reset</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- ====================================================
+         RESULTS PANEL
+    ==================================================== -->
+    <aside class="results-panel" id="results-panel" aria-labelledby="results-heading">
+      <h2 id="results-heading" data-i18n="results.heading">Your Tax Summary</h2>
+      <p class="results-disclaimer" data-i18n="results.disclaimer">
+        Estimates only. Not financial advice. Always consult a registered tax agent.
+      </p>
+
+      <dl class="results-list">
+
+        <div class="results-group">
+          <dt class="results-group-title" data-i18n="results.group.income">Income</dt>
+
+          <div class="results-row">
+            <dt data-i18n="results.grossIncome">Gross Income</dt>
+            <dd id="result-gross-income" class="result-value">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.totalDeductions">Total Deductions</dt>
+            <dd id="result-total-deductions" class="result-value result-value--deduction">—</dd>
+          </div>
+
+          <div class="results-row results-row--total">
+            <dt data-i18n="results.taxableIncome">Taxable Income</dt>
+            <dd id="result-taxable-income" class="result-value result-value--highlight">—</dd>
+          </div>
+        </div>
+
+        <div class="results-group">
+          <dt class="results-group-title" data-i18n="results.group.tax">Tax Calculation</dt>
+
+          <div class="results-row">
+            <dt data-i18n="results.incomeTax">Income Tax</dt>
+            <dd id="result-income-tax" class="result-value">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.medicareLevy">Medicare Levy</dt>
+            <dd id="result-medicare-levy" class="result-value">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt>
+            <dd id="result-medicare-surcharge" class="result-value">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt>
+            <dd id="result-hecs-repayment" class="result-value">—</dd>
+          </div>
+
+          <div class="results-row results-row--total">
+            <dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt>
+            <dd id="result-gross-tax" class="result-value result-value--highlight">—</dd>
+          </div>
+        </div>
+
+        <div class="results-group">
+          <dt class="results-group-title" data-i18n="results.group.offsets">Offsets &amp; Credits</dt>
+
+          <div class="results-row">
+            <dt data-i18n="results.lito">LITO</dt>
+            <dd id="result-lito" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.lmito">LMITO</dt>
+            <dd id="result-lmito" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.sapto">SAPTO</dt>
+            <dd id="result-sapto" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.frankingCreditsResult">Franking Credits</dt>
+            <dd id="result-franking" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt>
+            <dd id="result-foreign-offset" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.otherOffsets">Other Offsets</dt>
+            <dd id="result-other-offsets" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row results-row--total">
+            <dt data-i18n="results.totalOffsets">Total Offsets</dt>
+            <dd id="result-total-offsets" class="result-value result-value--credit">—</dd>
+          </div>
+        </div>
+
+        <div class="results-group">
+          <dt class="results-group-title" data-i18n="results.group.credits">Tax Already Paid</dt>
+
+          <div class="results-row">
+            <dt data-i18n="results.taxWithheld">Tax Withheld</dt>
+            <dd id="result-tax-withheld" class="result-value result-value--credit">—</dd>
+          </div>
+
+          <div class="results-row">
+            <dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt>
+            <dd id="result-payg-credits" class="result-value result-value--credit">—</dd>
+          </div>
+        </div>
+
+        <div class="results-group results-group--final">
+          <div class="results-row results-row--outcome">
+            <dt id="outcome-label" data-i18n="results.outcome.default">Tax Payable / Refund</dt>
+            <dd id="result-outcome" class="result-value result-value--outcome">—</dd>
+          </div>
+          <p class="outcome-note" id="outcome-note" aria-live="polite"></p>
+        </div>
+
+      </dl>
+    </aside>
+
+  </main>
+
+  <!-- ======================================================
+       FOOTER
+  ====================================================== -->
+  <footer class="site-footer">
+    <p data-i18n="footer.disclaimer">
+      This calculator provides estimates only and does not constitute financial or tax advice.
+    </p>
+    <p>
+      <span data-i18n="footer.taxYear">Tax rates based on ATO schedule for the selected financial year.</span>
+    </p>
+  </footer>
+
+  <!-- ======================================================
+       TOOLTIP MODAL
+  ====================================================== -->
+  <dialog id="tooltip-modal" class="tooltip-modal" aria-labelledby="tooltip-modal-title" aria-modal="true">
+    <div class="tooltip-modal-inner">
+      <header class="tooltip-modal-header">
+        <h3 id="tooltip-modal-title" class="tooltip-modal-title" data-i18n="modal.title">More Information</h3>
+        <button type="button" class="tooltip-modal-close" id="tooltip-modal-close" aria-label="Close" data-i18n-aria="modal.close">&#x2715;</button>
+      </header>
+      <div class="tooltip-modal-body" id="tooltip-modal-body">
+        <!-- Content injected by script.js -->
+      </div>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
