@@ -1,0 +1,271 @@
+'use strict';
+
+const translations = {
+
+  fr: {
+    // Page
+    'page.title':   'Calculateur de Tax Return Australien',
+    'header.title': 'Calculateur de Tax Return Australien',
+
+    // Language buttons
+    'lang.fr': '🇫🇷 FR',
+    'lang.en': '🇬🇧 EN',
+    'lang.es': '🇪🇸 ES',
+    'lang.it': '🇮🇹 IT',
+
+    // Resident type
+    'resident.heading':              'Sélectionnez votre statut de résident',
+    'resident.subtext':              'Votre statut de résidence détermine les taux et règles applicables à votre déclaration.',
+    'resident.australian.title':     'Résident Australien',
+    'resident.australian.desc':      'Imposé sur les revenus mondiaux. Éligible au seuil d\'exonération fiscale.',
+    'resident.whm.title':            'Vacancier-Travailleur',
+    'resident.whm.subtitle':         'PVT 417 / 462',
+    'resident.whm.desc':             'Taux fixe de 15 % sur les premiers 45 000 $. Taux spéciaux au-delà.',
+    'resident.foreign.title':        'Résident Étranger',
+    'resident.foreign.desc':         'Imposé uniquement sur les revenus australiens. Pas de seuil d\'exonération.',
+    'resident.nonresident.title':    'Non-Résident',
+    'resident.nonresident.desc':     'Taux de retenue spécifiques. Pas de prélèvement Medicare.',
+
+    // Year
+    'year.heading':       'Année Fiscale',
+    'year.label':         'Sélectionner l\'année fiscale',
+    'year.option.2025':   '2024–25',
+    'year.option.2024':   '2023–24',
+    'year.option.2023':   '2022–23',
+
+    // Income section
+    'section.income':               'Revenus',
+    'income.salary.label':          'Salaire et Traitements',
+    'income.allowances.label':      'Indemnités',
+    'income.tips.label':            'Pourboires et Primes',
+    'income.interest.label':        'Revenus d\'Intérêts',
+    'income.dividends.label':       'Dividendes',
+    'income.frankingCredits.label': 'Crédits de Dividendes',
+    'income.rental.label':          'Revenus Locatifs',
+    'income.capitalGains.label':    'Plus-Values',
+    'income.foreign.label':         'Revenus Étrangers',
+    'income.govPayments.label':     'Prestations Gouvernementales',
+    'income.other.label':           'Autres Revenus',
+
+    // Tax paid section
+    'section.taxPaid':                    'Impôts Payés',
+    'taxPaid.withheldSalary.label':       'Retenue sur Salaire',
+    'taxPaid.withheldInterest.label':     'Retenue sur Intérêts',
+    'taxPaid.withheldDividends.label':    'Retenue sur Dividendes',
+    'taxPaid.withheldOther.label':        'Retenue — Autres Sources',
+    'taxPaid.instalmentCredits.label':    'Crédits d\'Acomptes PAYG',
+
+    // Deductions section
+    'section.deductions':                   'Déductions',
+    'deductions.workTravel.label':          'Frais de Déplacement Professionnels',
+    'deductions.uniform.label':             'Uniformes et Vêtements',
+    'deductions.homeOffice.label':          'Frais de Bureau à Domicile',
+    'deductions.selfEducation.label':       'Frais de Formation',
+    'deductions.tools.label':               'Outils et Équipements',
+    'deductions.unionFees.label':           'Cotisations Syndicales et Professionnelles',
+    'deductions.incomeProtection.label':    'Assurance de Protection des Revenus',
+    'deductions.donations.label':           'Dons Caritatifs (DGR)',
+    'deductions.taxAgentFees.label':        'Honoraires d\'Agent Fiscal',
+    'deductions.rental.label':              'Charges Locatives',
+    'deductions.other.label':               'Autres Déductions',
+
+    // Offsets section
+    'section.offsets':                       'Réductions Fiscales',
+    'offsets.lito.label':                    'Réduction Faibles Revenus (LITO)',
+    'offsets.lmito.label':                   'Réduction Revenus Moyens (LMITO)',
+    'offsets.sapto.label':                   'Réduction Seniors et Retraités (SAPTO)',
+    'offsets.foreignTax.label':              'Crédit Impôt Étranger',
+    'offsets.privateHealth.label':           'Réduction Assurance Santé Privée',
+    'offsets.spouseContributions.label':     'Crédit Cotisations Super Conjoint',
+
+    // Medicare section
+    'section.medicare':                  'Medicare',
+    'medicare.levy.legend':              'Prélèvement Medicare',
+    'medicare.levy.full':                'Prélèvement Complet (2 %)',
+    'medicare.levy.reduction':           'Réduction (faibles revenus)',
+    'medicare.levy.exempt':              'Exempté',
+    'medicare.surcharge.label':          'Surtaxe Medicare applicable',
+    'medicare.privateHospital.label':    'Jours de Couverture Hospitalière Privée',
+    'medicare.dependants.label':         'Avoir des enfants ou étudiants à charge',
+    'medicare.dependantsCount.label':    'Nombre de Personnes à Charge',
+
+    // HECS section
+    'section.hecs':           'HECS / HELP',
+    'hecs.hasDebt.label':     'J\'ai une dette HECS-HELP',
+    'hecs.balance.label':     'Solde HECS Restant',
+    'hecs.ssl.label':         'J\'ai un prêt Student Start-up (SSL)',
+    'hecs.vsl.label':         'J\'ai un prêt VET Student (VSL)',
+    'hecs.withheld.label':    'Montants HECS Déjà Retenus',
+
+    // Form actions
+    'form.calculate': 'Calculer',
+    'form.reset':      'Réinitialiser',
+
+    // Results panel
+    'results.heading':              'Résumé Fiscal',
+    'results.disclaimer':           'Estimations uniquement. Consultez un agent fiscal agréé.',
+    'results.group.income':         'Revenus',
+    'results.grossIncome':          'Revenu Brut',
+    'results.totalDeductions':      'Total des Déductions',
+    'results.taxableIncome':        'Revenu Imposable',
+    'results.group.tax':            'Calcul de l\'Impôt',
+    'results.incomeTax':            'Impôt sur le Revenu',
+    'results.medicareLevy':         'Prélèvement Medicare',
+    'results.medicareSurcharge':    'Surtaxe Medicare',
+    'results.hecsRepayment':        'Remboursement HECS / HELP',
+    'results.grossTaxLiability':    'Impôt Brut Total',
+    'results.group.offsets':        'Réductions et Crédits',
+    'results.lito':                 'LITO',
+    'results.lmito':                'LMITO',
+    'results.sapto':                'SAPTO',
+    'results.frankingCreditsResult':'Crédits de Dividendes',
+    'results.foreignTaxOffset':     'Crédit Impôt Étranger',
+    'results.otherOffsets':         'Autres Réductions',
+    'results.totalOffsets':         'Total des Réductions',
+    'results.group.credits':        'Impôts Déjà Payés',
+    'results.taxWithheld':          'Impôt Retenu à la Source',
+    'results.paygCredits':          'Crédits d\'Acomptes PAYG',
+    'results.outcome.default':      'Impôt à Payer / Remboursement',
+
+    // Footer
+    'footer.disclaimer': 'Ce calculateur fournit des estimations uniquement et ne constitue pas un conseil fiscal.',
+    'footer.taxYear':    'Taux basés sur le barème ATO pour l\'année fiscale sélectionnée.',
+
+    // Modal
+    'modal.title': 'Plus d\'informations',
+  },
+
+  en: {
+    // Page
+    'page.title':   'Australian Tax Return Calculator',
+    'header.title': 'Australian Tax Return Calculator',
+
+    // Language buttons
+    'lang.fr': '🇫🇷 FR',
+    'lang.en': '🇬🇧 EN',
+    'lang.es': '🇪🇸 ES',
+    'lang.it': '🇮🇹 IT',
+
+    // Resident type
+    'resident.heading':              'Select Your Resident Type',
+    'resident.subtext':              'Your residency status determines which tax rates and rules apply to your return.',
+    'resident.australian.title':     'Australian Resident',
+    'resident.australian.desc':      'Taxed on worldwide income. Eligible for tax-free threshold.',
+    'resident.whm.title':            'Working Holiday Maker',
+    'resident.whm.subtitle':         'WHM 417 / 462',
+    'resident.whm.desc':             'Flat 15% on first $45,000. Special rates apply above that threshold.',
+    'resident.foreign.title':        'Foreign Resident',
+    'resident.foreign.desc':         'Taxed on Australian-sourced income only. No tax-free threshold.',
+    'resident.nonresident.title':    'Non-Resident',
+    'resident.nonresident.desc':     'Specific withholding tax rates. No Medicare levy applies.',
+
+    // Year
+    'year.heading':       'Financial Year',
+    'year.label':         'Select financial year',
+    'year.option.2025':   '2024–25',
+    'year.option.2024':   '2023–24',
+    'year.option.2023':   '2022–23',
+
+    // Income section
+    'section.income':               'Income',
+    'income.salary.label':          'Salary & Wages',
+    'income.allowances.label':      'Allowances',
+    'income.tips.label':            'Tips & Bonuses',
+    'income.interest.label':        'Interest Income',
+    'income.dividends.label':       'Dividends',
+    'income.frankingCredits.label': 'Franking Credits',
+    'income.rental.label':          'Rental Income',
+    'income.capitalGains.label':    'Capital Gains',
+    'income.foreign.label':         'Foreign Income',
+    'income.govPayments.label':     'Government Payments',
+    'income.other.label':           'Other Income',
+
+    // Tax paid section
+    'section.taxPaid':                    'Tax Paid',
+    'taxPaid.withheldSalary.label':       'Tax Withheld from Salary',
+    'taxPaid.withheldInterest.label':     'Tax Withheld from Interest',
+    'taxPaid.withheldDividends.label':    'Tax Withheld from Dividends',
+    'taxPaid.withheldOther.label':        'Tax Withheld from Other Sources',
+    'taxPaid.instalmentCredits.label':    'PAYG Instalment Credits',
+
+    // Deductions section
+    'section.deductions':                   'Deductions',
+    'deductions.workTravel.label':          'Work-Related Travel',
+    'deductions.uniform.label':             'Uniform & Clothing',
+    'deductions.homeOffice.label':          'Home Office Expenses',
+    'deductions.selfEducation.label':       'Self-Education Expenses',
+    'deductions.tools.label':               'Tools & Equipment',
+    'deductions.unionFees.label':           'Union & Professional Fees',
+    'deductions.incomeProtection.label':    'Income Protection Insurance',
+    'deductions.donations.label':           'Charitable Donations (DGR)',
+    'deductions.taxAgentFees.label':        'Tax Agent Fees',
+    'deductions.rental.label':              'Rental Property Expenses',
+    'deductions.other.label':               'Other Deductions',
+
+    // Offsets section
+    'section.offsets':                       'Offsets',
+    'offsets.lito.label':                    'Low Income Tax Offset (LITO)',
+    'offsets.lmito.label':                   'Low & Middle Income Tax Offset (LMITO)',
+    'offsets.sapto.label':                   'Seniors & Pensioners Offset (SAPTO)',
+    'offsets.foreignTax.label':              'Foreign Income Tax Offset',
+    'offsets.privateHealth.label':           'Private Health Insurance Offset',
+    'offsets.spouseContributions.label':     'Spouse Super Contributions Offset',
+
+    // Medicare section
+    'section.medicare':                  'Medicare',
+    'medicare.levy.legend':              'Medicare Levy',
+    'medicare.levy.full':                'Full Medicare Levy (2%)',
+    'medicare.levy.reduction':           'Reduction (low income)',
+    'medicare.levy.exempt':              'Exempt',
+    'medicare.surcharge.label':          'Medicare Levy Surcharge applies',
+    'medicare.privateHospital.label':    'Private Hospital Cover Days',
+    'medicare.dependants.label':         'Have dependant children or students',
+    'medicare.dependantsCount.label':    'Number of Dependants',
+
+    // HECS section
+    'section.hecs':           'HECS / HELP',
+    'hecs.hasDebt.label':     'I have a HECS-HELP debt',
+    'hecs.balance.label':     'Outstanding HECS Balance',
+    'hecs.ssl.label':         'I have a Student Start-up Loan (SSL)',
+    'hecs.vsl.label':         'I have a VET Student Loan (VSL)',
+    'hecs.withheld.label':    'HECS Amounts Already Withheld',
+
+    // Form actions
+    'form.calculate': 'Calculate',
+    'form.reset':      'Reset',
+
+    // Results panel
+    'results.heading':              'Your Tax Summary',
+    'results.disclaimer':           'Estimates only. Not financial advice. Always consult a registered tax agent.',
+    'results.group.income':         'Income',
+    'results.grossIncome':          'Gross Income',
+    'results.totalDeductions':      'Total Deductions',
+    'results.taxableIncome':        'Taxable Income',
+    'results.group.tax':            'Tax Calculation',
+    'results.incomeTax':            'Income Tax',
+    'results.medicareLevy':         'Medicare Levy',
+    'results.medicareSurcharge':    'Medicare Levy Surcharge',
+    'results.hecsRepayment':        'HECS / HELP Repayment',
+    'results.grossTaxLiability':    'Gross Tax Liability',
+    'results.group.offsets':        'Offsets & Credits',
+    'results.lito':                 'LITO',
+    'results.lmito':                'LMITO',
+    'results.sapto':                'SAPTO',
+    'results.frankingCreditsResult':'Franking Credits',
+    'results.foreignTaxOffset':     'Foreign Tax Offset',
+    'results.otherOffsets':         'Other Offsets',
+    'results.totalOffsets':         'Total Offsets',
+    'results.group.credits':        'Tax Already Paid',
+    'results.taxWithheld':          'Tax Withheld',
+    'results.paygCredits':          'PAYG Instalment Credits',
+    'results.outcome.default':      'Tax Payable / Refund',
+
+    // Footer
+    'footer.disclaimer': 'This calculator provides estimates only and does not constitute financial or tax advice.',
+    'footer.taxYear':    'Tax rates based on ATO schedule for the selected financial year.',
+
+    // Modal
+    'modal.title': 'More Information',
+  },
+
+};
