@@ -171,18 +171,9 @@ details > summary::-webkit-details-marker { display: none; }
 
 @media (min-width: 1024px) {
   .site-main {
-    display: grid;
-    grid-template-columns: 1fr var(--col-results);
-    grid-template-rows: auto auto auto;
-    column-gap: 2rem;
-    align-items: start;
     padding-bottom: 3rem;
+    padding-right: calc(var(--col-results) + 3rem);
   }
-
-  .resident-section { grid-column: 1; grid-row: 1; }
-  .year-section      { grid-column: 1; grid-row: 2; }
-  #tax-form          { grid-column: 1; grid-row: 3; }
-  .results-panel     { grid-column: 2; grid-row: 1 / 4; }
 }
 
 /* ================================================================
@@ -812,11 +803,13 @@ input[type="radio"]:focus-visible {
   overflow: hidden;
 }
 
-/* Desktop: sticky sidebar */
+/* Desktop: fixed right panel */
 @media (min-width: 1024px) {
   .results-panel {
-    position: sticky;
+    position: fixed;
     top: calc(var(--header-h) + 1rem);
+    right: max(var(--page-pad-x), calc((100vw - var(--page-max)) / 2 + var(--page-pad-x)));
+    width: var(--col-results);
     max-height: calc(100vh - var(--header-h) - 2rem);
     overflow-y: auto;
     scrollbar-width: thin;
@@ -864,7 +857,7 @@ input[type="radio"]:focus-visible {
 
   /* Push page content above the peeking sheet */
   body {
-    padding-bottom: 4rem;
+    padding-bottom: 5rem;
   }
 }
 
@@ -876,6 +869,14 @@ input[type="radio"]:focus-visible {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+@media (min-width: 1024px) {
+  .results-panel > h2 {
+    cursor: default;
+  }
 }
 
 .results-panel > h2::before {

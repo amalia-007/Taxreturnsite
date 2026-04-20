@@ -3,7 +3,7 @@
 const num   = id => parseFloat(document.getElementById(id)?.value) || 0;
 const check = id => !!document.getElementById(id)?.checked;
 const radio = name => document.querySelector(`[name="${name}"]:checked`)?.value ?? '';
-const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU');
+const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const set   = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = fmt(n); };
 
 function runCalculation() {
@@ -143,4 +143,13 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => openModal(btn.dataset.tooltip)));
   document.getElementById('tooltip-modal-close')?.addEventListener('click', closeModal);
   modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  // Mobile: tap panel heading to expand/collapse
+  const panel = document.getElementById('results-panel');
+  const panelHeading = panel?.querySelector('h2');
+  panelHeading?.addEventListener('click', () => {
+    if (window.innerWidth < 1024) panel.classList.toggle('is-open');
+  });
+
+  runCalculation();
 });
