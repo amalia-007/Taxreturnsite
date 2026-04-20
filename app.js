@@ -6,6 +6,12 @@ const radio = name => document.querySelector(`[name="${name}"]:checked`)?.value 
 const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const set   = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = fmt(n); };
 
+function tr(key) {
+  const lang = localStorage.getItem('lang') || 'en';
+  const tbl = (translations && translations[lang]) ? translations[lang] : translations.en;
+  return tbl[key] !== undefined ? tbl[key] : key;
+}
+
 // ── Input validation & number formatting ──────────────────────────────────
 function getOrCreateError(input) {
   let err = input.nextElementSibling;
@@ -64,7 +70,7 @@ function formatNumberInput(input) {
 
 function handleNumberInput(input) {
   if (input.value.includes('-')) {
-    setFieldError(input, 'Value cannot be negative');
+    setFieldError(input, tr('validation.negative'));
     input.value = input.value.replace(/-/g, '');
   } else {
     clearFieldError(input);
@@ -92,9 +98,8 @@ function runCalculation() {
   const tax     = calculateTax(taxable, type);
   const lito    = type === 'australian' ? calculateLITO(taxable) : 0;
 
-  const isAuOrWHM    = type === 'australian' || type === 'whm';
   const privatecover = check('medicare-surcharge') || num('private-hospital-cover') > 182;
-  const { levy, surcharge } = isAuOrWHM
+  const { levy, surcharge } = type === 'australian'
     ? calculateMedicare(taxable, privatecover)
     : { levy: 0, surcharge: 0 };
   const medicareLevy      = radio('medicareStatus') === 'exempt' ? 0 : levy;
@@ -117,6 +122,8 @@ function runCalculation() {
   set('result-medicare-levy',     medicareLevy);
   set('result-medicare-surcharge',medicareSurcharge);
   set('result-hecs-repayment',    hecs);
+  const hecsRow = document.getElementById('result-hecs-repayment')?.closest('.results-row');
+  if (hecsRow) hecsRow.hidden = !check('hecs-debt');
   set('result-gross-tax',         grossTax);
   set('result-lito',              lito);
   set('result-lmito',             0);
@@ -138,17 +145,17 @@ function runCalculation() {
     void group.offsetHeight;
     if (outcome < 0) {
       outcomeEl.textContent = fmt(Math.abs(outcome));
-      if (outcomeLabel) outcomeLabel.textContent = '🎉 Tax Refund';
+      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.refund');
       group.classList.add('is-refund');
       if (peekOutcome) { peekOutcome.textContent = '· ' + fmt(Math.abs(outcome)); peekOutcome.className = 'peek-outcome peek-outcome--refund'; }
     } else if (outcome > 0) {
       outcomeEl.textContent = fmt(outcome);
-      if (outcomeLabel) outcomeLabel.textContent = '⚠️ Tax Owing';
+      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.owing');
       group.classList.add('is-owing');
       if (peekOutcome) { peekOutcome.textContent = '· ' + fmt(outcome); peekOutcome.className = 'peek-outcome peek-outcome--owing'; }
     } else {
       outcomeEl.textContent = fmt(0);
-      if (outcomeLabel) outcomeLabel.textContent = 'Tax Payable / Refund';
+      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.default');
       if (peekOutcome) { peekOutcome.textContent = ''; peekOutcome.className = 'peek-outcome'; }
     }
   }
@@ -187,14 +194,16 @@ function updateProgress() {
 
   if (fill)  { fill.style.width = pct + '%'; fill.classList.toggle('is-complete', done); }
   if (wrap)  { wrap.setAttribute('aria-valuenow', filled); wrap.classList.toggle('is-complete', done); }
-  if (text)  text.textContent = done ? `✓ All ${total} sections complete` : `${filled} / ${total} sections complete`;
+  if (text) text.textContent = done
+    ? tr('progress.done').replace('{t}', total)
+    : tr('progress.text').replace('{f}', filled).replace('{t}', total);
   if (pctEl) pctEl.textContent = pct + '%';
 }
 
 // ── Resident rules — sections that show/hide per resident type ─────────────
 const RESIDENT_RULES = {
   australian:  { hideSections: [],                     hideOffsets: [] },
-  whm:         { hideSections: [],                     hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
+  whm:         { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
   foreign:     { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
   nonresident: { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
 };
@@ -227,6 +236,7 @@ function setLanguage(lang) {
   });
   document.documentElement.lang = lang;
   localStorage.setItem('lang', lang);
+  runCalculation();
 }
 
 // ── Summary modal ──────────────────────────────────────────────────────────
@@ -253,9 +263,9 @@ function buildSummaryHTML() {
   const residentName = residentEl?.closest('.resident-card')?.querySelector('.card-title')?.textContent?.trim() || '—';
   const yearEl       = document.getElementById('tax-year');
   const yearName     = yearEl ? yearEl.options[yearEl.selectedIndex]?.text : '—';
-  parts.push(sumSection('Your Details', [
-    sumRow('Resident Type', residentName),
-    sumRow('Tax Year', yearName),
+  parts.push(sumSection(tr('summary.section.details'), [
+    sumRow(tr('summary.residentType'), residentName),
+    sumRow(tr('summary.taxYear'), yearName),
   ]));
 
   // One section per accordion (skip hidden ones)
@@ -303,7 +313,7 @@ function buildSummaryHTML() {
     ['result-payg-credits',       'PAYG Credits'],
   ];
 
-  parts.push(sumSection('Calculation Breakdown',
+  parts.push(sumSection(tr('summary.section.breakdown'),
     resultFields.map(([id, label, cls]) =>
       sumRow(label, document.getElementById(id)?.textContent || '$0.00', cls || '')
     )
@@ -337,7 +347,7 @@ const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
 
 function openModal(key) {
-  const lang  = localStorage.getItem('lang') || 'fr';
+  const lang  = localStorage.getItem('lang') || 'en';
   const t     = (translations && translations[lang]) ? translations[lang] : translations.en;
   const label = key.replace('.tooltip', '.label');
   const titleEl = document.getElementById('tooltip-modal-title');
@@ -380,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('change', () => applyResidentRules(el.value)));
   applyResidentRules(radio('residentType') || 'australian');
 
-  const savedLang = localStorage.getItem('lang') || 'fr';
+  const savedLang = localStorage.getItem('lang') || 'en';
   setLanguage(savedLang);
 
   document.querySelectorAll('.lang-btn').forEach(btn =>

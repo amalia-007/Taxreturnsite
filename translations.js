@@ -99,7 +99,8 @@ var translations = {
 
     // Form actions
     'form.calculate': 'Calculer',
-    'form.reset':      'Réinitialiser',
+    'form.summary':   'Résumé',
+    'form.reset':     'Réinitialiser',
 
     // Results panel
     'results.heading':              'Résumé Fiscal',
@@ -126,10 +127,28 @@ var translations = {
     'results.taxWithheld':          'Impôt Retenu à la Source',
     'results.paygCredits':          'Crédits d\'Acomptes PAYG',
     'results.outcome.default':      'Impôt à Payer / Remboursement',
+    'results.outcome.refund':       '🎉 Remboursement Fiscal',
+    'results.outcome.owing':        '⚠️ Impôt à Payer',
 
     // Footer
     'footer.disclaimer': 'Ce calculateur fournit des estimations uniquement et ne constitue pas un conseil fiscal.',
     'footer.taxYear':    'Taux basés sur le barème ATO pour l\'année fiscale sélectionnée.',
+
+    // Progress
+    'progress.text': '{f} / {t} sections remplies',
+    'progress.done': '✓ Toutes les {t} sections complètes',
+
+    // Validation
+    'validation.negative': 'La valeur ne peut pas être négative',
+
+    // Summary modal
+    'summary.title':            '📋 Résumé Fiscal',
+    'summary.print':            '🖨️ Imprimer',
+    'summary.close':            'Fermer',
+    'summary.section.details':  'Vos Informations',
+    'summary.residentType':     'Type de Résident',
+    'summary.taxYear':          'Année Fiscale',
+    'summary.section.breakdown':'Détail du Calcul',
 
     // Modal
     'modal.title': 'Plus d\'informations',
@@ -280,7 +299,8 @@ var translations = {
 
     // Form actions
     'form.calculate': 'Calculate',
-    'form.reset':      'Reset',
+    'form.summary':   'Summary',
+    'form.reset':     'Reset',
 
     // Results panel
     'results.heading':              'Your Tax Summary',
@@ -307,10 +327,28 @@ var translations = {
     'results.taxWithheld':          'Tax Withheld',
     'results.paygCredits':          'PAYG Instalment Credits',
     'results.outcome.default':      'Tax Payable / Refund',
+    'results.outcome.refund':       '🎉 Tax Refund',
+    'results.outcome.owing':        '⚠️ Tax Owing',
 
     // Footer
     'footer.disclaimer': 'This calculator provides estimates only and does not constitute financial or tax advice.',
     'footer.taxYear':    'Tax rates based on ATO schedule for the selected financial year.',
+
+    // Progress
+    'progress.text': '{f} / {t} sections complete',
+    'progress.done': '✓ All {t} sections complete',
+
+    // Validation
+    'validation.negative': 'Value cannot be negative',
+
+    // Summary modal
+    'summary.title':            '📋 Tax Summary',
+    'summary.print':            '🖨️ Print',
+    'summary.close':            'Close',
+    'summary.section.details':  'Your Details',
+    'summary.residentType':     'Resident Type',
+    'summary.taxYear':          'Tax Year',
+    'summary.section.breakdown':'Calculation Breakdown',
 
     // Modal
     'modal.title': 'More Information',
@@ -461,7 +499,8 @@ var translations = {
 
     // Form actions
     'form.calculate': 'Calcular',
-    'form.reset':      'Reiniciar',
+    'form.summary':   'Resumen',
+    'form.reset':     'Reiniciar',
 
     // Results panel
     'results.heading':              'Resumen Fiscal',
@@ -488,10 +527,28 @@ var translations = {
     'results.taxWithheld':          'Impuesto Retenido',
     'results.paygCredits':          'Créditos de Cuotas PAYG',
     'results.outcome.default':      'Impuesto a Pagar / Devolución',
+    'results.outcome.refund':       '🎉 Devolución Fiscal',
+    'results.outcome.owing':        '⚠️ Impuesto a Pagar',
 
     // Footer
     'footer.disclaimer': 'Esta calculadora proporciona solo estimaciones y no constituye asesoramiento fiscal.',
     'footer.taxYear':    'Tasas basadas en el cronograma ATO para el año fiscal seleccionado.',
+
+    // Progress
+    'progress.text': '{f} / {t} secciones completas',
+    'progress.done': '✓ Todas las {t} secciones completas',
+
+    // Validation
+    'validation.negative': 'El valor no puede ser negativo',
+
+    // Summary modal
+    'summary.title':            '📋 Resumen Fiscal',
+    'summary.print':            '🖨️ Imprimir',
+    'summary.close':            'Cerrar',
+    'summary.section.details':  'Sus Datos',
+    'summary.residentType':     'Tipo de Residencia',
+    'summary.taxYear':          'Año Fiscal',
+    'summary.section.breakdown':'Desglose del Cálculo',
 
     // Modal
     'modal.title': 'Más Información',
@@ -642,7 +699,8 @@ var translations = {
 
     // Form actions
     'form.calculate': 'Calcola',
-    'form.reset':      'Reimposta',
+    'form.summary':   'Riepilogo',
+    'form.reset':     'Reimposta',
 
     // Results panel
     'results.heading':              'Riepilogo Fiscale',
@@ -669,10 +727,28 @@ var translations = {
     'results.taxWithheld':          'Imposta Trattenuta',
     'results.paygCredits':          'Crediti Rate PAYG',
     'results.outcome.default':      'Imposta da Pagare / Rimborso',
+    'results.outcome.refund':       '🎉 Rimborso Fiscale',
+    'results.outcome.owing':        '⚠️ Imposta da Pagare',
 
     // Footer
     'footer.disclaimer': 'Questo calcolatore fornisce solo stime e non costituisce consulenza fiscale.',
     'footer.taxYear':    'Aliquote basate sul prospetto ATO per l\'anno fiscale selezionato.',
+
+    // Progress
+    'progress.text': '{f} / {t} sezioni completate',
+    'progress.done': '✓ Tutte le {t} sezioni completate',
+
+    // Validation
+    'validation.negative': 'Il valore non può essere negativo',
+
+    // Summary modal
+    'summary.title':            '📋 Riepilogo Fiscale',
+    'summary.print':            '🖨️ Stampa',
+    'summary.close':            'Chiudi',
+    'summary.section.details':  'I Tuoi Dati',
+    'summary.residentType':     'Tipo di Residenza',
+    'summary.taxYear':          'Anno Fiscale',
+    'summary.section.breakdown':'Dettaglio del Calcolo',
 
     // Modal
     'modal.title': 'Ulteriori Informazioni',
