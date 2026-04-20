@@ -87,7 +87,7 @@ function runCalculation() {
   const gross = num('salary-wages') + num('allowances') + num('tips-bonuses') +
     num('interest-income') + num('dividends') + num('franking-credits') +
     num('rental-income') + num('capital-gains') + num('foreign-income') +
-    num('government-payments') + num('other-income');
+    num('government-payments') + num('abn-income') + num('other-income');
 
   const deductions = num('work-related-travel') + num('uniform-clothing') +
     num('home-office') + num('self-education') + num('tools-equipment') +

@@ -46,6 +46,7 @@ var translations = {
     'income.capitalGains.label':    'Plus-Values',
     'income.foreign.label':         'Revenus Étrangers',
     'income.govPayments.label':     'Prestations Gouvernementales',
+    'income.abn.label':             'ABN / Revenus en tant qu\'indépendant',
     'income.other.label':           'Autres Revenus',
 
     // Tax paid section
@@ -168,6 +169,7 @@ var translations = {
     'income.capitalGains.tooltip':         'Une plus-value apparaît lorsque vous vendez un actif au-dessus de son prix de revient.',
     'income.foreign.tooltip':              'Incluez tous les revenus étrangers tels que salaires, retraites ou investissements à l\'étranger.',
     'income.govPayments.tooltip':          'Incluez les prestations Centrelink, JobSeeker et autres allocations gouvernementales imposables.',
+    'income.abn.tooltip':                  'Déclarez les revenus perçus sous ABN (travailleur indépendant, freelance, sous-traitant). Imposés comme revenu ordinaire.',
     'income.other.tooltip':                'Incluez tout autre revenu imposable non couvert par les catégories ci-dessus.',
     'taxPaid.withheldSalary.tooltip':      'Le montant retenu par votre employeur sur votre salaire et versé à l\'ATO en votre nom.',
     'taxPaid.withheldInterest.tooltip':    'Impôt retenu sur les intérêts lorsque vous n\'avez pas fourni votre TFN à la banque.',
@@ -249,6 +251,7 @@ var translations = {
     'income.capitalGains.label':    'Capital Gains',
     'income.foreign.label':         'Foreign Income',
     'income.govPayments.label':     'Government Payments',
+    'income.abn.label':             'ABN / Self-Employed Income',
     'income.other.label':           'Other Income',
 
     // Tax paid section
@@ -371,6 +374,7 @@ var translations = {
     'income.capitalGains.tooltip':         'A capital gain arises when you sell an asset for more than its original cost base.',
     'income.foreign.tooltip':              'Include all overseas income such as salary, pension, or investment returns.',
     'income.govPayments.tooltip':          'Include Centrelink payments, JobSeeker, and other taxable government allowances.',
+    'income.abn.tooltip':                  'Report income earned under an ABN as a sole trader, freelancer, or contractor. Taxed as ordinary income.',
     'income.other.tooltip':                'Include any other taxable income not covered by the categories above.',
     'taxPaid.withheldSalary.tooltip':      'The tax your employer withheld from your pay and remitted to the ATO on your behalf.',
     'taxPaid.withheldInterest.tooltip':    'Tax withheld from interest payments when you did not quote your TFN to the bank.',
@@ -452,6 +456,7 @@ var translations = {
     'income.capitalGains.label':    'Ganancias de Capital',
     'income.foreign.label':         'Ingresos Extranjeros',
     'income.govPayments.label':     'Pagos Gubernamentales',
+    'income.abn.label':             'ABN / Ingresos como Autónomo',
     'income.other.label':           'Otros Ingresos',
 
     // Tax paid section
@@ -574,6 +579,7 @@ var translations = {
     'income.capitalGains.tooltip':         'Una ganancia de capital surge cuando vende un activo por encima de su costo base.',
     'income.foreign.tooltip':              'Incluya todos los ingresos extranjeros como salarios, pensiones o inversiones en el exterior.',
     'income.govPayments.tooltip':          'Incluya los pagos de Centrelink, JobSeeker y otras asignaciones gubernamentales imponibles.',
+    'income.abn.tooltip':                  'Declare los ingresos obtenidos bajo un ABN como trabajador autónomo, freelance o contratista. Tributados como ingreso ordinario.',
     'income.other.tooltip':                'Incluya cualquier otro ingreso imponible no cubierto por las categorías anteriores.',
     'taxPaid.withheldSalary.tooltip':      'El importe retenido por su empleador de su salario y remitido a la ATO en su nombre.',
     'taxPaid.withheldInterest.tooltip':    'Impuesto retenido sobre intereses cuando no proporcionó su TFN al banco.',
@@ -655,6 +661,7 @@ var translations = {
     'income.capitalGains.label':    'Plusvalenze',
     'income.foreign.label':         'Redditi Esteri',
     'income.govPayments.label':     'Pagamenti Governativi',
+    'income.abn.label':             'ABN / Redditi da Lavoro Autonomo',
     'income.other.label':           'Altri Redditi',
 
     // Tax paid section
@@ -777,6 +784,7 @@ var translations = {
     'income.capitalGains.tooltip':         'Una plusvalenza si verifica quando vendi un bene a un prezzo superiore al suo costo originario.',
     'income.foreign.tooltip':              'Includi tutti i redditi esteri come salari, pensioni o rendimenti di investimenti all\'estero.',
     'income.govPayments.tooltip':          'Includi i pagamenti Centrelink, JobSeeker e altre indennità governative imponibili.',
+    'income.abn.tooltip':                  'Dichiara i redditi percepiti con un ABN come lavoratore autonomo, freelance o appaltatore. Tassati come reddito ordinario.',
     'income.other.tooltip':                'Includi qualsiasi altro reddito imponibile non coperto dalle categorie sopra.',
     'taxPaid.withheldSalary.tooltip':      'L\'importo trattenuto dal tuo datore di lavoro dallo stipendio e versato all\'ATO per tuo conto.',
     'taxPaid.withheldInterest.tooltip':    'Imposta trattenuta sugli interessi quando non hai fornito il tuo TFN alla banca.',
