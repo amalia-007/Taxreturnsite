@@ -153,7 +153,42 @@ function runCalculation() {
     }
   }
 
+  updateProgress();
   setTimeout(() => panel?.classList.remove('is-calculating'), 350);
+}
+
+// ── Progress bar ──────────────────────────────────────────────────────────
+function isSectionFilled(accordion) {
+  for (const el of accordion.querySelectorAll('input[type="text"]')) {
+    if (el.closest('[hidden]')) continue;
+    if (parseFloat(el.value.replace(/,/g, '')) > 0) return true;
+  }
+  for (const el of accordion.querySelectorAll('input[type="checkbox"]')) {
+    if (el.closest('[hidden]')) continue;
+    if (el.checked) return true;
+  }
+  for (const el of accordion.querySelectorAll('input[type="radio"]:checked')) {
+    if (!el.closest('[hidden]')) return true;
+  }
+  return false;
+}
+
+function updateProgress() {
+  const accordions = [...document.querySelectorAll('.accordion')].filter(a => !a.hidden);
+  const total  = accordions.length;
+  const filled = accordions.filter(isSectionFilled).length;
+  const pct    = total > 0 ? Math.round((filled / total) * 100) : 0;
+  const done   = filled === total && total > 0;
+
+  const wrap = document.getElementById('progress-wrap');
+  const fill = document.getElementById('progress-fill');
+  const text = document.getElementById('progress-text');
+  const pctEl = document.getElementById('progress-pct');
+
+  if (fill)  { fill.style.width = pct + '%'; fill.classList.toggle('is-complete', done); }
+  if (wrap)  { wrap.setAttribute('aria-valuenow', filled); wrap.classList.toggle('is-complete', done); }
+  if (text)  text.textContent = done ? `✓ All ${total} sections complete` : `${filled} / ${total} sections complete`;
+  if (pctEl) pctEl.textContent = pct + '%';
 }
 
 // ── Resident rules — sections that show/hide per resident type ─────────────
@@ -322,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#tax-form .field-error').forEach(el => { el.textContent = ''; });
     applyResidentRules('australian');
     runCalculation();
+    updateProgress();
   });
 
   // Summary
