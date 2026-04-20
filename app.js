@@ -1,10 +1,76 @@
 'use strict';
 
-const num   = id => parseFloat(document.getElementById(id)?.value) || 0;
+const num   = id => parseFloat((document.getElementById(id)?.value || '').replace(/,/g, '')) || 0;
 const check = id => !!document.getElementById(id)?.checked;
 const radio = name => document.querySelector(`[name="${name}"]:checked`)?.value ?? '';
 const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const set   = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = fmt(n); };
+
+// ── Input validation & number formatting ──────────────────────────────────
+function getOrCreateError(input) {
+  let err = input.nextElementSibling;
+  if (!err || !err.classList.contains('field-error')) {
+    err = document.createElement('span');
+    err.className = 'field-error';
+    input.after(err);
+  }
+  return err;
+}
+
+function setFieldError(input, msg) {
+  input.classList.add('is-invalid');
+  getOrCreateError(input).textContent = msg;
+}
+
+function clearFieldError(input) {
+  input.classList.remove('is-invalid');
+  const err = input.nextElementSibling;
+  if (err?.classList.contains('field-error')) err.textContent = '';
+}
+
+function formatNumberInput(input) {
+  const sel = input.selectionStart;
+  const raw = input.value;
+  const isInt = input.inputMode === 'numeric';
+
+  // Count non-comma chars before cursor to restore position after reformatting
+  let sigBefore = 0;
+  for (let i = 0; i < sel; i++) {
+    if (raw[i] !== ',') sigBefore++;
+  }
+
+  // Strip invalid chars; allow one decimal point for non-integer fields
+  let clean = raw.replace(isInt ? /[^0-9]/g : /[^0-9.]/g, '');
+  if (!isInt) {
+    const d = clean.indexOf('.');
+    if (d >= 0) clean = clean.slice(0, d + 1) + clean.slice(d + 1).replace(/\./g, '');
+  }
+
+  // Add thousand-separator commas to integer part
+  const d = clean.indexOf('.');
+  const intPart = (d >= 0 ? clean.slice(0, d) : clean).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const formatted = intPart + (d >= 0 ? clean.slice(d) : '');
+
+  input.value = formatted;
+
+  // Restore cursor: advance until sigBefore non-comma chars have been passed
+  let count = 0, newSel = formatted.length;
+  for (let i = 0; i < formatted.length; i++) {
+    if (count === sigBefore) { newSel = i; break; }
+    if (formatted[i] !== ',') count++;
+  }
+  input.setSelectionRange(newSel, newSel);
+}
+
+function handleNumberInput(input) {
+  if (input.value.includes('-')) {
+    setFieldError(input, 'Value cannot be negative');
+    input.value = input.value.replace(/-/g, '');
+  } else {
+    clearFieldError(input);
+  }
+  formatNumberInput(input);
+}
 
 function runCalculation() {
   const panel = document.getElementById('results-panel');
@@ -145,6 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('#tax-form input, #tax-form select').forEach(el => {
     el.addEventListener('change', runCalculation);
     el.addEventListener('input',  runCalculation);
+  });
+
+  // Validation + formatting for text (numeric) inputs
+  document.querySelectorAll('#tax-form input[type="text"]').forEach(input => {
+    input.addEventListener('input', () => handleNumberInput(input));
   });
 
   document.querySelectorAll('[name="residentType"]').forEach(el =>

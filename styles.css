@@ -518,8 +518,35 @@ input[type="text"]::placeholder {
 }
 
 input[type="number"]:hover,
+input[type="text"]:hover,
 select:hover {
   border-color: var(--gray-400);
+}
+
+/* ── Validation ── */
+input.is-invalid,
+input.is-invalid:focus {
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.18) !important;
+}
+
+@keyframes errFadeIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.field-error {
+  display: block;
+  font-size: 0.725rem;
+  font-weight: 500;
+  color: var(--red);
+  margin-top: 0.2rem;
+  grid-column: 1 / -1;
+  animation: errFadeIn 0.15s ease;
+}
+
+.field-error:empty {
+  display: none;
 }
 
 input[type="number"]:focus,
