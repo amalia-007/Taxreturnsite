@@ -105,7 +105,7 @@ function runCalculation() {
   const medicareLevy      = radio('medicareStatus') === 'exempt' ? 0 : levy;
   const medicareSurcharge = radio('medicareStatus') === 'exempt' ? 0 : surcharge;
 
-  const hecs         = check('hecs-debt') ? calculateHECS(taxable) : 0;
+  const hecs         = radio('hecsDebt') === 'yes' ? calculateHECS(taxable) : 0;
   const frankingCr   = num('franking-credits');
   const foreignOff   = num('foreign-tax-offset');
   const totalOffsets = lito + frankingCr + foreignOff;
@@ -123,7 +123,10 @@ function runCalculation() {
   set('result-medicare-surcharge',medicareSurcharge);
   set('result-hecs-repayment',    hecs);
   const hecsRow = document.getElementById('result-hecs-repayment')?.closest('.results-row');
-  if (hecsRow) hecsRow.hidden = !check('hecs-debt');
+  if (hecsRow) hecsRow.hidden = radio('hecsDebt') !== 'yes';
+
+  const litoRow = document.getElementById('result-lito')?.closest('.results-row');
+  if (litoRow) litoRow.hidden = type !== 'australian';
   set('result-gross-tax',         grossTax);
   set('result-lito',              lito);
   set('result-lmito',             0);
@@ -198,6 +201,16 @@ function updateProgress() {
     ? tr('progress.done').replace('{t}', total)
     : tr('progress.text').replace('{f}', filled).replace('{t}', total);
   if (pctEl) pctEl.textContent = pct + '%';
+}
+
+// ── HECS sub-field show/hide ────────────────────────────────────────────────
+function applyHecsRules() {
+  const hasDebt = radio('hecsDebt') === 'yes';
+  ['hecs-balance', 'ssl-debt', 'vsl-debt', 'hecs-withheld'].forEach(id => {
+    const row = document.getElementById(id)?.closest('.field-row');
+    if (row) row.hidden = !hasDebt;
+  });
+  runCalculation();
 }
 
 // ── Resident rules — sections that show/hide per resident type ─────────────
@@ -359,7 +372,14 @@ function closeModal() { modal?.close(); }
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btn-calculate')?.addEventListener('click', runCalculation);
+  document.getElementById('btn-calculate')?.addEventListener('click', () => {
+    runCalculation();
+    const panel = document.getElementById('results-panel');
+    if (panel) {
+      if (window.innerWidth < 1024) panel.classList.add('is-open');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  });
 
   // Reset: clear validation state then recalculate to show $0.00
   document.getElementById('tax-form')?.addEventListener('reset', () => {
@@ -384,11 +404,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // Validation + formatting for text (numeric) inputs
   document.querySelectorAll('#tax-form input[type="text"]').forEach(input => {
     input.addEventListener('input', () => handleNumberInput(input));
+    input.addEventListener('blur', () => {
+      if (!input.value.trim()) input.value = '0';
+    });
   });
 
   document.querySelectorAll('[name="residentType"]').forEach(el =>
     el.addEventListener('change', () => applyResidentRules(el.value)));
   applyResidentRules(radio('residentType') || 'australian');
+
+  document.querySelectorAll('[name="hecsDebt"]').forEach(el =>
+    el.addEventListener('change', applyHecsRules));
+  applyHecsRules();
 
   const savedLang = localStorage.getItem('lang') || 'en';
   setLanguage(savedLang);

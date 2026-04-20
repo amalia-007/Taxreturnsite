@@ -12,9 +12,13 @@
   <!-- ======================================================
        HEADER
   ====================================================== -->
+  <div class="hero-banner" role="banner">
+    <h1 class="hero-title">GET MY TAX</h1>
+    <p class="hero-subtitle" data-i18n="header.title">Australian Tax Return Calculator</p>
+  </div>
+
   <header class="site-header">
     <div class="header-inner">
-      <h1 data-i18n="header.title">Australian Tax Return Calculator</h1>
       <nav class="lang-switcher" aria-label="Language switcher">
         <button type="button" class="lang-btn" data-lang="fr" data-i18n="lang.fr">🇫🇷 FR</button>
         <span class="lang-divider" aria-hidden="true">|</span>
@@ -135,8 +139,8 @@
 
           <div class="field-row">
             <label for="salary-wages">
-              <span data-i18n="income.salary.label">Salary &amp; Wages</span>
-              <button type="button" class="tooltip-btn" data-tooltip="income.salary.tooltip" aria-label="Help for salary and wages">?</button>
+              <span data-i18n="income.salary.label">Salaire brut</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.salary.tooltip" aria-label="Help for salary">?</button>
             </label>
             <input type="text" id="salary-wages" name="salaryWages" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
@@ -157,20 +161,26 @@
             <input type="text" id="tips-bonuses" name="tipsBonuses" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
 
+        </div>
+      </details>
+
+      <!-- ------------------------------------------------
+           1b. AUTRES SOURCES DE REVENUS
+      ------------------------------------------------ -->
+      <details class="accordion" id="accordion-other-sources">
+        <summary class="accordion-summary">
+          <span class="accordion-icon" aria-hidden="true">💰</span>
+          <span class="accordion-title" data-i18n="section.otherSources">Autres Sources de Revenus</span>
+          <span class="accordion-badge" id="badge-other-sources" aria-live="polite"></span>
+        </summary>
+        <div class="accordion-body">
+
           <div class="field-row">
             <label for="interest-income">
               <span data-i18n="income.interest.label">Interest Income</span>
               <button type="button" class="tooltip-btn" data-tooltip="income.interest.tooltip" aria-label="Help for interest income">?</button>
             </label>
             <input type="text" id="interest-income" name="interestIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
-          </div>
-
-          <div class="field-row">
-            <label for="dividends">
-              <span data-i18n="income.dividends.label">Dividends</span>
-              <button type="button" class="tooltip-btn" data-tooltip="income.dividends.tooltip" aria-label="Help for dividends">?</button>
-            </label>
-            <input type="text" id="dividends" name="dividends" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
 
           <div class="field-row">
@@ -190,14 +200,6 @@
           </div>
 
           <div class="field-row">
-            <label for="capital-gains">
-              <span data-i18n="income.capitalGains.label">Capital Gains</span>
-              <button type="button" class="tooltip-btn" data-tooltip="income.capitalGains.tooltip" aria-label="Help for capital gains">?</button>
-            </label>
-            <input type="text" id="capital-gains" name="capitalGains" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
-          </div>
-
-          <div class="field-row">
             <label for="foreign-income">
               <span data-i18n="income.foreign.label">Foreign Income</span>
               <button type="button" class="tooltip-btn" data-tooltip="income.foreign.tooltip" aria-label="Help for foreign income">?</button>
@@ -211,6 +213,22 @@
               <button type="button" class="tooltip-btn" data-tooltip="income.govPayments.tooltip" aria-label="Help for government payments">?</button>
             </label>
             <input type="text" id="government-payments" name="governmentPayments" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="dividends">
+              <span data-i18n="income.dividends.label">Dividends</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.dividends.tooltip" aria-label="Help for dividends">?</button>
+            </label>
+            <input type="text" id="dividends" name="dividends" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
+          <div class="field-row">
+            <label for="capital-gains">
+              <span data-i18n="income.capitalGains.label">Capital Gains</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.capitalGains.tooltip" aria-label="Help for capital gains">?</button>
+            </label>
+            <input type="text" id="capital-gains" name="capitalGains" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
 
           <div class="field-row">
@@ -528,12 +546,21 @@
         </summary>
         <div class="accordion-body">
 
-          <div class="field-row field-row--checkbox">
-            <label for="hecs-debt">
+          <div class="field-row field-row--yn">
+            <label>
               <span data-i18n="hecs.hasDebt.label">I have a HECS-HELP debt</span>
               <button type="button" class="tooltip-btn" data-tooltip="hecs.hasDebt.tooltip" aria-label="Help for HECS-HELP debt">?</button>
             </label>
-            <input type="checkbox" id="hecs-debt" name="hecsDebt" value="1" />
+            <div class="yn-toggle" role="radiogroup">
+              <label class="yn-option">
+                <input type="radio" name="hecsDebt" value="yes" id="hecs-debt-yes" />
+                <span data-i18n="hecs.debt.yes">Oui</span>
+              </label>
+              <label class="yn-option">
+                <input type="radio" name="hecsDebt" value="no" id="hecs-debt-no" checked />
+                <span data-i18n="hecs.debt.no">Non</span>
+              </label>
+            </div>
           </div>
 
           <div class="field-row">

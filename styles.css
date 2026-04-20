@@ -254,6 +254,32 @@ details > summary::-webkit-details-marker { display: none; }
 }
 
 /* ================================================================
+   HERO BANNER
+================================================================ */
+.hero-banner {
+  background: linear-gradient(135deg, #005c3a 0%, var(--green) 60%, #00c47a 100%);
+  text-align: center;
+  padding: 2.5rem var(--page-pad-x) 2rem;
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+}
+
+.hero-subtitle {
+  font-size: clamp(0.875rem, 2.5vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.82);
+  margin-top: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+/* ================================================================
    SITE HEADER
 ================================================================ */
 .site-header {
@@ -286,6 +312,7 @@ details > summary::-webkit-details-marker { display: none; }
 }
 
 .site-header h1 {
+  display: none; /* h1 moved to hero-banner */
   font-size: clamp(0.95rem, 2.5vw, 1.25rem);
   font-weight: 700;
   color: var(--white);
@@ -577,6 +604,52 @@ details > summary::-webkit-details-marker { display: none; }
 /* Radio rows: single column, label wraps input + text */
 .field-row--radio {
   grid-template-columns: 1fr;
+}
+
+/* Oui/Non toggle row */
+.field-row--yn {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+.yn-toggle {
+  display: flex;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1.5px solid var(--gray-300);
+  flex-shrink: 0;
+}
+
+.yn-option {
+  display: flex;
+  cursor: pointer;
+  position: relative;
+}
+
+.yn-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.yn-option span {
+  display: block;
+  padding: 0.35rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: var(--white);
+  color: var(--gray-600);
+  transition: background var(--t-fast), color var(--t-fast);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.yn-option input[type="radio"]:checked + span {
+  background: var(--green);
+  color: var(--white);
+  font-weight: 700;
 }
 
 .field-row--radio label {

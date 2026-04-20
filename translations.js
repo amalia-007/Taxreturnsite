@@ -35,7 +35,8 @@ var translations = {
 
     // Income section
     'section.income':               'Revenus',
-    'income.salary.label':          'Salaire et Traitements',
+    'section.otherSources':         'Autres Sources de Revenus',
+    'income.salary.label':          'Salaire brut',
     'income.allowances.label':      'Indemnités',
     'income.tips.label':            'Pourboires et Primes',
     'income.interest.label':        'Revenus d\'Intérêts',
@@ -92,6 +93,8 @@ var translations = {
     // HECS section
     'section.hecs':           'HECS / HELP',
     'hecs.hasDebt.label':     'J\'ai une dette HECS-HELP',
+    'hecs.debt.yes':          'Oui',
+    'hecs.debt.no':           'Non',
     'hecs.balance.label':     'Solde HECS Restant',
     'hecs.ssl.label':         'J\'ai un prêt Student Start-up (SSL)',
     'hecs.vsl.label':         'J\'ai un prêt VET Student (VSL)',
@@ -235,7 +238,8 @@ var translations = {
 
     // Income section
     'section.income':               'Income',
-    'income.salary.label':          'Salary & Wages',
+    'section.otherSources':         'Other Income Sources',
+    'income.salary.label':          'Gross Salary',
     'income.allowances.label':      'Allowances',
     'income.tips.label':            'Tips & Bonuses',
     'income.interest.label':        'Interest Income',
@@ -292,6 +296,8 @@ var translations = {
     // HECS section
     'section.hecs':           'HECS / HELP',
     'hecs.hasDebt.label':     'I have a HECS-HELP debt',
+    'hecs.debt.yes':          'Yes',
+    'hecs.debt.no':           'No',
     'hecs.balance.label':     'Outstanding HECS Balance',
     'hecs.ssl.label':         'I have a Student Start-up Loan (SSL)',
     'hecs.vsl.label':         'I have a VET Student Loan (VSL)',
@@ -435,7 +441,8 @@ var translations = {
 
     // Income section
     'section.income':               'Ingresos',
-    'income.salary.label':          'Salario y Sueldos',
+    'section.otherSources':         'Otras Fuentes de Ingresos',
+    'income.salary.label':          'Salario bruto',
     'income.allowances.label':      'Asignaciones',
     'income.tips.label':            'Propinas y Bonificaciones',
     'income.interest.label':        'Ingresos por Intereses',
@@ -492,6 +499,8 @@ var translations = {
     // HECS section
     'section.hecs':           'HECS / HELP',
     'hecs.hasDebt.label':     'Tengo una deuda HECS-HELP',
+    'hecs.debt.yes':          'Sí',
+    'hecs.debt.no':           'No',
     'hecs.balance.label':     'Saldo HECS Pendiente',
     'hecs.ssl.label':         'Tengo un Préstamo de Inicio Estudiantil (SSL)',
     'hecs.vsl.label':         'Tengo un Préstamo VET Student (VSL)',
@@ -635,7 +644,8 @@ var translations = {
 
     // Income section
     'section.income':               'Redditi',
-    'income.salary.label':          'Stipendio e Salari',
+    'section.otherSources':         'Altre Fonti di Reddito',
+    'income.salary.label':          'Stipendio lordo',
     'income.allowances.label':      'Indennità',
     'income.tips.label':            'Mance e Bonus',
     'income.interest.label':        'Redditi da Interessi',
@@ -692,6 +702,8 @@ var translations = {
     // HECS section
     'section.hecs':           'HECS / HELP',
     'hecs.hasDebt.label':     'Ho un debito HECS-HELP',
+    'hecs.debt.yes':          'Sì',
+    'hecs.debt.no':           'No',
     'hecs.balance.label':     'Saldo HECS Residuo',
     'hecs.ssl.label':         'Ho un Prestito Student Start-up (SSL)',
     'hecs.vsl.label':         'Ho un Prestito VET Student (VSL)',
