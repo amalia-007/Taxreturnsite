@@ -130,6 +130,7 @@ function runCalculation() {
 
   const outcomeEl    = document.getElementById('result-outcome');
   const outcomeLabel = document.getElementById('outcome-label');
+  const peekOutcome  = document.getElementById('peek-outcome');
   const group        = document.querySelector('.results-group--final');
   if (outcomeEl && group) {
     // Remove classes then force reflow so outcomePop animation replays each update
@@ -139,13 +140,16 @@ function runCalculation() {
       outcomeEl.textContent = fmt(Math.abs(outcome));
       if (outcomeLabel) outcomeLabel.textContent = '🎉 Tax Refund';
       group.classList.add('is-refund');
+      if (peekOutcome) { peekOutcome.textContent = '· ' + fmt(Math.abs(outcome)); peekOutcome.className = 'peek-outcome peek-outcome--refund'; }
     } else if (outcome > 0) {
       outcomeEl.textContent = fmt(outcome);
       if (outcomeLabel) outcomeLabel.textContent = '⚠️ Tax Owing';
       group.classList.add('is-owing');
+      if (peekOutcome) { peekOutcome.textContent = '· ' + fmt(outcome); peekOutcome.className = 'peek-outcome peek-outcome--owing'; }
     } else {
       outcomeEl.textContent = fmt(0);
       if (outcomeLabel) outcomeLabel.textContent = 'Tax Payable / Refund';
+      if (peekOutcome) { peekOutcome.textContent = ''; peekOutcome.className = 'peek-outcome'; }
     }
   }
 
