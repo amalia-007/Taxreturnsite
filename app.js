@@ -7,6 +7,9 @@ const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleSt
 const set   = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = fmt(n); };
 
 function runCalculation() {
+  const panel = document.getElementById('results-panel');
+  panel?.classList.add('is-calculating');
+
   const type = radio('residentType') || 'australian';
 
   const gross = num('salary-wages') + num('allowances') + num('tips-bonuses') +
@@ -59,13 +62,28 @@ function runCalculation() {
   set('result-tax-withheld',      withheld);
   set('result-payg-credits',      payg);
 
-  const outcomeEl = document.getElementById('result-outcome');
-  const group     = document.querySelector('.results-group--final');
-  if (outcomeEl) {
-    outcomeEl.textContent = (outcome <= 0 ? '✅ ' : '❌ ') + fmt(Math.abs(outcome));
-    group?.classList.toggle('is-refund', outcome <= 0);
-    group?.classList.toggle('is-owing',  outcome >  0);
+  const outcomeEl    = document.getElementById('result-outcome');
+  const outcomeLabel = document.getElementById('outcome-label');
+  const group        = document.querySelector('.results-group--final');
+  if (outcomeEl && group) {
+    // Remove classes then force reflow so outcomePop animation replays each update
+    group.classList.remove('is-refund', 'is-owing');
+    void group.offsetHeight;
+    if (outcome < 0) {
+      outcomeEl.textContent = fmt(Math.abs(outcome));
+      if (outcomeLabel) outcomeLabel.textContent = '🎉 Tax Refund';
+      group.classList.add('is-refund');
+    } else if (outcome > 0) {
+      outcomeEl.textContent = fmt(outcome);
+      if (outcomeLabel) outcomeLabel.textContent = '⚠️ Tax Owing';
+      group.classList.add('is-owing');
+    } else {
+      outcomeEl.textContent = fmt(0);
+      if (outcomeLabel) outcomeLabel.textContent = 'Tax Payable / Refund';
+    }
   }
+
+  setTimeout(() => panel?.classList.remove('is-calculating'), 350);
 }
 
 // ── Resident rules — sections that show/hide per resident type ─────────────
@@ -143,6 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => openModal(btn.dataset.tooltip)));
   document.getElementById('tooltip-modal-close')?.addEventListener('click', closeModal);
   modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  // Accordion: intercept close click to play exit animation before toggling
+  document.querySelectorAll('.accordion-summary').forEach(summary => {
+    summary.addEventListener('click', e => {
+      const details = summary.closest('details');
+      if (details.open) {
+        e.preventDefault();
+        details.classList.add('is-closing');
+        setTimeout(() => {
+          details.classList.remove('is-closing');
+          details.open = false;
+        }, 200);
+      }
+    });
+  });
 
   // Mobile: tap panel heading to expand/collapse
   const panel = document.getElementById('results-panel');

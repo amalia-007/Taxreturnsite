@@ -307,10 +307,10 @@ details > summary::-webkit-details-marker { display: none; }
   background-color: var(--white);
   box-shadow: var(--shadow-sm);
   transition:
-    border-color var(--t-fast),
-    box-shadow    var(--t-fast),
-    transform     var(--t-fast),
-    background-color var(--t-fast);
+    border-color     var(--t-fast),
+    box-shadow       var(--t-fast),
+    transform        var(--t-fast),
+    background-color var(--t);
   user-select: none;
 }
 
@@ -385,6 +385,18 @@ details > summary::-webkit-details-marker { display: none; }
   margin-top: 0.125rem;
 }
 
+@keyframes tickIn {
+  from { transform: scale(0) rotate(-45deg); opacity: 0; }
+  to   { transform: scale(1) rotate(0);     opacity: 1; }
+}
+
+@keyframes cardIconBounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.3) rotate(-8deg); }
+  75%  { transform: scale(0.95); }
+  100% { transform: scale(1) rotate(0); }
+}
+
 /* Selected card tick badge */
 .resident-card:has(input:checked)::after {
   content: "✓";
@@ -402,6 +414,11 @@ details > summary::-webkit-details-marker { display: none; }
   align-items: center;
   justify-content: center;
   line-height: 1;
+  animation: tickIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.resident-card:has(input:checked) .card-icon {
+  animation: cardIconBounce 0.35s ease forwards;
 }
 
 /* ================================================================
@@ -716,14 +733,18 @@ input[type="radio"]:focus-visible {
 }
 
 @keyframes accordionIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes accordionOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+.accordion.is-closing .accordion-body {
+  animation: accordionOut 0.2s ease forwards;
+  pointer-events: none;
 }
 
 /* ================================================================
@@ -884,6 +905,38 @@ input[type="radio"]:focus-visible {
   font-size: 1rem;
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes valueFadeIn {
+  from { opacity: 0.25; transform: translateY(2px); }
+  to   { opacity: 1;   transform: translateY(0); }
+}
+
+.results-panel > h2::after {
+  content: '';
+  display: inline-block;
+  width: 0.875rem;
+  height: 0.875rem;
+  border: 2px solid var(--green-light);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.results-panel.is-calculating > h2::after {
+  opacity: 1;
+}
+
+.results-panel.is-calculating .result-value {
+  animation: valueFadeIn 0.3s ease forwards;
+}
+
 .results-disclaimer {
   font-size: 0.75rem;
   color: var(--gray-500);
@@ -958,50 +1011,82 @@ input[type="radio"]:focus-visible {
 
 /* Final outcome row */
 .results-group--final {
-  padding: 0.75rem 1.125rem 0.5rem;
+  padding: 0.875rem 1rem 1.125rem;
   border-bottom: none;
 }
 
+@keyframes outcomePop {
+  0%   { transform: scale(0.88); opacity: 0.4; }
+  65%  { transform: scale(1.06); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
 .results-row--outcome {
-  padding: 1rem;
-  border-radius: var(--radius-md);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1.5rem 1.25rem 1.875rem;
+  border-radius: var(--radius-lg);
   background-color: var(--gray-100);
   border: 2px solid var(--gray-200);
-  transition: background-color var(--t), border-color var(--t);
-  flex-wrap: wrap;
   gap: 0.375rem;
+  transition: background-color var(--t), border-color var(--t), box-shadow var(--t);
 }
 
 .results-row--outcome dt {
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 700;
-  color: var(--gray-800);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gray-500);
 }
 
 .result-value--outcome {
-  font-size: 1.375rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 900;
   color: var(--gray-700);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 /* Refund state — JS adds .is-refund to .results-group--final */
 .results-group--final.is-refund .results-row--outcome {
-  background-color: var(--green-xlight);
+  background: linear-gradient(135deg, var(--green-xlight) 0%, #d4f5e7 100%);
   border-color: var(--green);
+  box-shadow: 0 4px 20px rgba(0, 168, 107, 0.18);
 }
 
-.results-group--final.is-refund .results-row--outcome dt { color: var(--green-dark); }
-.results-group--final.is-refund .result-value--outcome   { color: var(--green-dark); }
+.results-group--final.is-refund .results-row--outcome dt {
+  color: var(--green-dark);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.results-group--final.is-refund .result-value--outcome {
+  color: var(--green-dark);
+  font-size: 2.5rem;
+  animation: outcomePop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
 /* Owing state — JS adds .is-owing */
 .results-group--final.is-owing .results-row--outcome {
-  background-color: var(--red-light);
+  background: linear-gradient(135deg, var(--red-light) 0%, #fce8e6 100%);
   border-color: var(--red);
+  box-shadow: 0 4px 20px rgba(229, 57, 53, 0.15);
 }
 
-.results-group--final.is-owing .results-row--outcome dt { color: var(--red-dark); }
-.results-group--final.is-owing .result-value--outcome   { color: var(--red); }
+.results-group--final.is-owing .results-row--outcome dt {
+  color: var(--red-dark);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.results-group--final.is-owing .result-value--outcome {
+  color: var(--red);
+  font-size: 2.5rem;
+  animation: outcomePop 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
 
 .outcome-note {
   font-size: 0.775rem;
