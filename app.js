@@ -68,6 +68,30 @@ function runCalculation() {
   }
 }
 
+// ── Resident rules — sections that show/hide per resident type ─────────────
+const RESIDENT_RULES = {
+  australian:  { hideSections: [],                     hideOffsets: [] },
+  whm:         { hideSections: [],                     hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
+  foreign:     { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
+  nonresident: { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
+};
+
+function applyResidentRules(type) {
+  const rules = RESIDENT_RULES[type] || RESIDENT_RULES.australian;
+  const allSections = ['accordion-medicare'];
+  const allOffsets  = ['lito-eligible','lmito-eligible','sapto-eligible'];
+
+  allSections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = rules.hideSections.includes(id);
+  });
+
+  allOffsets.forEach(id => {
+    const row = document.getElementById(id)?.closest('.field-row');
+    if (row) row.hidden = rules.hideOffsets.includes(id);
+  });
+}
+
 // ── Language ───────────────────────────────────────────────────────────────
 function setLanguage(lang) {
   const t = (translations && translations[lang]) ? translations[lang] : translations.en;
@@ -104,6 +128,10 @@ document.addEventListener('DOMContentLoaded', () => {
     el.addEventListener('change', runCalculation);
     el.addEventListener('input',  runCalculation);
   });
+
+  document.querySelectorAll('[name="residentType"]').forEach(el =>
+    el.addEventListener('change', () => applyResidentRules(el.value)));
+  applyResidentRules(radio('residentType') || 'australian');
 
   const savedLang = localStorage.getItem('lang') || 'fr';
   setLanguage(savedLang);
