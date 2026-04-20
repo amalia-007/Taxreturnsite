@@ -3,7 +3,7 @@
 const num   = id => parseFloat((document.getElementById(id)?.value || '').replace(/,/g, '')) || 0;
 const check = id => !!document.getElementById(id)?.checked;
 const radio = name => document.querySelector(`[name="${name}"]:checked`)?.value ?? '';
-const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(Math.round(n)).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt   = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const set   = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = fmt(n); };
 
 function tr(key) {
