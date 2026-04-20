@@ -190,6 +190,109 @@ function setLanguage(lang) {
   localStorage.setItem('lang', lang);
 }
 
+// ── Summary modal ──────────────────────────────────────────────────────────
+const summaryModal = document.getElementById('summary-modal');
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function sumRow(label, value, cls = '') {
+  return `<div class="sum-row${cls ? ' ' + cls : ''}"><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`;
+}
+
+function sumSection(title, rows) {
+  if (!rows.length) return '';
+  return `<div class="sum-section"><h4 class="sum-section-title">${esc(title)}</h4><dl class="sum-dl">${rows.join('')}</dl></div>`;
+}
+
+function buildSummaryHTML() {
+  const parts = [];
+
+  // Details
+  const residentEl   = document.querySelector('[name="residentType"]:checked');
+  const residentName = residentEl?.closest('.resident-card')?.querySelector('.card-title')?.textContent?.trim() || '—';
+  const yearEl       = document.getElementById('tax-year');
+  const yearName     = yearEl ? yearEl.options[yearEl.selectedIndex]?.text : '—';
+  parts.push(sumSection('Your Details', [
+    sumRow('Resident Type', residentName),
+    sumRow('Tax Year', yearName),
+  ]));
+
+  // One section per accordion (skip hidden ones)
+  document.querySelectorAll('.accordion:not([hidden])').forEach(acc => {
+    const title = acc.querySelector('.accordion-title')?.textContent?.trim() || '';
+    const rows  = [];
+
+    acc.querySelectorAll('.field-row:not([hidden])').forEach(fieldRow => {
+      const labelText = fieldRow.querySelector('label > span[data-i18n]')?.textContent?.trim();
+      if (!labelText) return;
+
+      const textInput = fieldRow.querySelector('input[type="text"]');
+      const checkbox  = fieldRow.querySelector('input[type="checkbox"]');
+      const radioChecked = fieldRow.querySelector('input[type="radio"]:checked');
+
+      if (textInput) {
+        const raw = parseFloat(textInput.value.replace(/,/g, '')) || 0;
+        if (raw > 0) rows.push(sumRow(labelText, '$' + textInput.value));
+      } else if (checkbox && checkbox.checked) {
+        rows.push(sumRow(labelText, '✓ Yes'));
+      } else if (radioChecked) {
+        const optionLabel = fieldRow.querySelector('label > span[data-i18n]')?.textContent?.trim() || radioChecked.value;
+        rows.push(sumRow('Selected', optionLabel));
+      }
+    });
+
+    if (rows.length) parts.push(sumSection(title, rows));
+  });
+
+  // Calculation breakdown
+  const resultFields = [
+    ['result-gross-income',       'Gross Income'],
+    ['result-total-deductions',   'Total Deductions'],
+    ['result-taxable-income',     'Taxable Income',       'sum-row--subtotal sum-row--bold'],
+    ['result-income-tax',         'Income Tax'],
+    ['result-medicare-levy',      'Medicare Levy'],
+    ['result-medicare-surcharge', 'Medicare Levy Surcharge'],
+    ['result-hecs-repayment',     'HECS / HELP Repayment'],
+    ['result-gross-tax',          'Gross Tax Liability',  'sum-row--subtotal sum-row--bold'],
+    ['result-lito',               'LITO'],
+    ['result-franking',           'Franking Credits'],
+    ['result-foreign-offset',     'Foreign Tax Offset'],
+    ['result-total-offsets',      'Total Offsets',        'sum-row--subtotal sum-row--bold'],
+    ['result-tax-withheld',       'Tax Withheld'],
+    ['result-payg-credits',       'PAYG Credits'],
+  ];
+
+  parts.push(sumSection('Calculation Breakdown',
+    resultFields.map(([id, label, cls]) =>
+      sumRow(label, document.getElementById(id)?.textContent || '$0.00', cls || '')
+    )
+  ));
+
+  // Outcome
+  const group        = document.querySelector('.results-group--final');
+  const outcomeLabel = document.getElementById('outcome-label')?.textContent || 'Tax Payable / Refund';
+  const outcomeVal   = document.getElementById('result-outcome')?.textContent || '$0.00';
+  const outcomeClass = group?.classList.contains('is-refund') ? 'sum-outcome--refund'
+                     : group?.classList.contains('is-owing')  ? 'sum-outcome--owing' : '';
+
+  parts.push(`<div class="sum-outcome ${outcomeClass}">
+    <div class="sum-outcome-label">${esc(outcomeLabel)}</div>
+    <div class="sum-outcome-value">${esc(outcomeVal)}</div>
+  </div>`);
+
+  return parts.join('');
+}
+
+function openSummary() {
+  const body = document.getElementById('summary-modal-body');
+  if (body) body.innerHTML = buildSummaryHTML();
+  summaryModal?.showModal();
+}
+
+function closeSummary() { summaryModal?.close(); }
+
 // ── Modal ──────────────────────────────────────────────────────────────────
 const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
@@ -208,6 +311,21 @@ function closeModal() { modal?.close(); }
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-calculate')?.addEventListener('click', runCalculation);
+
+  // Reset: clear validation state then recalculate to show $0.00
+  document.getElementById('tax-form')?.addEventListener('reset', () => {
+    document.querySelectorAll('#tax-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.querySelectorAll('#tax-form .field-error').forEach(el => { el.textContent = ''; });
+    applyResidentRules('australian');
+    runCalculation();
+  });
+
+  // Summary
+  document.getElementById('btn-summary')?.addEventListener('click', openSummary);
+  document.getElementById('summary-modal-close')?.addEventListener('click', closeSummary);
+  document.getElementById('summary-close-btn')?.addEventListener('click', closeSummary);
+  document.getElementById('summary-print-btn')?.addEventListener('click', () => window.print());
+  summaryModal?.addEventListener('click', e => { if (e.target === summaryModal) closeSummary(); });
   document.querySelectorAll('#tax-form input, #tax-form select').forEach(el => {
     el.addEventListener('change', runCalculation);
     el.addEventListener('input',  runCalculation);

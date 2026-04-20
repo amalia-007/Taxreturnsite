@@ -40,7 +40,7 @@
       <div class="resident-cards" role="radiogroup" aria-labelledby="resident-heading">
 
         <label class="resident-card" for="type-australian">
-          <input type="radio" id="type-australian" name="residentType" value="australian" />
+          <input type="radio" id="type-australian" name="residentType" value="australian" checked />
           <div class="card-body">
             <span class="card-icon" aria-hidden="true">🏠</span>
             <span class="card-title" data-i18n="resident.australian.title">Australian Resident</span>
@@ -563,6 +563,9 @@
         <button type="button" id="btn-calculate" class="btn-calculate">
           <span data-i18n="form.calculate">Calculate</span>
         </button>
+        <button type="button" id="btn-summary" class="btn-summary">
+          📋 <span data-i18n="form.summary">Summary</span>
+        </button>
         <button type="reset" id="btn-reset" class="btn-reset">
           <span data-i18n="form.reset">Reset</span>
         </button>
@@ -719,6 +722,23 @@
       <div class="tooltip-modal-body" id="tooltip-modal-body">
         <!-- Content injected by script.js -->
       </div>
+    </div>
+  </dialog>
+
+  <!-- ======================================================
+       SUMMARY MODAL
+  ====================================================== -->
+  <dialog id="summary-modal" class="summary-modal" aria-labelledby="summary-modal-title" aria-modal="true">
+    <div class="summary-modal-inner">
+      <header class="tooltip-modal-header">
+        <h3 id="summary-modal-title" class="tooltip-modal-title">📋 Tax Summary</h3>
+        <button type="button" class="tooltip-modal-close" id="summary-modal-close" aria-label="Close">&#x2715;</button>
+      </header>
+      <div class="summary-modal-body" id="summary-modal-body"></div>
+      <footer class="summary-modal-footer">
+        <button type="button" id="summary-print-btn" class="btn-calculate">🖨️ Print</button>
+        <button type="button" id="summary-close-btn" class="btn-reset">Close</button>
+      </footer>
     </div>
   </dialog>
 
