@@ -67,7 +67,8 @@
         </li>
       </ul>
 
-      <!-- CTA button (Stripe integration goes here) -->
+      <div id="pay-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+
       <button
         id="pay-btn"
         class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold py-3 rounded-lg transition text-sm disabled:opacity-60 disabled:cursor-not-allowed"
@@ -109,22 +110,33 @@
       document.getElementById('user-email').textContent = session.user.email;
     })();
 
-    // Stripe checkout — wire up your price ID here
     document.getElementById('pay-btn').addEventListener('click', async () => {
       const btn = document.getElementById('pay-btn');
       btn.disabled = true;
       btn.textContent = 'Redirecting to checkout…';
 
-      // TODO: call your Supabase Edge Function / backend to create a Stripe
-      // Checkout session and redirect:
-      //   const res = await fetch('/api/create-checkout-session', { method:'POST' });
-      //   const { url } = await res.json();
-      //   window.location.href = url;
-
-      // Placeholder — remove when Stripe is wired up
-      alert('Stripe integration coming soon.');
-      btn.disabled = false;
-      btn.textContent = 'Pay $19 AUD · Secure checkout';
+      try {
+        const { data: { session } } = await window.sb.auth.getSession();
+        const res = await fetch(
+          `${window.SUPABASE_URL}/functions/v1/create-checkout-session`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error ?? 'Checkout failed');
+        window.location.href = body.url;
+      } catch (err) {
+        const errEl = document.getElementById('pay-error');
+        errEl.textContent = err.message;
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Pay $19 AUD · Secure checkout';
+      }
     });
   </script>
 </body>

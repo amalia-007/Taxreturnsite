@@ -34,6 +34,18 @@
   <!-- Main content -->
   <main class="max-w-5xl mx-auto px-4 py-10">
 
+    <!-- Payment success banner (shown only on ?payment=success) -->
+    <div id="payment-success" class="hidden mb-6 p-5 bg-brand-50 border border-brand-200 rounded-2xl flex items-start gap-4">
+      <div class="shrink-0 flex items-center justify-center w-10 h-10 bg-brand-500 rounded-full">
+        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold text-brand-900">Payment confirmed — welcome!</p>
+        <p class="text-sm text-brand-700 mt-0.5">You now have lifetime access to the GET MY TAX estimator.</p>
+      </div>
+      <button onclick="this.closest('#payment-success').classList.add('hidden')" class="ml-auto text-brand-400 hover:text-brand-600 text-lg leading-none">&times;</button>
+    </div>
+
     <!-- Welcome -->
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-gray-900">Your Dashboard</h1>
@@ -83,6 +95,11 @@
 
       const { session } = result;
       document.getElementById('user-email').textContent = session.user.email;
+
+      if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+        document.getElementById('payment-success').classList.remove('hidden');
+        history.replaceState({}, '', window.location.pathname);
+      }
 
       // Load saved tax returns
       const { data: returns } = await window.sb
