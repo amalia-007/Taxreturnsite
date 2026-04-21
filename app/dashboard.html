@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — GET MY TAX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        brand: { 50:'#f0faf6', 100:'#dcf4ea', 500:'#00A86B', 600:'#009960', 700:'#007a4e', 800:'#005c3a' }
+      }}}
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <!-- Top nav -->
+  <nav class="bg-white border-b border-gray-200 px-4 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
+      <div class="flex items-center gap-4">
+        <span id="user-email" class="text-sm text-gray-500 hidden sm:block"></span>
+        <button
+          onclick="signOut()"
+          class="text-sm text-gray-600 hover:text-gray-900 font-medium transition"
+        >
+          Sign out
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="max-w-5xl mx-auto px-4 py-10">
+
+    <!-- Welcome -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900">Your Dashboard</h1>
+      <p class="text-gray-500 text-sm mt-1">Access your tax estimator and saved returns below.</p>
+    </div>
+
+    <!-- Quick action -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">Tax Estimator</h2>
+        <p class="text-sm text-gray-500 mt-0.5">Calculate your Australian tax refund or liability for 2023–24.</p>
+      </div>
+      <a
+        href="../index.html"
+        class="shrink-0 bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2.5 px-5 rounded-lg transition text-sm"
+      >
+        Open estimator
+      </a>
+    </div>
+
+    <!-- Saved returns placeholder -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Saved Tax Returns</h2>
+      <div id="returns-list">
+        <div class="text-center py-10 text-gray-400">
+          <svg class="mx-auto mb-3 h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p class="text-sm">No saved returns yet.</p>
+          <p class="text-xs mt-1">Complete an estimate and save it to see it here.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>
+    'use strict';
+
+    (async () => {
+      const result = await requirePaid();
+      if (!result) return;
+
+      const { session } = result;
+      document.getElementById('user-email').textContent = session.user.email;
+
+      // Load saved tax returns
+      const { data: returns } = await window.sb
+        .from('tax_returns')
+        .select('id, tax_year, created_at, result_json')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false });
+
+      if (returns && returns.length > 0) {
+        const list = document.getElementById('returns-list');
+        list.innerHTML = returns.map(r => {
+          const date = new Date(r.created_at).toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+          return `
+            <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+              <div>
+                <p class="text-sm font-medium text-gray-900">Tax Year ${r.tax_year}</p>
+                <p class="text-xs text-gray-400 mt-0.5">Saved ${date}</p>
+              </div>
+              <a href="../index.html" class="text-xs text-brand-600 font-semibold hover:underline">View</a>
+            </div>`;
+        }).join('');
+      }
+    })();
+  </script>
+</body>
+</html>

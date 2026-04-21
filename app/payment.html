@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlock Full Access — GET MY TAX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        brand: { 50:'#f0faf6', 100:'#dcf4ea', 500:'#00A86B', 600:'#009960', 700:'#007a4e', 800:'#005c3a' }
+      }}}
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand-800 to-brand-500 flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <a href="../index.html" class="inline-block">
+        <span class="text-3xl font-black text-white tracking-tight">GET MY TAX</span>
+      </a>
+      <p class="text-brand-100 mt-1 text-sm">Australian tax refund estimator</p>
+    </div>
+
+    <!-- Payment card -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-brand-50 rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900 mb-1">One-time access</h1>
+        <p class="text-gray-500 text-sm">Unlock your full Australian tax estimate</p>
+      </div>
+
+      <!-- Pricing -->
+      <div class="bg-brand-50 border border-brand-100 rounded-xl p-6 mb-6 text-center">
+        <div class="text-4xl font-black text-brand-700 mb-1">$19 <span class="text-lg font-semibold text-brand-500">AUD</span></div>
+        <p class="text-sm text-brand-700">One-time payment · No subscription</p>
+      </div>
+
+      <!-- Feature list -->
+      <ul class="space-y-3 mb-7">
+        <li class="flex items-start gap-3 text-sm text-gray-700">
+          <svg class="h-5 w-5 text-brand-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Full tax refund / liability estimate
+        </li>
+        <li class="flex items-start gap-3 text-sm text-gray-700">
+          <svg class="h-5 w-5 text-brand-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          HECS/HELP repayment calculation
+        </li>
+        <li class="flex items-start gap-3 text-sm text-gray-700">
+          <svg class="h-5 w-5 text-brand-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          All resident types (AU, WHM, Foreign)
+        </li>
+        <li class="flex items-start gap-3 text-sm text-gray-700">
+          <svg class="h-5 w-5 text-brand-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Printable detailed summary report
+        </li>
+        <li class="flex items-start gap-3 text-sm text-gray-700">
+          <svg class="h-5 w-5 text-brand-500 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Lifetime access — no expiry
+        </li>
+      </ul>
+
+      <!-- CTA button (Stripe integration goes here) -->
+      <button
+        id="pay-btn"
+        class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold py-3 rounded-lg transition text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        Pay $19 AUD · Secure checkout
+      </button>
+
+      <p class="text-center text-xs text-gray-400 mt-4">Powered by Stripe · SSL encrypted</p>
+
+      <div class="mt-6 pt-5 border-t border-gray-100 flex justify-between items-center">
+        <p class="text-xs text-gray-400">Signed in as <span id="user-email" class="font-medium text-gray-600"></span></p>
+        <button onclick="signOut()" class="text-xs text-gray-400 hover:text-gray-600 underline">Sign out</button>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-brand-100 mt-6 px-4">
+      We are not a registered tax agent. This tool provides estimates only.
+    </p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>
+    'use strict';
+
+    (async () => {
+      const session = await requireAuth();
+      if (!session) return;
+
+      // If already paid, skip to dashboard
+      const profile = await getProfile(session.user.id);
+      if (profile?.has_paid) {
+        window.location.replace(siteUrl('/app/dashboard.html'));
+        return;
+      }
+
+      document.getElementById('user-email').textContent = session.user.email;
+    })();
+
+    // Stripe checkout — wire up your price ID here
+    document.getElementById('pay-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('pay-btn');
+      btn.disabled = true;
+      btn.textContent = 'Redirecting to checkout…';
+
+      // TODO: call your Supabase Edge Function / backend to create a Stripe
+      // Checkout session and redirect:
+      //   const res = await fetch('/api/create-checkout-session', { method:'POST' });
+      //   const { url } = await res.json();
+      //   window.location.href = url;
+
+      // Placeholder — remove when Stripe is wired up
+      alert('Stripe integration coming soon.');
+      btn.disabled = false;
+      btn.textContent = 'Pay $19 AUD · Secure checkout';
+    });
+  </script>
+</body>
+</html>
