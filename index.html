@@ -3,9 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="page.title">Tax Return Calculator Australia</title>
+  <title data-i18n="page.title">Australian Tax Return Calculator 2024-25 — GET MY TAX</title>
+  <meta name="description" content="Free Australian income tax calculator for 2024-25. Estimate your tax refund or amount owing in minutes. Covers residents, working holiday makers, HECS, Medicare, and deductions." />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://amalia-007.github.io/Taxreturnsite/" />
+  <meta property="og:title"       content="Australian Tax Return Calculator 2024-25 — GET MY TAX" />
+  <meta property="og:description" content="Estimate your 2024-25 Australian tax refund in minutes. Upload payslips, enter deductions, and get an instant calculation." />
+  <meta property="og:image"       content="https://amalia-007.github.io/Taxreturnsite/og-image.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
+
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2300A86B'/><text y='25' x='16' font-size='23' font-family='system-ui,sans-serif' font-weight='900' fill='white' text-anchor='middle'>$</text></svg>" />
   <link rel="stylesheet" href="styles.css" />
+
+  <!-- Plausible Analytics (privacy-friendly, no cookies) -->
+  <!-- Replace data-domain with your Plausible site ID after creating an account at plausible.io -->
+  <script defer data-domain="amalia-007.github.io/Taxreturnsite" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -792,5 +807,17 @@
   <script src="translations.js"></script>
   <script src="taxCalc.js"></script>
   <script src="app.js"></script>
+
+  <footer style="margin-top:3rem;border-top:1px solid #e5e7eb;padding:1.5rem 1rem;text-align:center;">
+    <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.75rem;font-size:.75rem;color:#9ca3af;">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div style="display:flex;gap:1rem;">
+        <a href="legal/privacy.html" style="color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#6b7280'" onmouseout="this.style.color='#9ca3af'">Privacy</a>
+        <a href="legal/terms.html"   style="color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#6b7280'" onmouseout="this.style.color='#9ca3af'">Terms</a>
+        <a href="legal/refund.html"  style="color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#6b7280'" onmouseout="this.style.color='#9ca3af'">Refunds</a>
+        <a href="auth/login.html"    style="color:#9ca3af;text-decoration:none;" onmouseover="this.style.color='#6b7280'" onmouseout="this.style.color='#9ca3af'">Log in</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

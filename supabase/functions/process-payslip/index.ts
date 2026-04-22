@@ -23,7 +23,11 @@ const OCR_PROMPT = `Extract the following from this Australian payslip and retur
   "ytd_gross": number or null,
   "ytd_tax_withheld": number or null
 }
-If any field is missing or unreadable, use null. Do not guess values.`
+If any field is missing or unreadable, use null. Do not guess values.
+IMPORTANT: Only extract data you can clearly read. If this does not appear to be a payslip, return {"error": "not_a_payslip"}.`
+
+const ALLOWED_EXTENSIONS = new Set(['pdf', 'png', 'jpg', 'jpeg'])
+const OCR_TIMEOUT_MS = 25_000
 
 function json(data: unknown, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -62,23 +66,41 @@ Deno.serve(async (req) => {
     const { path } = body
     if (!path || typeof path !== 'string') return json({ error: 'Missing path' }, 400)
 
-    // Ensure file belongs to this user (path = {userId}/...)
+    // Ensure file belongs to this user
     if (!path.startsWith(user.id + '/')) return json({ error: 'Forbidden' }, 403)
 
-    // Download from Supabase Storage using admin client (bypasses RLS)
+    // Validate file extension
+    const ext = path.split('.').pop()?.toLowerCase() ?? ''
+    if (!ALLOWED_EXTENSIONS.has(ext)) {
+      return json({ error: 'Unsupported file type. Upload PDF, JPG, or PNG.' }, 400)
+    }
+
+    // Download from Supabase Storage
     const { data: blob, error: dlErr } = await supabaseAdmin.storage
       .from('payslips')
       .download(path)
-    if (dlErr || !blob) return json({ error: 'File not found' }, 404)
+
+    if (dlErr) {
+      console.error('Storage download error:', dlErr)
+      return json({ error: 'Could not retrieve file. It may have been deleted.' }, 404)
+    }
+    if (!blob) return json({ error: 'File not found' }, 404)
 
     const buffer = await blob.arrayBuffer()
-    const bytes = new Uint8Array(buffer)
+    const bytes  = new Uint8Array(buffer)
     const mimeType = mimeFromPath(path)
 
     // Size guard: 5 MB for images, 32 MB for PDFs
     const maxBytes = mimeType === 'application/pdf' ? 32 * 1024 * 1024 : 5 * 1024 * 1024
     if (bytes.length > maxBytes) {
-      return json({ error: `File too large (max ${mimeType === 'application/pdf' ? '32 MB' : '5 MB'})` }, 400)
+      return json({
+        error: `File too large (max ${mimeType === 'application/pdf' ? '32 MB' : '5 MB'}). Please compress or crop the image and try again.`,
+      }, 400)
+    }
+
+    // Zero-byte guard
+    if (bytes.length === 0) {
+      return json({ error: 'The uploaded file appears to be empty or corrupted.' }, 400)
     }
 
     const base64Data = encodeBase64(bytes)
@@ -95,20 +117,32 @@ Deno.serve(async (req) => {
     }
     if (isPdf) claudeHeaders['anthropic-beta'] = 'pdfs-2024-09-25'
 
-    const claudeRes = await fetch('https://api.anthropic.com/v1/messages', {
-      method:  'POST',
-      headers: claudeHeaders,
-      body: JSON.stringify({
-        model:      'claude-sonnet-4-5',
-        max_tokens: 1024,
-        messages:   [{ role: 'user', content: [contentItem, { type: 'text', text: OCR_PROMPT }] }],
+    // Race the Claude call against a timeout so we can surface a clear error
+    const claudeRes = await Promise.race([
+      fetch('https://api.anthropic.com/v1/messages', {
+        method:  'POST',
+        headers: claudeHeaders,
+        body: JSON.stringify({
+          model:      'claude-sonnet-4-6',
+          max_tokens: 1024,
+          messages:   [{ role: 'user', content: [contentItem, { type: 'text', text: OCR_PROMPT }] }],
+        }),
       }),
+      new Promise<Response>((_, reject) =>
+        setTimeout(() => reject(new Error('OCR_TIMEOUT')), OCR_TIMEOUT_MS)
+      ),
+    ]).catch((err: Error) => {
+      if (err.message === 'OCR_TIMEOUT') throw err
+      throw err
     })
 
     if (!claudeRes.ok) {
       const errText = await claudeRes.text()
       console.error('Claude API error:', claudeRes.status, errText)
-      return json({ error: 'OCR service unavailable' }, 502)
+      return json({
+        error: 'AI extraction service is temporarily unavailable. Enter values manually.',
+        fallback: true,
+      }, 502)
     }
 
     const claudeBody = await claudeRes.json()
@@ -116,16 +150,34 @@ Deno.serve(async (req) => {
 
     let extracted: Record<string, unknown>
     try {
-      // Strip any accidental markdown fences
-      const clean = rawText.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/,'').trim()
+      const clean = rawText.replace(/^```[a-z]*\n?/i, '').replace(/\n?```$/, '').trim()
       extracted = JSON.parse(clean)
     } catch {
       console.error('Claude output not valid JSON:', rawText)
-      return json({ error: 'OCR returned unexpected format' }, 422)
+      return json({
+        error: 'AI could not read this file. Please enter values manually.',
+        fallback: true,
+      }, 422)
+    }
+
+    // Detected non-payslip
+    if ((extracted as { error?: string }).error === 'not_a_payslip') {
+      return json({
+        error: 'This file does not appear to be a payslip. Please upload a valid payslip for the 2024–25 financial year.',
+        fallback: true,
+      }, 422)
     }
 
     return json({ data: extracted })
   } catch (err) {
+    const isTimeout = err instanceof Error && err.message === 'OCR_TIMEOUT'
+    if (isTimeout) {
+      console.error('process-payslip: Claude OCR timed out')
+      return json({
+        error: 'AI extraction timed out. Please enter your payslip values manually.',
+        fallback: true,
+      }, 504)
+    }
     console.error('process-payslip error:', err)
     return json({ error: 'Internal server error' }, 500)
   }

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Settings — GET MY TAX</title>
+  <meta name="robots" content="noindex" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      brand: { 50:'#f0faf6',100:'#dcf4ea',500:'#00A86B',600:'#009960',700:'#007a4e',800:'#005c3a' }
+    }}}}
+  </script>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <nav class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
+      <div class="flex items-center gap-4">
+        <a href="dashboard.html" class="text-sm text-gray-500 hover:text-gray-700">← Dashboard</a>
+        <span id="user-email" class="text-sm text-gray-400 hidden sm:block"></span>
+        <button onclick="signOut()" class="text-sm text-gray-600 hover:text-gray-900 font-medium">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- Change Password -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-1">Change password</h2>
+      <p class="text-sm text-gray-500 mb-5">Choose a strong password of at least 8 characters.</p>
+
+      <div id="pw-success" class="hidden mb-4 p-3 bg-brand-50 border border-brand-100 rounded-lg text-brand-800 text-sm font-medium"></div>
+      <div id="pw-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+
+      <form id="pw-form" novalidate class="space-y-4 max-w-sm">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">New password</label>
+          <input id="new-pw" type="password" autocomplete="new-password" placeholder="Minimum 8 characters"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Confirm new password</label>
+          <input id="confirm-pw" type="password" autocomplete="new-password" placeholder="Repeat password"
+            class="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+        </div>
+        <button type="submit" id="pw-btn"
+          class="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-5 py-2.5 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+          Update password
+        </button>
+      </form>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="bg-white rounded-2xl shadow-sm border border-red-100 p-6">
+      <h2 class="text-lg font-semibold text-red-700 mb-1">Danger zone</h2>
+      <p class="text-sm text-gray-500 mb-6">These actions are irreversible. Please be certain before proceeding.</p>
+
+      <div id="danger-msg" class="hidden mb-4 p-3 rounded-lg text-sm font-medium"></div>
+
+      <!-- Delete payslips only -->
+      <div class="border border-gray-100 rounded-xl p-4 mb-4">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Delete uploaded payslips</p>
+            <p class="text-xs text-gray-500 mt-0.5">Removes all payslip files and extracted data from your account. Your account and payment status are kept.</p>
+          </div>
+          <button id="delete-payslips-btn"
+            class="shrink-0 border border-red-300 text-red-600 hover:bg-red-50 font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Delete payslips
+          </button>
+        </div>
+        <!-- Confirm -->
+        <div id="delete-payslips-confirm" class="hidden mt-4 p-3 bg-red-50 rounded-lg">
+          <p class="text-sm text-red-700 mb-3">Are you sure? All uploaded payslips and extracted data will be permanently deleted.</p>
+          <div class="flex gap-2">
+            <button id="delete-payslips-yes"
+              class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50">
+              Yes, delete payslips
+            </button>
+            <button id="delete-payslips-no"
+              class="border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold px-4 py-2 rounded-lg text-sm transition">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete account -->
+      <div class="border border-red-200 rounded-xl p-4">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <p class="text-sm font-semibold text-red-700">Delete my account</p>
+            <p class="text-xs text-gray-500 mt-0.5">Permanently deletes your account, all payslips, profile data, and payment history. This cannot be undone.</p>
+          </div>
+          <button id="delete-account-btn"
+            class="shrink-0 bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Delete account
+          </button>
+        </div>
+        <!-- Confirm -->
+        <div id="delete-account-confirm" class="hidden mt-4 p-3 bg-red-50 rounded-lg">
+          <p class="text-sm text-red-700 mb-3 font-medium">This will permanently delete your account and all data. Type <strong>DELETE</strong> to confirm.</p>
+          <input id="delete-confirm-input" type="text" placeholder="Type DELETE to confirm"
+            class="w-full mb-3 px-3 py-2 border border-red-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
+          <div class="flex gap-2">
+            <button id="delete-account-yes"
+              class="bg-red-700 hover:bg-red-800 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50">
+              Permanently delete my account
+            </button>
+            <button id="delete-account-no"
+              class="border border-gray-200 text-gray-600 hover:bg-gray-50 font-semibold px-4 py-2 rounded-lg text-sm transition">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-8 border-t border-gray-200 py-6">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div class="flex gap-4">
+        <a href="../legal/privacy.html" class="hover:text-gray-600">Privacy</a>
+        <a href="../legal/terms.html" class="hover:text-gray-600">Terms</a>
+        <a href="../legal/refund.html" class="hover:text-gray-600">Refunds</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>
+    'use strict';
+
+    let currentSession = null;
+
+    // ── Auth guard ─────────────────────────────────────────────────────────────
+    (async () => {
+      const result = await requirePaid();
+      if (!result) return;
+      currentSession = result.session;
+      document.getElementById('user-email').textContent = currentSession.user.email;
+    })();
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function showDanger(msg, isError = true) {
+      const el = document.getElementById('danger-msg');
+      el.textContent = msg;
+      el.className = `mb-4 p-3 rounded-lg text-sm font-medium ${isError ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-brand-50 text-brand-800 border border-brand-100'}`;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), 8000);
+    }
+
+    // ── Change Password ────────────────────────────────────────────────────────
+    document.getElementById('pw-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw      = document.getElementById('new-pw').value;
+      const confirm = document.getElementById('confirm-pw').value;
+      const btn     = document.getElementById('pw-btn');
+      const ok      = document.getElementById('pw-success');
+      const err     = document.getElementById('pw-error');
+      ok.classList.add('hidden');
+      err.classList.add('hidden');
+
+      if (pw.length < 8) {
+        err.textContent = 'Password must be at least 8 characters.';
+        err.classList.remove('hidden');
+        return;
+      }
+      if (pw !== confirm) {
+        err.textContent = 'Passwords do not match.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled    = true;
+      btn.textContent = 'Updating…';
+
+      const { error } = await window.sb.auth.updateUser({ password: pw });
+
+      btn.disabled    = false;
+      btn.textContent = 'Update password';
+
+      if (error) {
+        err.textContent = error.message;
+        err.classList.remove('hidden');
+      } else {
+        ok.textContent = 'Password updated successfully.';
+        ok.classList.remove('hidden');
+        document.getElementById('pw-form').reset();
+      }
+    });
+
+    // ── Delete Payslips Only ───────────────────────────────────────────────────
+    document.getElementById('delete-payslips-btn').addEventListener('click', () => {
+      document.getElementById('delete-payslips-confirm').classList.remove('hidden');
+    });
+    document.getElementById('delete-payslips-no').addEventListener('click', () => {
+      document.getElementById('delete-payslips-confirm').classList.add('hidden');
+    });
+
+    document.getElementById('delete-payslips-yes').addEventListener('click', async () => {
+      const btn = document.getElementById('delete-payslips-yes');
+      btn.disabled    = true;
+      btn.textContent = 'Deleting…';
+
+      try {
+        const userId = currentSession.user.id;
+
+        // Get all payslip records to find storage paths
+        const { data: records, error: fetchErr } = await window.sb
+          .from('payslips')
+          .select('file_url')
+          .eq('user_id', userId);
+        if (fetchErr) throw fetchErr;
+
+        // Delete files from storage
+        if (records && records.length > 0) {
+          const paths = records.map(r => r.file_url).filter(Boolean);
+          if (paths.length > 0) {
+            const { error: storageErr } = await window.sb.storage
+              .from('payslips')
+              .remove(paths);
+            if (storageErr) console.warn('Storage delete partial error:', storageErr);
+          }
+        }
+
+        // Delete DB rows
+        const { error: dbErr } = await window.sb
+          .from('payslips')
+          .delete()
+          .eq('user_id', userId);
+        if (dbErr) throw dbErr;
+
+        document.getElementById('delete-payslips-confirm').classList.add('hidden');
+        showDanger('All payslips deleted successfully.', false);
+      } catch (err) {
+        showDanger('Failed to delete payslips: ' + err.message);
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Yes, delete payslips';
+      }
+    });
+
+    // ── Delete Account ─────────────────────────────────────────────────────────
+    document.getElementById('delete-account-btn').addEventListener('click', () => {
+      document.getElementById('delete-account-confirm').classList.remove('hidden');
+      document.getElementById('delete-confirm-input').focus();
+    });
+    document.getElementById('delete-account-no').addEventListener('click', () => {
+      document.getElementById('delete-account-confirm').classList.add('hidden');
+      document.getElementById('delete-confirm-input').value = '';
+    });
+
+    document.getElementById('delete-account-yes').addEventListener('click', async () => {
+      const confirmText = document.getElementById('delete-confirm-input').value.trim();
+      if (confirmText !== 'DELETE') {
+        showDanger('Please type DELETE (in capitals) to confirm.');
+        return;
+      }
+
+      const btn = document.getElementById('delete-account-yes');
+      btn.disabled    = true;
+      btn.textContent = 'Deleting…';
+
+      try {
+        const res  = await fetch(`${window.SUPABASE_URL}/functions/v1/delete-account`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${currentSession.access_token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const body = await res.json();
+        if (!res.ok) throw new Error(body.error ?? 'Delete failed');
+
+        // Account gone — sign out and redirect to home
+        await window.sb.auth.signOut();
+        window.location.replace(siteUrl('/index.html'));
+      } catch (err) {
+        showDanger('Failed to delete account: ' + err.message);
+        btn.disabled    = false;
+        btn.textContent = 'Permanently delete my account';
+      }
+    });
+  </script>
+</body>
+</html>

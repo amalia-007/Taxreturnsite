@@ -97,7 +97,23 @@
       if (event === 'SIGNED_IN' && session) {
         // Email confirmation or magic link — route to the right page.
         const { data: profile } = await window.sb.from('profiles')
-          .select('has_paid').eq('id', session.user.id).single();
+          .select('has_paid, welcome_sent').eq('id', session.user.id).single();
+
+        // Send welcome email on first-ever sign-in (best-effort, non-blocking)
+        if (!profile?.welcome_sent) {
+          fetch(`${window.SUPABASE_URL}/functions/v1/send-welcome-email`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${session.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: session.user.email }),
+          }).catch(() => {}); // swallow errors — don't block redirect
+
+          // Mark welcome as sent so we don't re-send on future logins
+          window.sb.from('profiles').update({ welcome_sent: true }).eq('id', session.user.id).then(() => {});
+        }
+
         window.location.replace(
           profile?.has_paid ? siteUrl('/app/dashboard.html') : siteUrl('/app/payment.html')
         );

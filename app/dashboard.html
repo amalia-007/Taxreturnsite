@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard — GET MY TAX</title>
+  <meta name="robots" content="noindex" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -29,12 +30,22 @@
       <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
       <div class="flex items-center gap-4">
         <span id="user-email" class="text-sm text-gray-500 hidden sm:block"></span>
+        <a href="settings.html" class="text-sm text-gray-500 hover:text-gray-700 transition">Settings</a>
         <button onclick="signOut()" class="text-sm text-gray-600 hover:text-gray-900 font-medium transition">
           Sign out
         </button>
       </div>
     </div>
   </nav>
+
+  <!-- Persistent disclaimer banner -->
+  <div class="bg-amber-50 border-b border-amber-200 px-4 py-2.5">
+    <p class="max-w-5xl mx-auto text-xs text-amber-800 text-center">
+      <strong>Estimates only.</strong> GET MY TAX is not a registered tax agent. You must lodge your return via
+      <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-amber-900">myGov/myTax</a>
+      or a registered tax agent. Results are not tax advice.
+    </p>
+  </div>
 
   <main class="max-w-5xl mx-auto px-4 py-8 space-y-6">
 
@@ -56,7 +67,7 @@
       <div class="flex items-start justify-between mb-5">
         <div>
           <h2 class="text-lg font-semibold text-gray-900">Step 1 — Upload your payslips</h2>
-          <p class="text-sm text-gray-500 mt-0.5">Upload up to 20 payslips. We'll extract the data automatically using AI.</p>
+          <p class="text-sm text-gray-500 mt-0.5">Upload up to 20 payslips for <strong>2024–25</strong> (1 Jul 2024 – 30 Jun 2025). We'll extract data automatically using AI.</p>
         </div>
         <span class="shrink-0 ml-4 text-xs bg-brand-100 text-brand-700 font-semibold px-3 py-1 rounded-full">AI-powered</span>
       </div>
@@ -262,13 +273,23 @@
           }
         );
         const body = await res.json();
-        if (!res.ok) throw new Error(body.error ?? 'OCR failed');
+
+        if (!res.ok) {
+          // Fallback: show error but still add a manual-entry row
+          const msg = body.error ?? 'AI extraction failed';
+          setQueueStatus(li, 'error', msg);
+          if (body.fallback) {
+            addTableRow(file.name, path, null); // blank row for manual entry
+          }
+          return; // don't throw — let other files continue
+        }
 
         setQueueStatus(li, 'done', 'Done');
         addTableRow(file.name, path, body.data);
 
       } catch (err) {
-        setQueueStatus(li, 'error', err.message);
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setQueueStatus(li, 'error', msg);
         // Let user fill in manually — add blank row
         addTableRow(file.name, null, null);
       }
@@ -491,5 +512,16 @@
       el._t = setTimeout(() => el.classList.add('hidden'), 6000);
     }
   </script>
+
+  <footer class="mt-12 border-t border-gray-200 py-6">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div class="flex gap-4">
+        <a href="../legal/privacy.html" class="hover:text-gray-600">Privacy</a>
+        <a href="../legal/terms.html" class="hover:text-gray-600">Terms</a>
+        <a href="../legal/refund.html" class="hover:text-gray-600">Refunds</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

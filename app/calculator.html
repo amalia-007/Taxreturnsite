@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tax Calculator — GET MY TAX</title>
+  <meta name="robots" content="noindex" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { theme: { extend: { colors: {
@@ -464,5 +465,16 @@
       });
     });
   </script>
+
+  <footer class="mt-12 border-t border-gray-200 py-6">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div class="flex gap-4">
+        <a href="../legal/privacy.html" class="hover:text-gray-600">Privacy</a>
+        <a href="../legal/terms.html" class="hover:text-gray-600">Terms</a>
+        <a href="../legal/refund.html" class="hover:text-gray-600">Refunds</a>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>
