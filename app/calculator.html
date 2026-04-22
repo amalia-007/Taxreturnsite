@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tax Calculator — GET MY TAX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      brand: { 50:'#f0faf6',100:'#dcf4ea',500:'#00A86B',600:'#009960',700:'#007a4e',800:'#005c3a' }
+    }}}}
+  </script>
+  <style>
+    .seg-btn input[type="radio"]               { position:absolute; opacity:0; width:0; }
+    .seg-btn input[type="radio"]:checked + span { background:#00A86B; color:#fff; font-weight:600; }
+    .seg-btn span { display:block; padding:.45rem .85rem; font-size:.8125rem; cursor:pointer; transition:background .15s,color .15s; }
+    .yn-btn  input[type="radio"]               { position:absolute; opacity:0; width:0; }
+    .yn-btn  input[type="radio"]:checked + span { background:#00A86B; color:#fff; font-weight:600; }
+    .yn-btn  span { display:block; padding:.4rem 1.1rem; font-size:.8125rem; cursor:pointer; transition:background .15s,color .15s; }
+    input[type="number"]::-webkit-inner-spin-button { opacity:1; }
+    details > summary { list-style:none; cursor:pointer; }
+    details > summary::-webkit-details-marker { display:none; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <nav class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
+      <div class="flex items-center gap-4">
+        <a href="dashboard.html" class="text-sm text-gray-500 hover:text-gray-700">← Dashboard</a>
+        <span id="user-email" class="text-sm text-gray-400 hidden sm:block"></span>
+        <button onclick="signOut()" class="text-sm text-gray-600 hover:text-gray-900 font-medium">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- ── Step 2: Calculator ──────────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Step 2 — Tax Calculator</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Pre-filled from your saved payslips. Edit any field if needed.</p>
+        </div>
+        <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
+      </div>
+
+      <div id="prefill-note" class="hidden mb-5 p-3 bg-brand-50 border border-brand-100 rounded-lg text-brand-800 text-xs font-medium"></div>
+
+      <!-- Income -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Total gross income <span class="font-normal text-gray-400 text-xs">(excl. super)</span></label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+            <input id="gross-income" type="number" min="0" step="0.01" value="0"
+              class="w-full pl-7 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Total PAYG withheld <span class="font-normal text-gray-400 text-xs">(tax already paid)</span></label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+            <input id="payg-withheld" type="number" min="0" step="0.01" value="0"
+              class="w-full pl-7 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Tax details -->
+      <div class="border-t border-gray-100 pt-5 space-y-5 mb-5">
+
+        <div>
+          <p class="text-sm font-medium text-gray-700 mb-2">Residency status</p>
+          <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
+            <label class="seg-btn relative"><input type="radio" name="residency" value="australian" checked /><span>Australian resident</span></label>
+            <label class="seg-btn relative border-l border-gray-200"><input type="radio" name="residency" value="foreign" /><span>Foreign resident</span></label>
+            <label class="seg-btn relative border-l border-gray-200"><input type="radio" name="residency" value="whm" /><span>Working Holiday Maker</span></label>
+          </div>
+          <p id="residency-note" class="mt-1.5 text-xs text-gray-400">Residents get the $18,200 tax-free threshold, LITO, and Medicare levy.</p>
+        </div>
+
+        <div>
+          <p class="text-sm font-medium text-gray-700 mb-2">HECS/HELP debt?</p>
+          <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
+            <label class="yn-btn relative"><input type="radio" name="hecs" value="yes" /><span>Yes</span></label>
+            <label class="yn-btn relative border-l border-gray-200"><input type="radio" name="hecs" value="no" checked /><span>No</span></label>
+          </div>
+        </div>
+
+        <div id="medicare-row">
+          <p class="text-sm font-medium text-gray-700 mb-2">Medicare levy exemption?</p>
+          <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
+            <label class="yn-btn relative"><input type="radio" name="medicare-exempt" value="yes" /><span>Yes</span></label>
+            <label class="yn-btn relative border-l border-gray-200"><input type="radio" name="medicare-exempt" value="no" checked /><span>No</span></label>
+          </div>
+          <p class="mt-1.5 text-xs text-gray-400">Select Yes if you hold a full exemption certificate or are not eligible for Medicare.</p>
+        </div>
+
+      </div>
+
+      <!-- Deductions -->
+      <div class="border-t border-gray-100 pt-5 mb-5">
+        <h3 class="text-sm font-semibold text-gray-800 mb-4">Deductions</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Work-related expenses</label>
+            <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+              <input id="work-related" type="number" min="0" step="0.01" value="0"
+                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Charitable donations</label>
+            <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+              <input id="donations" type="number" min="0" step="0.01" value="0"
+                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Self-education expenses</label>
+            <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+              <input id="self-education" type="number" min="0" step="0.01" value="0"
+                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Other deductions</label>
+            <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
+              <input id="other-deductions" type="number" min="0" step="0.01" value="0"
+                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Deduction Finder -->
+      <div class="border-t border-gray-100 pt-5 mb-6">
+        <div class="flex items-center gap-2 mb-2">
+          <h3 class="text-sm font-semibold text-gray-800">Deduction Finder</h3>
+          <span class="text-xs bg-brand-100 text-brand-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
+        </div>
+        <p class="text-xs text-gray-500 mb-3">Enter your job title to see the most common ATO-accepted deductions for your profession.</p>
+        <div class="flex gap-2">
+          <input id="job-title" type="text" placeholder="e.g. nurse, electrician, teacher, Uber driver"
+            class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
+          <button id="find-deductions-btn"
+            class="shrink-0 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Find deductions
+          </button>
+        </div>
+        <p id="deduction-error" class="hidden mt-2 text-xs text-red-500"></p>
+        <div id="deduction-tips" class="hidden mt-4 border border-gray-100 rounded-xl overflow-hidden divide-y divide-gray-50"></div>
+      </div>
+
+      <button id="calculate-btn"
+        class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition text-sm tracking-wide">
+        Calculate my tax →
+      </button>
+
+    </div><!-- end Step 2 -->
+
+    <!-- ── Step 3: Results ───────────────────────────────────────────────── -->
+    <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Step 3 — Your Tax Summary</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Estimated for the 2024–25 financial year.</p>
+        </div>
+        <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
+      </div>
+
+      <!-- Refund / Owing banner -->
+      <div id="outcome-banner" class="rounded-xl p-5 mb-6 text-center">
+        <p id="outcome-label" class="text-sm font-medium mb-1"></p>
+        <p id="outcome-amount" class="text-4xl font-black tabular-nums"></p>
+        <p id="outcome-sub" class="text-xs mt-1 opacity-75"></p>
+      </div>
+
+      <!-- Breakdown table -->
+      <div class="space-y-0 divide-y divide-gray-100 text-sm mb-5">
+        <div class="flex justify-between py-2.5">
+          <span class="text-gray-600">Gross income</span>
+          <span id="r-gross" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+        <div class="flex justify-between py-2.5">
+          <span class="text-gray-600">Total deductions</span>
+          <span id="r-deductions" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+        <div class="flex justify-between py-2.5 font-semibold">
+          <span class="text-gray-800">Taxable income</span>
+          <span id="r-taxable" class="tabular-nums text-gray-900"></span>
+        </div>
+        <div class="flex justify-between py-2.5">
+          <span class="text-gray-600">Income tax</span>
+          <span id="r-income-tax" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+        <div id="r-lito-row" class="flex justify-between py-2.5">
+          <span class="text-gray-600">Low income tax offset (LITO)</span>
+          <span id="r-lito" class="font-medium tabular-nums text-brand-600"></span>
+        </div>
+        <div id="r-medicare-row" class="flex justify-between py-2.5">
+          <span class="text-gray-600">Medicare levy</span>
+          <span id="r-medicare" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+        <div id="r-hecs-row" class="hidden flex justify-between py-2.5">
+          <span class="text-gray-600">HECS/HELP repayment</span>
+          <span id="r-hecs" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+        <div class="flex justify-between py-2.5 font-semibold">
+          <span class="text-gray-800">Total tax liability</span>
+          <span id="r-liability" class="tabular-nums text-gray-900"></span>
+        </div>
+        <div class="flex justify-between py-2.5">
+          <span class="text-gray-600">PAYG withheld (already paid)</span>
+          <span id="r-payg" class="font-medium tabular-nums text-gray-900"></span>
+        </div>
+      </div>
+
+      <!-- Bracket breakdown (collapsible) -->
+      <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
+        <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
+          <span>Tax bracket breakdown</span>
+          <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </summary>
+        <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
+      </details>
+
+      <p class="text-xs text-gray-400 text-center">
+        This is an <strong>estimate only</strong> based on the information you provided. For official lodgement, use ATO myTax or speak to a registered tax agent.
+      </p>
+    </div>
+
+    <!-- ── Step 4: Next Steps ─────────────────────────────────────────────── -->
+    <div id="next-steps-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-1">Step 4 — Lodge Your Return</h2>
+      <p class="text-sm text-gray-500 mb-5">Use your summary above to lodge quickly and accurately.</p>
+
+      <div class="space-y-4">
+        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition">
+          <div class="shrink-0 w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Lodge via myGov / myTax</p>
+            <p class="text-xs text-gray-500 mt-0.5">Sign in to <strong>my.gov.au</strong>, link your ATO account, and complete your tax return using the values above. Pre-fill data from your employer will already be loaded.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition">
+          <div class="shrink-0 w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">2</div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Add your deductions</p>
+            <p class="text-xs text-gray-500 mt-0.5">Enter the deduction amounts you identified in Step 2. Keep your receipts for 5 years in case of an ATO audit.</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition">
+          <div class="shrink-0 w-9 h-9 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">3</div>
+          <div>
+            <p class="text-sm font-semibold text-gray-800">Submit and track</p>
+            <p class="text-xs text-gray-500 mt-0.5">After submitting, the ATO typically processes refunds within <strong>2 weeks</strong>. You'll receive an assessment notice by email or post.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 flex flex-col sm:flex-row gap-3">
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+          class="flex-1 text-center bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl text-sm transition">
+          Go to myGov →
+        </a>
+        <button onclick="window.print()"
+          class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition">
+          Print summary
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script src="../taxCalc.js"></script>
+  <script>
+    'use strict';
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    const fmt = (n) => '$' + Math.abs(n).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+
+    function radio(name) {
+      return document.querySelector(`input[name="${name}"]:checked`)?.value ?? null;
+    }
+
+    function esc(v) {
+      if (v == null) return '';
+      return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Auth guard & pre-fill ──────────────────────────────────────────────────
+    (async () => {
+      const result = await requirePaid();
+      if (!result) return;
+
+      const { session } = result;
+      document.getElementById('user-email').textContent = session.user.email;
+
+      const { data: payslips } = await window.sb
+        .from('payslips')
+        .select('extracted_data')
+        .eq('user_id', session.user.id)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (payslips && payslips.length > 0) {
+        let totalGross = 0, totalTax = 0;
+        for (const p of payslips) {
+          const d = p.extracted_data ?? {};
+          totalGross += parseFloat(d.gross_income) || 0;
+          totalTax   += parseFloat(d.tax_withheld)  || 0;
+        }
+        if (totalGross > 0 || totalTax > 0) {
+          document.getElementById('gross-income').value  = totalGross.toFixed(2);
+          document.getElementById('payg-withheld').value = totalTax.toFixed(2);
+          const note = document.getElementById('prefill-note');
+          note.textContent = `Pre-filled from ${payslips.length} saved payslip${payslips.length > 1 ? 's' : ''} — gross ${fmt(totalGross)}, PAYG ${fmt(totalTax)}. Edit any field if needed.`;
+          note.classList.remove('hidden');
+        }
+      }
+    })();
+
+    // ── Residency note ─────────────────────────────────────────────────────────
+    document.querySelectorAll('input[name="residency"]').forEach(r => {
+      r.addEventListener('change', () => {
+        const notes = {
+          australian: 'Residents get the $18,200 tax-free threshold, LITO, and Medicare levy.',
+          foreign:    'Foreign residents pay tax from $1 (no tax-free threshold) and are not subject to Medicare levy.',
+          whm:        'Working Holiday Makers pay 15% on the first $45,000, then standard rates — no LITO, no Medicare levy.',
+        };
+        document.getElementById('residency-note').textContent = notes[r.value] ?? '';
+        document.getElementById('medicare-row').style.display = r.value === 'australian' ? '' : 'none';
+      });
+    });
+
+    // ── Calculate ──────────────────────────────────────────────────────────────
+    document.getElementById('calculate-btn').addEventListener('click', () => {
+      const grossIncome     = val('gross-income');
+      const paygWithheld    = val('payg-withheld');
+      const type            = radio('residency') ?? 'australian';
+      const hasHECS         = radio('hecs') === 'yes';
+      const medicareExempt  = radio('medicare-exempt') === 'yes';
+      const totalDeductions = val('work-related') + val('donations') + val('self-education') + val('other-deductions');
+
+      const r = calculateFullTax({ grossIncome, totalDeductions, type, hasHECS, medicareExempt, paygWithheld });
+
+      document.getElementById('r-gross').textContent      = fmt(r.grossIncome);
+      document.getElementById('r-deductions').textContent = r.totalDeductions > 0 ? '−' + fmt(r.totalDeductions) : '$0.00';
+      document.getElementById('r-taxable').textContent    = fmt(r.taxableIncome);
+      document.getElementById('r-income-tax').textContent = fmt(r.incomeTax);
+
+      const litoRow = document.getElementById('r-lito-row');
+      if (r.lito > 0) {
+        document.getElementById('r-lito').textContent = '−' + fmt(r.lito);
+        litoRow.classList.remove('hidden');
+      } else {
+        litoRow.classList.add('hidden');
+      }
+
+      const medRow = document.getElementById('r-medicare-row');
+      if (type === 'australian' && !medicareExempt) {
+        document.getElementById('r-medicare').textContent = fmt(r.medicareLevy);
+        medRow.classList.remove('hidden');
+      } else {
+        medRow.classList.add('hidden');
+      }
+
+      const hecsRow = document.getElementById('r-hecs-row');
+      if (hasHECS && r.hecsRepayment > 0) {
+        document.getElementById('r-hecs').textContent = fmt(r.hecsRepayment);
+        hecsRow.classList.remove('hidden');
+      } else {
+        hecsRow.classList.add('hidden');
+      }
+
+      document.getElementById('r-liability').textContent = fmt(r.totalLiability);
+      document.getElementById('r-payg').textContent      = fmt(r.paygWithheld);
+
+      const isRefund = r.refundOrOwed >= 0;
+      const banner   = document.getElementById('outcome-banner');
+      banner.className = `rounded-xl p-5 mb-6 text-center ${isRefund ? 'bg-brand-50 border border-brand-100' : 'bg-red-50 border border-red-100'}`;
+      document.getElementById('outcome-label').textContent  = isRefund ? 'Estimated refund' : 'Estimated tax owing';
+      document.getElementById('outcome-label').className    = `text-sm font-medium mb-1 ${isRefund ? 'text-brand-700' : 'text-red-700'}`;
+      document.getElementById('outcome-amount').textContent = fmt(r.refundOrOwed);
+      document.getElementById('outcome-amount').className   = `text-4xl font-black tabular-nums ${isRefund ? 'text-brand-600' : 'text-red-600'}`;
+      document.getElementById('outcome-sub').textContent    = isRefund
+        ? 'The ATO will deposit this into your nominated bank account.'
+        : 'You will need to pay this by the due date on your assessment notice.';
+      document.getElementById('outcome-sub').className      = `text-xs mt-1 opacity-75 ${isRefund ? 'text-brand-700' : 'text-red-700'}`;
+
+      document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `
+        <div class="flex justify-between px-4 py-2.5 text-xs">
+          <span class="text-gray-500">${fmt(b.from)} – ${b.to === Infinity ? 'above' : fmt(b.to)} @ ${(b.rate * 100).toFixed(0)}c/dollar</span>
+          <span class="font-medium text-gray-800 tabular-nums">${fmt(b.amount)}</span>
+        </div>`).join('');
+
+      document.getElementById('results-panel').classList.remove('hidden');
+      document.getElementById('next-steps-panel').classList.remove('hidden');
+      document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ── AI Deduction Finder ────────────────────────────────────────────────────
+    document.getElementById('find-deductions-btn').addEventListener('click', async () => {
+      const btn   = document.getElementById('find-deductions-btn');
+      const input = document.getElementById('job-title');
+      const err   = document.getElementById('deduction-error');
+      const tips  = document.getElementById('deduction-tips');
+      const job   = input.value.trim();
+
+      if (!job) { err.textContent = 'Please enter a job title.'; err.classList.remove('hidden'); return; }
+      err.classList.add('hidden');
+      tips.classList.add('hidden');
+      btn.disabled    = true;
+      btn.textContent = 'Finding…';
+
+      try {
+        const session = await getSession();
+        const headers = { 'Content-Type': 'application/json' };
+        if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
+
+        const res  = await fetch(`${window.SUPABASE_URL}/functions/v1/suggest-deductions`, {
+          method: 'POST', headers, body: JSON.stringify({ job }),
+        });
+        const body = await res.json();
+        if (!res.ok || body.error) throw new Error(body.error ?? 'Request failed');
+
+        const deductions = body.deductions ?? [];
+        if (deductions.length === 0) throw new Error('No deductions found for this role.');
+
+        tips.innerHTML = deductions.map(d => `
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="text-sm font-semibold text-gray-800">${esc(d.category)}</p>
+                <p class="text-xs text-gray-500 mt-0.5">${esc(d.description)}</p>
+              </div>
+              <span class="shrink-0 text-xs bg-brand-50 text-brand-700 font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">${esc(d.typical_range_aud)}</span>
+            </div>
+          </div>`).join('');
+        tips.classList.remove('hidden');
+      } catch (e) {
+        err.textContent = e.message;
+        err.classList.remove('hidden');
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Find deductions';
+      }
+    });
+
+    // ── Details arrow rotation ─────────────────────────────────────────────────
+    document.querySelectorAll('details').forEach(d => {
+      d.addEventListener('toggle', () => {
+        d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open);
+      });
+    });
+  </script>
+</body>
+</html>
