@@ -952,9 +952,15 @@
       var errEl = document.getElementById('landing-pay-error');
       var t     = LP_TRANS[currentLang] || LP_TRANS.en;
 
-      // Guard: detect unconfigured deployment
-      if (!window.SUPABASE_URL || window.SUPABASE_URL.indexOf('YOUR_PROJECT_REF') !== -1) {
-        errEl.textContent = 'Payment service is not yet configured. Please contact support.';
+      // Guard: detect unconfigured or placeholder Supabase URL
+      var url = window.SUPABASE_URL || '';
+      var isPlaceholder = !url ||
+        url.indexOf('YOUR_PROJECT') !== -1 ||
+        url.indexOf('localhost') !== -1 ||
+        !url.startsWith('https://');
+      if (isPlaceholder) {
+        console.error('[GET MY TAX] SUPABASE_URL is not configured:', url);
+        errEl.textContent = 'Payment service is not configured. Please contact support.';
         return;
       }
 
@@ -966,20 +972,26 @@
       var timer = setTimeout(function () { controller.abort(); }, 15000);
 
       try {
-        var res = await fetch(window.SUPABASE_URL + '/functions/v1/create-guest-checkout', {
+        var res = await fetch(url + '/functions/v1/create-guest-checkout', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           signal:  controller.signal,
         });
         clearTimeout(timer);
-        var data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Checkout failed. Please try again.');
-        window.location.href = data.url;
+        var body;
+        try { body = await res.json(); } catch (_) { body = {}; }
+        if (!res.ok) {
+          console.error('[GET MY TAX] Checkout API error', res.status, body);
+          throw new Error(body.error || ('Server error ' + res.status + '. Please try again.'));
+        }
+        if (!body.url) throw new Error('No checkout URL returned. Please try again.');
+        window.location.href = body.url;
       } catch (err) {
         clearTimeout(timer);
         var msg = err.name === 'AbortError'
           ? 'Request timed out. Please try again.'
           : (err.message || 'Checkout failed. Please try again.');
+        console.error('[GET MY TAX] Pay button error:', err);
         errEl.textContent = msg;
         btn.disabled    = false;
         btn.textContent = t.button;
