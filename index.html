@@ -952,18 +952,6 @@
       var errEl = document.getElementById('landing-pay-error');
       var t     = LP_TRANS[currentLang] || LP_TRANS.en;
 
-      // Guard: detect unconfigured or placeholder Supabase URL
-      var url = window.SUPABASE_URL || '';
-      var isPlaceholder = !url ||
-        url.indexOf('YOUR_PROJECT') !== -1 ||
-        url.indexOf('localhost') !== -1 ||
-        !url.startsWith('https://');
-      if (isPlaceholder) {
-        console.error('[GET MY TAX] SUPABASE_URL is not configured:', url);
-        errEl.textContent = 'Payment service is not configured. Please contact support.';
-        return;
-      }
-
       btn.disabled    = true;
       btn.textContent = 'Redirecting to checkout…';
       errEl.textContent = '';
@@ -972,7 +960,7 @@
       var timer = setTimeout(function () { controller.abort(); }, 15000);
 
       try {
-        var res = await fetch(url + '/functions/v1/create-guest-checkout', {
+        var res = await fetch('/api/checkout', {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           signal:  controller.signal,
