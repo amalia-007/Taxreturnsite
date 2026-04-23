@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — GET MY TAX</title>
+  <meta name="robots" content="noindex" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        brand: { 50:'#f0faf6', 100:'#dcf4ea', 500:'#00A86B', 600:'#009960', 700:'#007a4e', 800:'#005c3a' }
+      }}}
+    }
+  </script>
+  <style>
+    #drop-zone.dragging {
+      border-color: #00A86B;
+      background-color: #f0faf6;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <!-- Top nav -->
+  <nav class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
+      <div class="flex items-center gap-4">
+        <span id="user-email" class="text-sm text-gray-500 hidden sm:block"></span>
+        <a href="settings.html" class="text-sm text-gray-500 hover:text-gray-700 transition">Settings</a>
+        <button onclick="signOut()" class="text-sm text-gray-600 hover:text-gray-900 font-medium transition">
+          Sign out
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Persistent disclaimer banner -->
+  <div class="bg-amber-50 border-b border-amber-200 px-4 py-2.5">
+    <p class="max-w-5xl mx-auto text-xs text-amber-800 text-center">
+      <strong>Estimates only.</strong> GET MY TAX is not a registered tax agent. You must lodge your return via
+      <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-amber-900">myGov/myTax</a>
+      or a registered tax agent. Results are not tax advice.
+    </p>
+  </div>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-6">
+
+    <!-- Payment success banner -->
+    <div id="payment-success" class="hidden p-5 bg-brand-50 border border-brand-200 rounded-2xl flex items-start gap-4">
+      <div class="shrink-0 flex items-center justify-center w-10 h-10 bg-brand-500 rounded-full">
+        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-semibold text-brand-900">Payment confirmed — welcome!</p>
+        <p class="text-sm text-brand-700 mt-0.5">You now have lifetime access to the GET MY TAX estimator.</p>
+      </div>
+      <button onclick="this.closest('#payment-success').classList.add('hidden')" class="text-brand-400 hover:text-brand-600 text-xl leading-none">&times;</button>
+    </div>
+
+    <!-- ── Step 1: Upload Payslips ─────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">Step 1 — Upload your payslips</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Upload up to 20 payslips for <strong>2024–25</strong> (1 Jul 2024 – 30 Jun 2025). We'll extract data automatically using AI.</p>
+        </div>
+        <span class="shrink-0 ml-4 text-xs bg-brand-100 text-brand-700 font-semibold px-3 py-1 rounded-full">AI-powered</span>
+      </div>
+
+      <!-- Drop zone -->
+      <div
+        id="drop-zone"
+        class="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center cursor-pointer hover:border-brand-300 hover:bg-brand-50 transition-colors select-none"
+      >
+        <input type="file" id="file-input" multiple accept=".pdf,.jpg,.jpeg,.png" class="hidden" />
+        <svg class="mx-auto mb-3 h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+        </svg>
+        <p class="text-sm font-medium text-gray-700">Drop files here, or <span class="text-brand-600 underline">browse</span></p>
+        <p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG · Up to 20 files · Max 5 MB each (32 MB for PDF)</p>
+      </div>
+
+      <!-- Drop zone error -->
+      <p id="drop-error" class="hidden mt-2 text-xs text-red-500 font-medium"></p>
+
+      <!-- Processing queue -->
+      <ul id="file-queue" class="hidden mt-4 divide-y divide-gray-100 border border-gray-100 rounded-xl overflow-hidden"></ul>
+
+      <!-- ── Results table (shown after first successful extraction) ───────── -->
+      <div id="results-section" class="hidden mt-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-gray-800">Extracted data</h3>
+          <p class="text-xs text-gray-400">Edit any cell if the AI got it wrong</p>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-100">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <tr>
+                <th class="px-3 py-2.5 text-left font-medium">File</th>
+                <th class="px-3 py-2.5 text-left font-medium">Employer</th>
+                <th class="px-3 py-2.5 text-left font-medium">Pay period</th>
+                <th class="px-3 py-2.5 text-right font-medium">Gross ($)</th>
+                <th class="px-3 py-2.5 text-right font-medium">Tax withheld ($)</th>
+                <th class="px-3 py-2.5 text-right font-medium">Super ($)</th>
+                <th class="px-3 py-2.5 text-right font-medium">Net pay ($)</th>
+                <th class="px-2 py-2.5"></th>
+              </tr>
+            </thead>
+            <tbody id="payslip-tbody" class="divide-y divide-gray-50"></tbody>
+            <tfoot>
+              <tr class="bg-gray-50 font-semibold text-gray-700 text-sm">
+                <td class="px-3 py-2.5 text-gray-500" colspan="3">Totals</td>
+                <td id="total-gross" class="px-3 py-2.5 text-right tabular-nums">—</td>
+                <td id="total-tax"   class="px-3 py-2.5 text-right tabular-nums">—</td>
+                <td id="total-super" class="px-3 py-2.5 text-right tabular-nums">—</td>
+                <td id="total-net"   class="px-3 py-2.5 text-right tabular-nums">—</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Save status -->
+        <p id="save-status" class="mt-2 text-sm hidden"></p>
+
+        <!-- Action buttons -->
+        <div class="mt-4 flex flex-wrap items-center justify-end gap-3">
+          <button
+            id="save-btn"
+            class="bg-white border border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-2 px-4 rounded-lg transition text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Save payslips
+          </button>
+          <button
+            id="continue-btn"
+            class="bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2 px-5 rounded-lg transition text-sm"
+          >
+            Continue to calculator →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Previously saved payslips ──────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">Previously saved payslips</h2>
+      <div id="saved-list">
+        <div class="text-center py-8 text-gray-400">
+          <svg class="mx-auto mb-2 h-8 w-8 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <p class="text-sm">No saved payslips yet.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script src="../assets/js/auth.js"></script>
+  <script>
+    'use strict';
+
+    // ── State ──────────────────────────────────────────────────────────────────
+    let currentSession = null;
+    let rowCounter     = 0;
+    const rows         = new Map(); // rowId → { storagePath, filename }
+
+    // ── Auth guard ─────────────────────────────────────────────────────────────
+    (async () => {
+      const result = await requirePaid();
+      if (!result) return;
+      currentSession = result.session;
+      document.getElementById('user-email').textContent = currentSession.user.email;
+
+      if (new URLSearchParams(window.location.search).get('payment') === 'success') {
+        document.getElementById('payment-success').classList.remove('hidden');
+        history.replaceState({}, '', window.location.pathname);
+      }
+
+      loadSavedPayslips(currentSession.user.id);
+    })();
+
+    // ── Drop zone setup ────────────────────────────────────────────────────────
+    const dropZone  = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragging');
+    });
+    dropZone.addEventListener('dragleave', (e) => {
+      if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('dragging');
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragging');
+      handleFiles(Array.from(e.dataTransfer.files));
+    });
+    fileInput.addEventListener('change', () => {
+      handleFiles(Array.from(fileInput.files));
+      fileInput.value = ''; // allow re-selecting same file
+    });
+
+    // ── File handling ──────────────────────────────────────────────────────────
+    const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
+    const MAX_FILES = 20;
+
+    function handleFiles(files) {
+      if (!currentSession) return;
+      const valid = files.filter(f => ALLOWED_TYPES.includes(f.type));
+      const used  = document.querySelectorAll('#file-queue li').length;
+      const slots = MAX_FILES - used;
+
+      if (valid.length === 0) {
+        showDropError('Only PDF, JPG, and PNG files are accepted.');
+        return;
+      }
+      if (slots <= 0) {
+        showDropError(`You've reached the ${MAX_FILES}-file limit.`);
+        return;
+      }
+
+      const toProcess = valid.slice(0, slots);
+      if (toProcess.length < valid.length) {
+        showDropError(`Only ${slots} file(s) added — ${MAX_FILES}-file limit reached.`);
+      }
+
+      document.getElementById('file-queue').classList.remove('hidden');
+      // Process sequentially to avoid overwhelming the API
+      toProcess.reduce((chain, file) => chain.then(() => processFile(file)), Promise.resolve());
+    }
+
+    async function processFile(file) {
+      const li = addQueueItem(file.name);
+
+      try {
+        // 1. Upload to Supabase Storage
+        const userId   = currentSession.user.id;
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const path     = `${userId}/${Date.now()}-${safeName}`;
+
+        setQueueStatus(li, 'spinning', 'Uploading…');
+
+        const { error: uploadErr } = await window.sb.storage
+          .from('payslips')
+          .upload(path, file);
+
+        if (uploadErr) throw new Error(`Upload failed: ${uploadErr.message}`);
+
+        // 2. Call Edge Function for OCR
+        setQueueStatus(li, 'spinning', 'Extracting with AI…');
+
+        const res  = await fetch(
+          `${window.SUPABASE_URL}/functions/v1/process-payslip`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${currentSession.access_token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ path }),
+          }
+        );
+        const body = await res.json();
+
+        if (!res.ok) {
+          // Fallback: show error but still add a manual-entry row
+          const msg = body.error ?? 'AI extraction failed';
+          setQueueStatus(li, 'error', msg);
+          if (body.fallback) {
+            addTableRow(file.name, path, null); // blank row for manual entry
+          }
+          return; // don't throw — let other files continue
+        }
+
+        setQueueStatus(li, 'done', 'Done');
+        addTableRow(file.name, path, body.data);
+
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Unknown error';
+        setQueueStatus(li, 'error', msg);
+        // Let user fill in manually — add blank row
+        addTableRow(file.name, null, null);
+      }
+    }
+
+    // ── Queue item helpers ─────────────────────────────────────────────────────
+    function addQueueItem(filename) {
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-3 px-4 py-2.5 bg-white text-sm';
+      li.dataset.filename = filename;
+      document.getElementById('file-queue').appendChild(li);
+      return li;
+    }
+
+    function setQueueStatus(li, type, message) {
+      const spinnerSVG = `<div class="h-4 w-4 shrink-0 rounded-full border-2 border-gray-200 border-t-brand-500 animate-spin"></div>`;
+      const doneSVG    = `<svg class="h-4 w-4 shrink-0 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
+      const errorSVG   = `<svg class="h-4 w-4 shrink-0 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`;
+      const icon = type === 'done' ? doneSVG : type === 'error' ? errorSVG : spinnerSVG;
+      const msgClass = type === 'error' ? 'text-red-400' : 'text-gray-400';
+      li.innerHTML = `
+        ${icon}
+        <span class="flex-1 truncate text-gray-700" title="${esc(li.dataset.filename)}">${esc(li.dataset.filename)}</span>
+        <span class="text-xs ${msgClass}">${esc(message)}</span>
+      `;
+    }
+
+    // ── Table rows ─────────────────────────────────────────────────────────────
+    function addTableRow(filename, storagePath, data) {
+      const id = ++rowCounter;
+      const d  = data ?? {};
+
+      document.getElementById('results-section').classList.remove('hidden');
+
+      const numInput = (field, val) =>
+        `<input data-field="${field}" type="number" step="0.01" min="0" value="${val ?? ''}"
+          class="w-24 px-2 py-1 text-right text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-brand-400 tabular-nums" />`;
+
+      const tr = document.createElement('tr');
+      tr.id = `row-${id}`;
+      tr.className = 'bg-white hover:bg-gray-50 transition-colors';
+      tr.innerHTML = `
+        <td class="px-3 py-2 text-xs text-gray-400 max-w-[100px]">
+          <span class="block truncate" title="${esc(filename)}">${esc(filename)}</span>
+        </td>
+        <td class="px-2 py-2">
+          <input data-field="employer_name" type="text" value="${esc(d.employer_name)}"
+            placeholder="Employer"
+            class="w-full min-w-[130px] px-2 py-1 text-sm border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-brand-400" />
+        </td>
+        <td class="px-2 py-2 whitespace-nowrap">
+          <input data-field="pay_period_start" type="date" value="${d.pay_period_start ?? ''}"
+            class="px-1 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-brand-400" />
+          <span class="text-gray-300 mx-0.5">–</span>
+          <input data-field="pay_period_end" type="date" value="${d.pay_period_end ?? ''}"
+            class="px-1 py-1 text-xs border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-brand-400" />
+        </td>
+        <td class="px-2 py-2 text-right">${numInput('gross_income', d.gross_income)}</td>
+        <td class="px-2 py-2 text-right">${numInput('tax_withheld', d.tax_withheld)}</td>
+        <td class="px-2 py-2 text-right">${numInput('super', d.super)}</td>
+        <td class="px-2 py-2 text-right">${numInput('net_pay', d.net_pay)}</td>
+        <td class="px-2 py-2 text-center">
+          <button onclick="removeRow(${id})"
+            class="text-gray-300 hover:text-red-400 transition text-xl leading-none font-bold"
+            title="Remove row">&times;</button>
+        </td>
+      `;
+
+      tr.querySelectorAll('input[type="number"]').forEach(inp =>
+        inp.addEventListener('input', updateTotals)
+      );
+
+      document.getElementById('payslip-tbody').appendChild(tr);
+      rows.set(id, { storagePath, filename });
+      updateTotals();
+    }
+
+    function removeRow(id) {
+      document.getElementById(`row-${id}`)?.remove();
+      rows.delete(id);
+      updateTotals();
+      if (rows.size === 0) document.getElementById('results-section').classList.add('hidden');
+    }
+
+    // ── Totals ─────────────────────────────────────────────────────────────────
+    function updateTotals() {
+      const sum = (field) => {
+        let t = 0;
+        document.querySelectorAll(`[data-field="${field}"]`).forEach(el => {
+          t += parseFloat(el.value) || 0;
+        });
+        return t;
+      };
+      const fmt = (n) => n === 0
+        ? '—'
+        : '$' + n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('total-gross').textContent = fmt(sum('gross_income'));
+      document.getElementById('total-tax').textContent   = fmt(sum('tax_withheld'));
+      document.getElementById('total-super').textContent = fmt(sum('super'));
+      document.getElementById('total-net').textContent   = fmt(sum('net_pay'));
+    }
+
+    // ── Save payslips ──────────────────────────────────────────────────────────
+    async function savePayslips() {
+      const btn    = document.getElementById('save-btn');
+      const status = document.getElementById('save-status');
+
+      btn.disabled    = true;
+      btn.textContent = 'Saving…';
+      status.className = 'mt-2 text-sm text-gray-400';
+      status.textContent = '';
+      status.classList.remove('hidden');
+
+      try {
+        const userId  = currentSession.user.id;
+        const records = [];
+
+        for (const [id, meta] of rows) {
+          const tr = document.getElementById(`row-${id}`);
+          if (!tr) continue;
+
+          const get = (field) => {
+            const el = tr.querySelector(`[data-field="${field}"]`);
+            if (!el) return null;
+            if (el.type === 'number') return parseFloat(el.value) || null;
+            return el.value.trim() || null;
+          };
+
+          records.push({
+            user_id:        userId,
+            file_url:       meta.storagePath,
+            extracted_data: {
+              filename:         meta.filename,
+              employer_name:    get('employer_name'),
+              pay_period_start: get('pay_period_start'),
+              pay_period_end:   get('pay_period_end'),
+              gross_income:     get('gross_income'),
+              tax_withheld:     get('tax_withheld'),
+              super:            get('super'),
+              net_pay:          get('net_pay'),
+            },
+          });
+        }
+
+        if (records.length === 0) throw new Error('No payslips to save.');
+
+        const { error } = await window.sb.from('payslips').insert(records);
+        if (error) throw error;
+
+        status.className   = 'mt-2 text-sm text-brand-600 font-medium';
+        status.textContent = `${records.length} payslip(s) saved successfully.`;
+        loadSavedPayslips(userId);
+        return true;
+
+      } catch (err) {
+        status.className   = 'mt-2 text-sm text-red-500';
+        status.textContent = `Save failed: ${err.message}`;
+        return false;
+      } finally {
+        btn.disabled    = false;
+        btn.textContent = 'Save payslips';
+      }
+    }
+
+    document.getElementById('save-btn').addEventListener('click', savePayslips);
+
+    document.getElementById('continue-btn').addEventListener('click', async () => {
+      if (rows.size > 0) await savePayslips();
+      window.location.href = 'calculator.html';
+    });
+
+    // ── Load saved payslips ────────────────────────────────────────────────────
+    async function loadSavedPayslips(userId) {
+      const { data } = await window.sb
+        .from('payslips')
+        .select('id, file_url, extracted_data, created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      const list = document.getElementById('saved-list');
+      if (!data || data.length === 0) return;
+
+      list.innerHTML = data.map(p => {
+        const d     = p.extracted_data ?? {};
+        const date  = new Date(p.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+        const gross = d.gross_income != null
+          ? '$' + Number(d.gross_income).toLocaleString('en-AU', { minimumFractionDigits: 2 })
+          : '—';
+        const employer = esc(d.employer_name ?? d.filename ?? 'Payslip');
+        const period = d.pay_period_start && d.pay_period_end
+          ? `${d.pay_period_start} – ${d.pay_period_end}`
+          : d.pay_period_start ?? '';
+        return `
+          <div class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+            <div>
+              <p class="text-sm font-medium text-gray-900">${employer}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${date}${period ? ' · ' + period : ''} · Gross ${gross}</p>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    // ── Utilities ──────────────────────────────────────────────────────────────
+    function esc(val) {
+      if (val == null) return '';
+      return String(val)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function showDropError(msg) {
+      const el = document.getElementById('drop-error');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.add('hidden'), 6000);
+    }
+  </script>
+
+  <footer class="mt-12 border-t border-gray-200 py-6">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div class="flex gap-4">
+        <a href="../legal/privacy.html" class="hover:text-gray-600">Privacy</a>
+        <a href="../legal/terms.html" class="hover:text-gray-600">Terms</a>
+        <a href="../legal/refund.html" class="hover:text-gray-600">Refunds</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

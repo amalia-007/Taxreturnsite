@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — GET MY TAX</title>
+  <meta name="description" content="GET MY TAX Privacy Policy — how we collect, use, and protect your personal information under the Australian Privacy Act 1988." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: {
+      brand: { 50:'#f0faf6',100:'#dcf4ea',500:'#00A86B',600:'#009960',700:'#007a4e',800:'#005c3a' }
+    }}}}
+  </script>
+</head>
+<body class="min-h-screen bg-gray-50">
+
+  <nav class="bg-white border-b border-gray-200 px-4 py-3">
+    <div class="max-w-3xl mx-auto flex items-center justify-between">
+      <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
+      <a href="../index.html" class="text-sm text-gray-500 hover:text-gray-700">← Home</a>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Privacy Policy</h1>
+      <p class="text-sm text-gray-400 mb-8">Last updated: 1 July 2025 · Effective: 1 July 2025</p>
+
+      <div class="prose prose-sm max-w-none text-gray-700 space-y-6">
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">1. About this policy</h2>
+          <p>GET MY TAX ("we", "us", "our") is committed to protecting your personal information in accordance with the <em>Privacy Act 1988</em> (Cth) and the Australian Privacy Principles (APPs). This policy explains how we collect, hold, use, and disclose personal information collected through our website and services.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">2. What information we collect</h2>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Account information:</strong> your email address and hashed password when you create an account.</li>
+            <li><strong>Payment information:</strong> payment is processed by Stripe, Inc. We do not store your card details. We receive confirmation of payment and a Stripe customer ID.</li>
+            <li><strong>Payslip files:</strong> PDF or image files you upload for OCR extraction. These are stored encrypted in Supabase cloud storage (AWS region ap-southeast-2).</li>
+            <li><strong>Extracted payslip data:</strong> employer name, pay periods, gross income, tax withheld, superannuation, and net pay extracted from your payslips by our AI service.</li>
+            <li><strong>Tax calculation inputs:</strong> income figures, deductions, residency status, and HECS/HELP status that you enter into the calculator.</li>
+            <li><strong>Usage data:</strong> anonymous page-view statistics collected via Plausible Analytics (no cookies, no personal identifiers).</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">3. How we use your information</h2>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>To provide you with a tax refund estimate for the 2024–25 financial year.</li>
+            <li>To process your one-time payment via Stripe.</li>
+            <li>To send transactional emails (account confirmation, payment receipt) via Resend.</li>
+            <li>To extract financial data from payslips you upload using Anthropic's Claude AI API.</li>
+            <li>To improve our service and diagnose technical issues.</li>
+          </ul>
+          <p class="mt-2">We do not sell, rent, or share your personal information with third parties for marketing purposes.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">4. Third-party services</h2>
+          <p>We use the following third-party sub-processors. Each has its own privacy policy:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li><strong>Supabase (supabase.com)</strong> — database and file storage. Data hosted in AWS ap-southeast-2 (Sydney).</li>
+            <li><strong>Anthropic (anthropic.com)</strong> — Claude AI for payslip OCR and deduction suggestions. Your payslip data is sent to Anthropic's API for processing.</li>
+            <li><strong>Stripe (stripe.com)</strong> — payment processing. Stripe is PCI DSS Level 1 certified.</li>
+            <li><strong>Resend (resend.com)</strong> — transactional email delivery.</li>
+            <li><strong>Plausible Analytics (plausible.io)</strong> — privacy-friendly analytics. No cookies, no personal data, GDPR-compliant.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">5. Data retention</h2>
+          <p>We retain your account data and uploaded payslips for as long as your account is active. You may delete your payslips or your entire account at any time via <strong>Account Settings</strong>. Upon account deletion, all personal data and uploaded files are permanently removed within 30 days.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">6. Security</h2>
+          <p>We use industry-standard security measures including TLS encryption in transit, AES-256 encryption at rest for stored files, and row-level security on our database. Access to your data is restricted to authenticated requests using your own account credentials.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">7. Your rights</h2>
+          <p>Under the Australian Privacy Act, you have the right to:</p>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Access the personal information we hold about you.</li>
+            <li>Request correction of inaccurate information.</li>
+            <li>Request deletion of your data (via Account Settings or by contacting us).</li>
+            <li>Complain to the Office of the Australian Information Commissioner (OAIC) if you believe we have breached the APPs.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">8. Cookies</h2>
+          <p>We use only essential session cookies required for authentication (provided by Supabase Auth). We do not use advertising or tracking cookies. Our analytics provider (Plausible) does not use cookies.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">9. Children</h2>
+          <p>Our service is intended for adults aged 18 and over. We do not knowingly collect personal information from minors.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">10. Changes to this policy</h2>
+          <p>We may update this policy from time to time. Material changes will be notified by email or by a prominent notice on our website. Continued use of the service after changes constitutes acceptance of the updated policy.</p>
+        </section>
+
+        <section>
+          <h2 class="text-base font-semibold text-gray-900 mb-2">11. Contact us</h2>
+          <p>For privacy enquiries or to exercise your rights, contact us at <strong>privacy@getmytax.com.au</strong>. We will respond within 30 days.</p>
+          <p class="mt-1">If you are not satisfied with our response, you may contact the Office of the Australian Information Commissioner at <strong>www.oaic.gov.au</strong>.</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-8 border-t border-gray-200 py-6">
+    <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
+      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <div class="flex gap-4">
+        <a href="privacy.html" class="hover:text-gray-600 font-medium text-gray-600">Privacy</a>
+        <a href="terms.html" class="hover:text-gray-600">Terms</a>
+        <a href="refund.html" class="hover:text-gray-600">Refunds</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

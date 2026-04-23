@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Log in — GET MY TAX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: {
+        brand: { 50:'#f0faf6', 100:'#dcf4ea', 500:'#00A86B', 600:'#009960', 700:'#007a4e', 800:'#005c3a' }
+      }}}
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand-800 to-brand-500 flex items-center justify-center p-4">
+
+  <div class="w-full max-w-md">
+
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <a href="../index.html" class="inline-block">
+        <span class="text-3xl font-black text-white tracking-tight">GET MY TAX</span>
+      </a>
+      <p class="text-brand-100 mt-1 text-sm">Australian tax refund estimator</p>
+    </div>
+
+    <!-- Login card -->
+    <div id="login-card" class="bg-white rounded-2xl shadow-2xl p-8">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Welcome back</h1>
+      <p class="text-gray-500 text-sm mb-6">Log in to access your tax estimator.</p>
+
+      <div id="error-banner" class="hidden mb-5 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+      <div id="info-banner"  class="hidden mb-5 p-4 bg-brand-50 border border-brand-100 rounded-lg text-brand-800 text-sm"></div>
+
+      <form id="login-form" novalidate>
+
+        <div class="mb-4">
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+          <input
+            type="email" id="email" name="email" required autocomplete="email"
+            placeholder="you@example.com"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+          />
+        </div>
+
+        <div class="mb-2">
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <div class="relative">
+            <input
+              type="password" id="password" name="password" required autocomplete="current-password"
+              placeholder="Your password"
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition pr-10"
+            />
+            <button type="button" id="toggle-pw" class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600" tabindex="-1" aria-label="Show password">
+              <svg id="eye-show" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg id="eye-hide" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-end mb-6">
+          <button type="button" id="forgot-btn" class="text-xs text-brand-600 hover:underline font-medium">
+            Forgot password?
+          </button>
+        </div>
+
+        <button
+          type="submit" id="submit-btn"
+          class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold py-3 rounded-lg transition text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          Log in
+        </button>
+
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-6">
+        No account yet?
+        <a href="signup.html" class="text-brand-600 font-semibold hover:underline">Create one free</a>
+      </p>
+    </div>
+
+    <!-- Forgot password card (hidden by default) -->
+    <div id="forgot-card" class="hidden bg-white rounded-2xl shadow-2xl p-8">
+      <button id="back-btn" class="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back to login
+      </button>
+      <h2 class="text-xl font-bold text-gray-900 mb-1">Reset your password</h2>
+      <p class="text-gray-500 text-sm mb-6">Enter your email and we'll send a reset link.</p>
+
+      <div id="reset-error"   class="hidden mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+      <div id="reset-success" class="hidden mb-4 p-4 bg-brand-50 border border-brand-100 rounded-lg text-brand-800 text-sm"></div>
+
+      <form id="forgot-form" novalidate>
+        <div class="mb-4">
+          <label for="reset-email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+          <input
+            type="email" id="reset-email" name="reset-email" required
+            placeholder="you@example.com"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition"
+          />
+        </div>
+        <button
+          type="submit" id="reset-btn"
+          class="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-3 rounded-lg transition text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          Send reset link
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-brand-100 mt-6 px-4">
+      We are not a registered tax agent. This tool provides estimates only.
+    </p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/supabase-client.js"></script>
+  <script>
+    'use strict';
+
+    function siteUrl(path) {
+      const base = window.location.pathname.replace(/\/(auth|app)(\/.*)?$/, '');
+      return window.location.origin + base + path;
+    }
+
+    // ── Redirect if already logged in ──────────────────────────────────────
+    (async () => {
+      const { data: { session } } = await window.sb.auth.getSession();
+      if (session) {
+        const { data: profile } = await window.sb.from('profiles')
+          .select('has_paid').eq('id', session.user.id).single();
+        window.location.replace(
+          profile?.has_paid ? siteUrl('/app/dashboard.html') : siteUrl('/app/payment.html')
+        );
+      }
+    })();
+
+    // ── Password toggle ────────────────────────────────────────────────────
+    const pwInput = document.getElementById('password');
+    const eyeShow = document.getElementById('eye-show');
+    const eyeHide = document.getElementById('eye-hide');
+    document.getElementById('toggle-pw').addEventListener('click', () => {
+      const isText = pwInput.type === 'text';
+      pwInput.type = isText ? 'password' : 'text';
+      eyeShow.classList.toggle('hidden', !isText);
+      eyeHide.classList.toggle('hidden', isText);
+    });
+
+    // ── Toggle cards ───────────────────────────────────────────────────────
+    const loginCard  = document.getElementById('login-card');
+    const forgotCard = document.getElementById('forgot-card');
+    document.getElementById('forgot-btn').addEventListener('click', () => {
+      loginCard.classList.add('hidden');
+      forgotCard.classList.remove('hidden');
+    });
+    document.getElementById('back-btn').addEventListener('click', () => {
+      forgotCard.classList.add('hidden');
+      loginCard.classList.remove('hidden');
+    });
+
+    // ── Helpers ────────────────────────────────────────────────────────────
+    const errorBanner = document.getElementById('error-banner');
+    const infoBanner  = document.getElementById('info-banner');
+    const submitBtn   = document.getElementById('submit-btn');
+
+    function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.remove('hidden'); }
+    function clearError()   { errorBanner.classList.add('hidden'); }
+    function setLoading(on) { submitBtn.disabled = on; submitBtn.textContent = on ? 'Logging in…' : 'Log in'; }
+
+    // ── Login form ─────────────────────────────────────────────────────────
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+      setLoading(true);
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await window.sb.auth.signInWithPassword({ email, password });
+      setLoading(false);
+
+      if (error) {
+        const map = {
+          'Invalid login credentials':      'Incorrect email or password. Please try again.',
+          'Email not confirmed':            'Please confirm your email first. Check your inbox.',
+          'Too many requests':              'Too many attempts. Please wait a moment and try again.',
+        };
+        showError(map[error.message] || error.message);
+        return;
+      }
+
+      // Check payment status and redirect
+      const { data: profile } = await window.sb.from('profiles')
+        .select('has_paid').eq('id', data.user.id).single();
+
+      window.location.replace(
+        profile?.has_paid ? siteUrl('/app/dashboard.html') : siteUrl('/app/payment.html')
+      );
+    });
+
+    // ── Forgot password form ───────────────────────────────────────────────
+    const resetBtn     = document.getElementById('reset-btn');
+    const resetError   = document.getElementById('reset-error');
+    const resetSuccess = document.getElementById('reset-success');
+
+    document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      resetError.classList.add('hidden');
+      resetSuccess.classList.add('hidden');
+      resetBtn.disabled    = true;
+      resetBtn.textContent = 'Sending…';
+
+      const email = document.getElementById('reset-email').value.trim();
+      const { error } = await window.sb.auth.resetPasswordForEmail(email, {
+        redirectTo: siteUrl('/auth/callback.html'),
+      });
+
+      resetBtn.disabled    = false;
+      resetBtn.textContent = 'Send reset link';
+
+      if (error) {
+        resetError.textContent = error.message;
+        resetError.classList.remove('hidden');
+      } else {
+        resetSuccess.textContent = 'Reset link sent! Check your inbox (and spam folder).';
+        resetSuccess.classList.remove('hidden');
+        document.getElementById('forgot-form').reset();
+      }
+    });
+  </script>
+
+  <footer class="mt-8 pb-6 text-center">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-xs text-white/50">
+      <span>© 2025 GET MY TAX · Not a registered tax agent</span>
+      <div class="flex gap-4">
+        <a href="../legal/privacy.html" class="hover:text-white/70">Privacy</a>
+        <a href="../legal/terms.html" class="hover:text-white/70">Terms</a>
+        <a href="../legal/refund.html" class="hover:text-white/70">Refunds</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
