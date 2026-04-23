@@ -29,7 +29,8 @@
   ====================================================== -->
   <div class="hero-banner" role="banner">
     <h1 class="hero-title">GET MY TAX</h1>
-    <p class="hero-subtitle" data-i18n="header.title">Australian Tax Return Calculator</p>
+    <p class="hero-subtitle">Your smart Australian tax return assistant</p>
+    <a href="auth/signup.html" class="hero-cta">Get started — $19 AUD</a>
   </div>
 
   <header class="site-header">
@@ -176,6 +177,14 @@
             <input type="text" id="tips-bonuses" name="tipsBonuses" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
 
+          <div class="field-row">
+            <label for="abn-income">
+              <span data-i18n="income.abn.label">ABN / Self-employed income</span>
+              <button type="button" class="tooltip-btn" data-tooltip="income.abn.tooltip" aria-label="Help for ABN income">?</button>
+            </label>
+            <input type="text" id="abn-income" name="abnIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
+          </div>
+
         </div>
       </details>
 
@@ -244,14 +253,6 @@
               <button type="button" class="tooltip-btn" data-tooltip="income.capitalGains.tooltip" aria-label="Help for capital gains">?</button>
             </label>
             <input type="text" id="capital-gains" name="capitalGains" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
-          </div>
-
-          <div class="field-row">
-            <label for="abn-income">
-              <span data-i18n="income.abn.label">ABN / Revenus en tant qu'indépendant</span>
-              <button type="button" class="tooltip-btn" data-tooltip="income.abn.tooltip" aria-label="Help for ABN income">?</button>
-            </label>
-            <input type="text" id="abn-income" name="abnIncome" min="0" step="0.01" placeholder="0.00" inputmode="decimal" />
           </div>
 
           <div class="field-row">
