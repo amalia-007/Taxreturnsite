@@ -11,12 +11,16 @@ module.exports = async function handler(req, res) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
     console.error('[checkout] STRIPE_SECRET_KEY is not set');
-    return res.status(500).json({ error: 'Payment service is not configured.' });
+    return res.status(500).json({ error: 'STRIPE_SECRET_KEY is not set in environment variables.' });
+  }
+  if (!secretKey.startsWith('sk_')) {
+    console.error('[checkout] STRIPE_SECRET_KEY format invalid:', secretKey.slice(0, 8));
+    return res.status(500).json({ error: 'STRIPE_SECRET_KEY format is invalid (must start with sk_).' });
   }
 
   const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : (process.env.NEXT_PUBLIC_SITE_URL || 'https://getmytax.vercel.app');
+    : 'https://getmytax.vercel.app';
 
   try {
     const stripe = new Stripe(secretKey, { apiVersion: '2023-10-16' });
@@ -41,7 +45,11 @@ module.exports = async function handler(req, res) {
 
     return res.status(200).json({ url: session.url });
   } catch (err) {
-    console.error('[checkout] Stripe error:', err.message);
-    return res.status(500).json({ error: 'Could not create checkout session. Please try again.' });
+    console.error('[checkout] Stripe error:', err.type, err.message);
+    // Return the real Stripe error so it's visible in the browser
+    return res.status(500).json({
+      error: err.message || 'Could not create checkout session. Please try again.',
+      type:  err.type  || 'unknown',
+    });
   }
 };
