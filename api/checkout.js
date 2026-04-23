@@ -39,6 +39,7 @@ module.exports = async function handler(req, res) {
         },
         quantity: 1,
       }],
+      allow_promotion_codes: true,
       success_url: `${siteUrl}?paid=true`,
       cancel_url:  siteUrl,
     });
