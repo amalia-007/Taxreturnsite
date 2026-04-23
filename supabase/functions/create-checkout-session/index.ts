@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
       line_items: [{
         price_data: {
           currency: 'aud',
-          unit_amount: 1900,
+          unit_amount: 4000,
           product_data: {
             name: 'Tax Estimator Access — 2024-25',
             description: 'One-time lifetime access to the GET MY TAX estimator.',
