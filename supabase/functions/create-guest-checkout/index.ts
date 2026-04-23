@@ -4,7 +4,8 @@ const stripe   = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!)
 const SITE_URL = Deno.env.get('SITE_URL') ?? 'http://localhost:8080'
 
 const CORS = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'content-type',
 }
 
@@ -16,7 +17,15 @@ function json(data: unknown, status = 200) {
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS })
+
+  if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405)
+
+  const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
+  if (!stripeKey) {
+    console.error('STRIPE_SECRET_KEY not set')
+    return json({ error: 'Payment service is not configured.' }, 500)
+  }
 
   try {
     const session = await stripe.checkout.sessions.create({
