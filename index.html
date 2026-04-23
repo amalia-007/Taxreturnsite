@@ -21,8 +21,53 @@
   <!-- Plausible Analytics (privacy-friendly, no cookies) -->
   <!-- Replace data-domain with your Plausible site ID after creating an account at plausible.io -->
   <script defer data-domain="amalia-007.github.io/Taxreturnsite" src="https://plausible.io/js/script.js"></script>
+
+  <!-- Payment gate: hide calculator until paid -->
+  <style>
+    #landing-page { display: block; }
+    #app-section  { display: none; }
+    .is-paid #landing-page { display: none; }
+    .is-paid #app-section  { display: block; }
+  </style>
+  <script>
+    (function () {
+      var sp = new URLSearchParams(location.search);
+      if (sp.get('paid') === 'true') {
+        localStorage.setItem('gmt_paid', '1');
+        history.replaceState(null, '', location.pathname);
+      }
+      if (localStorage.getItem('gmt_paid') === '1') {
+        document.documentElement.classList.add('is-paid');
+      }
+    })();
+  </script>
 </head>
 <body>
+
+  <!-- ======================================================
+       LANDING PAGE (shown before payment)
+  ====================================================== -->
+  <section id="landing-page">
+    <div class="landing-inner">
+      <p class="landing-logo">GET MY TAX</p>
+      <h1 class="landing-title">Your 2024–25 Australian<br>Tax Refund Estimate</h1>
+      <p class="landing-sub">Upload your payslips, enter your deductions, and get an instant estimate — in minutes.</p>
+      <ul class="landing-features">
+        <li>Instant refund or liability estimate</li>
+        <li>HECS/HELP, Medicare &amp; all deductions included</li>
+        <li>Payslip OCR — upload &amp; auto-fill your data</li>
+        <li>One-time payment · No subscription · No expiry</li>
+      </ul>
+      <button id="landing-pay-btn" class="landing-cta">Pay $40 AUD · Get Instant Access</button>
+      <p id="landing-pay-error" class="landing-error"></p>
+      <p class="landing-legal">Powered by Stripe · SSL encrypted · Not a registered tax agent · Estimates only</p>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       APP SECTION (shown after payment)
+  ====================================================== -->
+  <div id="app-section">
 
   <!-- ======================================================
        HEADER
@@ -30,7 +75,6 @@
   <div class="hero-banner" role="banner">
     <h1 class="hero-title">GET MY TAX</h1>
     <p class="hero-subtitle">Your smart Australian tax return assistant</p>
-    <a href="auth/signup.html" class="hero-cta">Get started — $19 AUD</a>
   </div>
 
   <header class="site-header">
@@ -820,5 +864,32 @@
       </div>
     </div>
   </footer>
+
+  </div><!-- /#app-section -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
+  <script>
+    document.getElementById('landing-pay-btn').addEventListener('click', async function () {
+      var btn    = document.getElementById('landing-pay-btn');
+      var errEl  = document.getElementById('landing-pay-error');
+      btn.disabled    = true;
+      btn.textContent = 'Redirecting to checkout…';
+      errEl.textContent = '';
+      try {
+        var res  = await fetch(window.SUPABASE_URL + '/functions/v1/create-guest-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        var data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Checkout failed. Please try again.');
+        window.location.href = data.url;
+      } catch (err) {
+        errEl.textContent = err.message;
+        btn.disabled    = false;
+        btn.textContent = 'Pay $40 AUD · Get Instant Access';
+      }
+    });
+  </script>
 </body>
 </html>
