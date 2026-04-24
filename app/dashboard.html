@@ -160,6 +160,111 @@
       </div>
     </div>
 
+    <!-- ── Working Holiday Visa question ─────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+      <div class="flex items-start gap-4">
+        <div class="shrink-0 flex items-center justify-center w-10 h-10 bg-blue-50 rounded-xl text-lg">🌏</div>
+        <div class="flex-1">
+          <h2 class="text-base font-semibold text-gray-900">Are you on a Working Holiday Visa?</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Visa subclass 417 (Working Holiday) or 462 (Work and Holiday)</p>
+          <div class="flex gap-3 mt-4">
+            <button id="whm-yes-btn"
+              class="px-5 py-2 rounded-lg text-sm font-semibold border-2 border-gray-200 text-gray-600 hover:border-brand-400 hover:text-brand-600 transition">
+              Yes — I'm on a WHV
+            </button>
+            <button id="whm-no-btn"
+              class="px-5 py-2 rounded-lg text-sm font-semibold border-2 border-gray-200 text-gray-600 hover:border-gray-400 hover:text-gray-800 transition">
+              No — I'm not
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Superannuation ─────────────────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <!-- Header -->
+      <div class="flex items-start gap-3 mb-5">
+        <div class="shrink-0 flex items-center justify-center w-10 h-10 bg-brand-50 rounded-xl">
+          <svg class="h-5 w-5 text-brand-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">What about your Super?</h2>
+          <p class="text-sm text-gray-500 mt-0.5">Superannuation paid by your employer — separate from your tax refund</p>
+        </div>
+      </div>
+
+      <!-- Super total card -->
+      <div class="bg-brand-50 border border-brand-100 rounded-xl p-4 mb-5">
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <p class="text-sm font-medium text-brand-800">Total super paid by employer</p>
+            <p class="text-xs text-brand-600 mt-0.5">Extracted from your payslips</p>
+          </div>
+          <p id="super-display" class="text-2xl font-black text-brand-700 tabular-nums shrink-0">—</p>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div class="text-sm text-gray-600 space-y-1.5 mb-5">
+        <p>Your employer pays <strong>11.5% of your gross salary</strong> into your super fund. This is on top of your wages and is completely separate from your tax refund.</p>
+        <p class="text-xs text-gray-400">Super guarantee rate: 11.5% for FY 2024–25 (up from 11% in FY 2023–24).</p>
+      </div>
+
+      <!-- DASP section — shown only for WHM -->
+      <div id="dasp-section" class="hidden border-t border-gray-100 pt-5">
+
+        <div class="flex items-start gap-3 mb-5">
+          <div class="shrink-0 w-9 h-9 bg-amber-50 border border-amber-100 rounded-xl flex items-center justify-center text-lg">✈️</div>
+          <div>
+            <h3 class="text-base font-semibold text-gray-900">Leaving Australia? Claim your Super back!</h3>
+            <p class="text-sm text-gray-500 mt-1">As a Working Holiday Maker (visa 417 or 462), you can reclaim your superannuation when you leave Australia permanently via the <strong>DASP</strong> — Departing Australia Superannuation Payment.</p>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <ol class="space-y-4 mb-5">
+          <li class="flex gap-3">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-brand-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">1</span>
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Find your super fund name</p>
+              <p class="text-xs text-gray-500 mt-0.5">It's on your payslips above. You can also check via <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="text-brand-600 underline hover:text-brand-700">myGov</a> → ATO → Super → "Find my super".</p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-brand-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">2</span>
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Leave Australia — visa expired or cancelled</p>
+              <p class="text-xs text-gray-500 mt-0.5">You cannot claim DASP while still in Australia or while your visa is still valid.</p>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-brand-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">3</span>
+            <div>
+              <p class="text-sm font-semibold text-gray-800">Apply online via the ATO DASP portal</p>
+              <p class="text-xs text-gray-500 mt-0.5">Submit your claim directly to the ATO — no intermediary needed.</p>
+              <a href="https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/super/growing-and-keeping-track-of-your-super/when-you-can-access-your-super/departing-australia-superannuation-payment-dasp"
+                target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-brand-600 hover:text-brand-700 underline">
+                Open ATO DASP portal →
+              </a>
+            </div>
+          </li>
+        </ol>
+
+        <!-- Warning -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <p class="text-sm text-amber-800 leading-relaxed">
+            <strong>⚠️ Tax on DASP withdrawals:</strong> A withholding tax of <strong>65%</strong> applies on WHM super withdrawals — but it's still <strong>YOUR money!</strong> Even after tax, claiming your super back is worth it.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -391,6 +496,7 @@
       document.getElementById('total-tax').textContent   = fmt(sum('tax_withheld'));
       document.getElementById('total-super').textContent = fmt(sum('super'));
       document.getElementById('total-net').textContent   = fmt(sum('net_pay'));
+      document.getElementById('super-display').textContent = fmt(sum('super'));
     }
 
     // ── Save payslips ──────────────────────────────────────────────────────────
@@ -474,6 +580,15 @@
       const list = document.getElementById('saved-list');
       if (!data || data.length === 0) return;
 
+      // Populate super display from saved payslips (if no rows in current session)
+      if (rows.size === 0) {
+        const savedSuper = data.reduce((acc, p) => acc + (parseFloat((p.extracted_data ?? {}).super) || 0), 0);
+        if (savedSuper > 0) {
+          document.getElementById('super-display').textContent =
+            '$' + savedSuper.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      }
+
       list.innerHTML = data.map(p => {
         const d     = p.extracted_data ?? {};
         const date  = new Date(p.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -503,6 +618,35 @@
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
     }
+
+    // ── WHM visa toggle ────────────────────────────────────────────────────────
+    (function () {
+      const yesBtn  = document.getElementById('whm-yes-btn');
+      const noBtn   = document.getElementById('whm-no-btn');
+      const dasp    = document.getElementById('dasp-section');
+      const ACTIVE  = ['border-brand-500', 'text-brand-700', 'bg-brand-50'];
+      const DEFAULT = ['border-gray-200',  'text-gray-600'];
+
+      function setWhm(isWhm) {
+        dasp.classList.toggle('hidden', !isWhm);
+        if (isWhm) {
+          yesBtn.classList.add(...ACTIVE);    yesBtn.classList.remove(...DEFAULT);
+          noBtn.classList.remove(...ACTIVE);  noBtn.classList.add(...DEFAULT);
+        } else {
+          noBtn.classList.add(...ACTIVE);     noBtn.classList.remove(...DEFAULT);
+          yesBtn.classList.remove(...ACTIVE); yesBtn.classList.add(...DEFAULT);
+        }
+        localStorage.setItem('gmt_is_whm', isWhm ? '1' : '0');
+      }
+
+      // Restore from previous session
+      const saved = localStorage.getItem('gmt_is_whm');
+      if (saved === '1') setWhm(true);
+      else if (saved === '0') setWhm(false);
+
+      yesBtn.addEventListener('click', () => setWhm(true));
+      noBtn.addEventListener('click',  () => setWhm(false));
+    })();
 
     function showDropError(msg) {
       const el = document.getElementById('drop-error');
