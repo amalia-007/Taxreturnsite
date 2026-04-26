@@ -72,6 +72,8 @@
           <span id="sum-gross" class="font-semibold text-gray-800 text-right tabular-nums"></span>
           <span class="text-gray-500">Tax withheld</span>
           <span id="sum-tax" class="font-semibold text-gray-800 text-right tabular-nums"></span>
+          <span id="sum-super-label" class="hidden text-gray-500">Super paid</span>
+          <span id="sum-super" class="hidden font-semibold text-gray-800 text-right tabular-nums"></span>
         </div>
       </div>
 
@@ -576,10 +578,11 @@
       const done = uploadedPayslips.filter(p => p.status === 'done');
       if (done.length === 0) { summary.classList.add('hidden'); return; }
 
-      let totalGross = 0, totalTax = 0;
+      let totalGross = 0, totalTax = 0, totalSuper = 0;
       for (const p of done) {
         totalGross += parseFloat(p.data.gross_income) || 0;
-        totalTax   += parseFloat(p.data.tax_withheld)  || 0;
+        totalTax   += parseFloat(p.data.tax_withheld) || 0;
+        totalSuper += parseFloat(p.data.super)        || 0;
       }
 
       // Auto-fill the calculator fields
@@ -588,12 +591,66 @@
 
       document.getElementById('sum-gross').textContent = fmt(totalGross);
       document.getElementById('sum-tax').textContent   = fmt(totalTax);
+
+      // Show super row only if at least one payslip had super data
+      const superLabel = document.getElementById('sum-super-label');
+      const superVal   = document.getElementById('sum-super');
+      if (totalSuper > 0) {
+        superVal.textContent = fmt(totalSuper);
+        superLabel.classList.remove('hidden');
+        superVal.classList.remove('hidden');
+      } else {
+        superLabel.classList.add('hidden');
+        superVal.classList.add('hidden');
+      }
+
       summary.classList.remove('hidden');
     }
 
-    // Stub — Part 5 replaces this with real Claude OCR via the process-payslip Edge Function
+    // ── Claude OCR via process-payslip Edge Function ──────────────────────────
     async function runOCR(file) {
-      return {};
+      const session = await getSession();
+      if (!session) throw new Error('Not authenticated — please sign in again.');
+
+      // 1. Upload file to Supabase Storage so the Edge Function can read it
+      const safeName    = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storagePath = `${session.user.id}/${Date.now()}_${safeName}`;
+
+      const { error: uploadErr } = await window.sb.storage
+        .from('payslips')
+        .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+      if (uploadErr) throw new Error('Upload failed: ' + uploadErr.message);
+
+      // 2. Call the Edge Function — it reads from Storage, runs Claude, returns JSON
+      let body;
+      try {
+        const res = await fetch(`${window.SUPABASE_URL}/functions/v1/process-payslip`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: storagePath }),
+        });
+        body = await res.json();
+        if (!res.ok || body.error) throw new Error(body.error || 'OCR request failed.');
+      } catch (err) {
+        // Clean up orphaned storage object on failure
+        await window.sb.storage.from('payslips').remove([storagePath]).catch(() => {});
+        throw err;
+      }
+
+      const data = body.data ?? {};
+
+      // 3. Persist extracted data to the payslips table for future pre-fill
+      await window.sb.from('payslips').insert({
+        user_id:        session.user.id,
+        file_url:       storagePath,
+        extracted_data: data,
+      }).catch(err => console.warn('Could not save payslip to DB:', err));
+
+      return data;
     }
   </script>
 
