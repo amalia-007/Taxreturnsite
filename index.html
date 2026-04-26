@@ -59,17 +59,17 @@
 
     <div class="landing-inner">
       <p class="landing-logo">GET MY TAX</p>
-      <h1 class="landing-title" id="lp-title">Your 2024–25 Australian Tax Refund Estimate</h1>
-      <p class="landing-sub" id="lp-sub">Upload your payslips, enter your deductions, and get an instant estimate — in minutes.</p>
+      <h1 class="landing-title" id="lp-title">Skip the stress. Upload your payslips and get an instant refund estimate.</h1>
       <ul class="landing-features">
         <li id="lp-b1">Instant refund or liability estimate</li>
-        <li id="lp-b2">HECS/HELP, Medicare &amp; all deductions included</li>
-        <li id="lp-b3">Payslip OCR — upload &amp; auto-fill your data</li>
-        <li id="lp-b4">One-time payment · No subscription · No expiry</li>
+        <li id="lp-b2">AI-powered payslip reading</li>
+        <li id="lp-b3">ATO lodgement guide included</li>
+        <li id="lp-b4">WHM &amp; DASP super recovery guide</li>
       </ul>
-      <button id="landing-pay-btn" class="landing-cta">Pay $40 AUD · Get Instant Access</button>
+      <button id="landing-pay-btn" class="landing-cta">GET MY TAX NOW →</button>
+      <p class="landing-price">$45.99 AUD · one-time payment</p>
       <p id="landing-pay-error" class="landing-error"></p>
-      <p class="landing-legal" id="lp-legal">Powered by Stripe · SSL encrypted · Not a registered tax agent · Estimates only</p>
+      <p class="landing-legal" id="lp-legal">Estimates only — not financial advice. Always consult a registered tax agent.</p>
     </div>
   </section>
 
@@ -882,44 +882,40 @@
     // ── Landing page translations ──────────────────────────────
     var LP_TRANS = {
       en: {
-        title:   'Your 2024–25 Australian Tax Refund Estimate',
-        sub:     'Upload your payslips, enter your deductions, and get an instant estimate — in minutes.',
-        b1:      'Instant refund or liability estimate',
-        b2:      'HECS/HELP, Medicare & all deductions included',
-        b3:      'Payslip OCR — upload & auto-fill your data',
-        b4:      'One-time payment · No subscription · No expiry',
-        button:  'Pay $40 AUD · Get Instant Access',
-        legal:   'Powered by Stripe · SSL encrypted · Not a registered tax agent · Estimates only'
+        title:  'Skip the stress. Upload your payslips and get an instant refund estimate.',
+        b1:     'Instant refund or liability estimate',
+        b2:     'AI-powered payslip reading',
+        b3:     'ATO lodgement guide included',
+        b4:     'WHM & DASP super recovery guide',
+        button: 'GET MY TAX NOW →',
+        legal:  'Estimates only — not financial advice. Always consult a registered tax agent.'
       },
       fr: {
-        title:   'Votre estimation de remboursement fiscal australien 2024–25',
-        sub:     'Importez vos fiches de paie, entrez vos déductions et obtenez une estimation instantanée — en quelques minutes.',
-        b1:      'Estimation de remboursement ou de dette fiscale instantanée',
-        b2:      'HECS/HELP, Medicare et toutes les déductions incluses',
-        b3:      'OCR de fiche de paie — importez et remplissez automatiquement',
-        b4:      'Paiement unique · Sans abonnement · Sans expiration',
-        button:  'Payer 40 AUD · Accès immédiat',
-        legal:   'Propulsé par Stripe · Chiffrement SSL · Non enregistré comme agent fiscal · Estimations uniquement'
+        title:  'Oubliez le stress. Téléversez vos bulletins de paie et obtenez une estimation de remboursement instantanée.',
+        b1:     'Estimation instantanée du remboursement ou de l\'impôt dû',
+        b2:     'Lecture des bulletins de paie par intelligence artificielle',
+        b3:     'Guide de dépôt ATO inclus',
+        b4:     'Guide WHM & récupération de la retraite DASP',
+        button: 'OBTENIR MON TAX →',
+        legal:  'Estimations uniquement — pas un conseil fiscal. Consultez toujours un agent fiscal agréé.'
       },
       es: {
-        title:   'Tu estimación de devolución de impuestos australiana 2024–25',
-        sub:     'Sube tus recibos de sueldo, ingresa tus deducciones y obtén una estimación instantánea — en minutos.',
-        b1:      'Estimación instantánea de devolución o deuda fiscal',
-        b2:      'HECS/HELP, Medicare y todas las deducciones incluidas',
-        b3:      'OCR de recibo de sueldo — sube y rellena tus datos automáticamente',
-        b4:      'Pago único · Sin suscripción · Sin vencimiento',
-        button:  'Pagar 40 AUD · Acceso inmediato',
-        legal:   'Desarrollado por Stripe · Cifrado SSL · No es un agente fiscal registrado · Solo estimaciones'
+        title:  'Olvídate del estrés. Sube tus recibos de sueldo y obtén una estimación de reembolso al instante.',
+        b1:     'Estimación instantánea del reembolso o impuesto adeudado',
+        b2:     'Lectura de recibos de sueldo con inteligencia artificial',
+        b3:     'Guía de presentación ATO incluida',
+        b4:     'Guía WHM y recuperación de super DASP',
+        button: 'OBTENER MI TAX →',
+        legal:  'Solo estimaciones — no es asesoramiento fiscal. Consulte siempre a un agente fiscal registrado.'
       },
       it: {
-        title:   'La tua stima di rimborso fiscale australiano 2024–25',
-        sub:     'Carica le tue buste paga, inserisci le detrazioni e ottieni una stima istantanea — in pochi minuti.',
-        b1:      'Stima istantanea di rimborso o debito fiscale',
-        b2:      'HECS/HELP, Medicare e tutte le detrazioni incluse',
-        b3:      'OCR della busta paga — carica e compila i dati automaticamente',
-        b4:      'Pagamento unico · Nessun abbonamento · Nessuna scadenza',
-        button:  'Paga 40 AUD · Accesso immediato',
-        legal:   'Powered by Stripe · Crittografia SSL · Non è un agente fiscale registrato · Solo stime'
+        title:  'Dimentica lo stress. Carica le tue buste paga e ottieni una stima del rimborso all\'istante.',
+        b1:     'Stima istantanea del rimborso o dell\'imposta dovuta',
+        b2:     'Lettura delle buste paga tramite intelligenza artificiale',
+        b3:     'Guida alla presentazione ATO inclusa',
+        b4:     'Guida WHM e recupero super DASP',
+        button: 'OTTIENI IL MIO TAX →',
+        legal:  'Solo stime — non un consiglio fiscale. Consulta sempre un agente fiscale registrato.'
       }
     };
 
@@ -927,14 +923,13 @@
 
     function applyLang(lang) {
       var t = LP_TRANS[lang] || LP_TRANS.en;
-      document.getElementById('lp-title').textContent  = t.title;
-      document.getElementById('lp-sub').textContent    = t.sub;
-      document.getElementById('lp-b1').textContent     = t.b1;
-      document.getElementById('lp-b2').textContent     = t.b2;
-      document.getElementById('lp-b3').textContent     = t.b3;
-      document.getElementById('lp-b4').textContent     = t.b4;
+      document.getElementById('lp-title').textContent        = t.title;
+      document.getElementById('lp-b1').textContent           = t.b1;
+      document.getElementById('lp-b2').textContent           = t.b2;
+      document.getElementById('lp-b3').textContent           = t.b3;
+      document.getElementById('lp-b4').textContent           = t.b4;
       document.getElementById('landing-pay-btn').textContent = t.button;
-      document.getElementById('lp-legal').textContent  = t.legal;
+      document.getElementById('lp-legal').textContent        = t.legal;
       document.querySelectorAll('.lang-flag').forEach(function (btn) {
         btn.classList.toggle('lang-flag--active', btn.dataset.lang === lang);
       });
