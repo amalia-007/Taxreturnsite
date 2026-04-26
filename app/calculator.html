@@ -21,6 +21,7 @@
     input[type="number"]::-webkit-inner-spin-button { opacity:1; }
     details > summary { list-style:none; cursor:pointer; }
     details > summary::-webkit-details-marker { display:none; }
+    #upload-dropzone.dz-over { border-color:#00A86B; background-color:#f0faf6; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -38,6 +39,46 @@
 
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
+    <!-- ── Upload Payslips ───────────────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <div class="flex items-center gap-2 mb-0.5">
+            <h2 class="text-lg font-semibold text-gray-900">📄 Upload your payslips</h2>
+            <span class="text-xs bg-brand-100 text-brand-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
+          </div>
+          <p class="text-sm text-gray-500">Our AI will automatically read your gross salary, taxes and superannuation.</p>
+        </div>
+      </div>
+
+      <!-- Drop zone -->
+      <div id="upload-dropzone"
+        class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer transition-colors hover:border-brand-400 hover:bg-brand-50 select-none">
+        <input type="file" id="upload-input" accept=".pdf,.jpg,.jpeg,.png" multiple class="hidden" />
+        <p class="text-3xl mb-2 pointer-events-none">📄</p>
+        <p class="text-sm font-medium text-gray-700 pointer-events-none">Drop payslips here or click to browse</p>
+        <p class="text-xs text-gray-400 mt-1 pointer-events-none">PDF, JPG or PNG — up to 10 MB each</p>
+      </div>
+
+      <!-- Per-file status list -->
+      <ul id="upload-file-list" class="mt-4 space-y-2"></ul>
+
+      <!-- Aggregate AI summary (shown after OCR completes) -->
+      <div id="upload-summary" class="hidden mt-5 p-4 bg-brand-50 border border-brand-100 rounded-xl">
+        <p class="text-xs font-semibold text-brand-700 mb-3">Filled by AI ✅ — edit the fields below if needed</p>
+        <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
+          <span class="text-gray-500">Gross income</span>
+          <span id="sum-gross" class="font-semibold text-gray-800 text-right tabular-nums"></span>
+          <span class="text-gray-500">Tax withheld</span>
+          <span id="sum-tax" class="font-semibold text-gray-800 text-right tabular-nums"></span>
+          <span id="sum-super-label" class="hidden text-gray-500">Super paid</span>
+          <span id="sum-super" class="hidden font-semibold text-gray-800 text-right tabular-nums"></span>
+        </div>
+      </div>
+
+    </div><!-- end Upload Payslips -->
+
     <!-- ── Step 2: Calculator ──────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
 
@@ -54,7 +95,10 @@
       <!-- Income -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Total gross income <span class="font-normal text-gray-400 text-xs">(excl. super)</span></label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Total gross income <span class="font-normal text-gray-400 text-xs">(excl. super)</span>
+            <span id="gross-income-badge" class="hidden ml-1 text-xs text-brand-600 font-semibold">✅ AI filled</span>
+          </label>
           <div class="relative">
             <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
             <input id="gross-income" type="number" min="0" step="0.01" value="0"
@@ -62,7 +106,10 @@
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Total PAYG withheld <span class="font-normal text-gray-400 text-xs">(tax already paid)</span></label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Total PAYG withheld <span class="font-normal text-gray-400 text-xs">(tax already paid)</span>
+            <span id="payg-withheld-badge" class="hidden ml-1 text-xs text-brand-600 font-semibold">✅ AI filled</span>
+          </label>
           <div class="relative">
             <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
             <input id="payg-withheld" type="number" min="0" step="0.01" value="0"
@@ -464,6 +511,153 @@
         d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open);
       });
     });
+
+    // ── Payslip Upload ─────────────────────────────────────────────────────────
+    const dropzone  = document.getElementById('upload-dropzone');
+    const fileInput = document.getElementById('upload-input');
+    const fileList  = document.getElementById('upload-file-list');
+    const summary   = document.getElementById('upload-summary');
+
+    // All uploaded payslips: { file, status, data }
+    const uploadedPayslips = [];
+    let superFromPayslips = 0;
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+      handleFiles(fileInput.files);
+      fileInput.value = '';
+    });
+
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dz-over');
+    });
+
+    dropzone.addEventListener('dragleave', (e) => {
+      if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('dz-over');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dz-over');
+      handleFiles(e.dataTransfer.files);
+    });
+
+    async function handleFiles(files) {
+      for (const file of [...files]) {
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`${file.name} exceeds the 10 MB limit and was skipped.`);
+          continue;
+        }
+        const idx = uploadedPayslips.length;
+        uploadedPayslips.push({ file, status: 'processing', data: {} });
+        renderFileList();
+
+        try {
+          const data = await runOCR(file);
+          uploadedPayslips[idx].status = 'done';
+          uploadedPayslips[idx].data   = data;
+        } catch (_) {
+          uploadedPayslips[idx].status = 'error';
+        }
+        renderFileList();
+        updateUploadSummary();
+      }
+    }
+
+    function renderFileList() {
+      const icons  = { processing: '⏳', done: '✅', error: '❌' };
+      const labels = {
+        processing: 'Reading payslip…',
+        done:       'Filled by AI ✅',
+        error:      'Could not read — please fill in manually.',
+      };
+      fileList.innerHTML = uploadedPayslips.map(p => `
+        <li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg">
+          <span class="text-base flex-shrink-0">${icons[p.status]}</span>
+          <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
+          <span class="text-xs flex-shrink-0 ${p.status === 'error' ? 'text-red-500' : 'text-gray-400'}">${labels[p.status]}</span>
+        </li>`).join('');
+    }
+
+    function updateUploadSummary() {
+      const done = uploadedPayslips.filter(p => p.status === 'done');
+      if (done.length === 0) { summary.classList.add('hidden'); return; }
+
+      let totalGross = 0, totalTax = 0, totalSuper = 0;
+      for (const p of done) {
+        totalGross += parseFloat(p.data.gross_income) || 0;
+        totalTax   += parseFloat(p.data.tax_withheld) || 0;
+        totalSuper += parseFloat(p.data.super)        || 0;
+      }
+
+      // Auto-fill calculator fields and show ✅ badges
+      document.getElementById('gross-income').value  = totalGross.toFixed(2);
+      document.getElementById('payg-withheld').value = totalTax.toFixed(2);
+      superFromPayslips = totalSuper;
+      document.getElementById('gross-income-badge').classList.remove('hidden');
+      document.getElementById('payg-withheld-badge').classList.remove('hidden');
+
+      document.getElementById('sum-gross').textContent = fmt(totalGross);
+      document.getElementById('sum-tax').textContent   = fmt(totalTax);
+
+      const superLabel = document.getElementById('sum-super-label');
+      const superVal   = document.getElementById('sum-super');
+      if (totalSuper > 0) {
+        superVal.textContent = fmt(totalSuper);
+        superLabel.classList.remove('hidden');
+        superVal.classList.remove('hidden');
+      } else {
+        superLabel.classList.add('hidden');
+        superVal.classList.add('hidden');
+      }
+
+      summary.classList.remove('hidden');
+    }
+
+    // ── Claude OCR via process-payslip Edge Function ──────────────────────────
+    async function runOCR(file) {
+      const session = await getSession();
+      if (!session) throw new Error('Not authenticated — please sign in again.');
+
+      const safeName    = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const storagePath = `${session.user.id}/${Date.now()}_${safeName}`;
+
+      const { error: uploadErr } = await window.sb.storage
+        .from('payslips')
+        .upload(storagePath, file, { contentType: file.type, upsert: false });
+
+      if (uploadErr) throw new Error('Upload failed: ' + uploadErr.message);
+
+      let body;
+      try {
+        const res = await fetch(`${window.SUPABASE_URL}/functions/v1/process-payslip`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: storagePath }),
+        });
+        body = await res.json();
+        if (!res.ok || body.error) throw new Error(body.error || 'OCR request failed.');
+      } catch (err) {
+        await window.sb.storage.from('payslips').remove([storagePath]).catch(() => {});
+        throw err;
+      }
+
+      const data = body.data ?? {};
+
+      // Persist to DB for future pre-fill on next login
+      await window.sb.from('payslips').insert({
+        user_id:        session.user.id,
+        file_url:       storagePath,
+        extracted_data: data,
+      }).catch(err => console.warn('Could not save payslip to DB:', err));
+
+      return data;
+    }
   </script>
 
   <footer class="mt-12 border-t border-gray-200 py-6">
