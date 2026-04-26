@@ -52,10 +52,23 @@ Deno.serve(async (req) => {
       return new Response('ok', { status: 200 })
     }
 
+    // Fetch current paid_tax_years so we can append without duplicating
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('paid_tax_years')
+      .eq('id', userId)
+      .single()
+
+    const currentYears: string[] = profile?.paid_tax_years ?? []
+    const TAX_YEAR = '2024-2025'
+    const updatedYears = currentYears.includes(TAX_YEAR)
+      ? currentYears
+      : [...currentYears, TAX_YEAR]
+
     // Update profile
     const { error } = await supabaseAdmin
       .from('profiles')
-      .update({ has_paid: true, stripe_customer_id: customerId })
+      .update({ has_paid: true, stripe_customer_id: customerId, paid_tax_years: updatedYears })
       .eq('id', userId)
 
     if (error) {
@@ -63,7 +76,7 @@ Deno.serve(async (req) => {
       return new Response('DB update failed', { status: 500 })
     }
 
-    console.log('Payment confirmed for user:', userId)
+    console.log('Payment confirmed for user:', userId, '— years:', updatedYears)
 
     // Send receipt email (best-effort — failures don't affect webhook response)
     const customerEmail = session.customer_details?.email ?? null

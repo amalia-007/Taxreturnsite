@@ -31,10 +31,10 @@ module.exports = async function handler(req, res) {
       line_items: [{
         price_data: {
           currency: 'aud',
-          unit_amount: 4000,
+          unit_amount: 4599,
           product_data: {
-            name: 'Tax Estimator Access — 2024-25',
-            description: 'One-time lifetime access to the GET MY TAX estimator.',
+            name: 'GET MY TAX — 2024-25 Access',
+            description: 'One-time access: instant refund estimate, AI payslip reading, ATO lodgement guide.',
           },
         },
         quantity: 1,
