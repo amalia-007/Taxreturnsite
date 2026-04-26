@@ -22,6 +22,13 @@
     details > summary { list-style:none; cursor:pointer; }
     details > summary::-webkit-details-marker { display:none; }
     #upload-dropzone.dz-over { border-color:#00A86B; background-color:#f0faf6; }
+    .copy-btn {
+      font-size:.7rem; color:#9ca3af; padding:.15rem .45rem;
+      border:1px solid #e5e7eb; border-radius:4px; cursor:pointer;
+      background:transparent; transition:color .15s,border-color .15s;
+      flex-shrink:0; white-space:nowrap; line-height:1.5;
+    }
+    .copy-btn:hover,.copy-btn.copied { color:#00A86B; border-color:#00A86B; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -202,77 +209,116 @@
     </div><!-- end Step 2 -->
 
     <!-- ── Step 3: Results ───────────────────────────────────────────────── -->
-    <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+    <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
-      <div class="flex items-start justify-between mb-5">
-        <div>
-          <h2 class="text-lg font-semibold text-gray-900">Step 3 — Your Tax Summary</h2>
-          <p class="text-sm text-gray-500 mt-0.5">Estimated for the 2024–25 financial year.</p>
-        </div>
-        <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
+      <!-- Big outcome hero -->
+      <div id="outcome-banner" class="p-8 text-center">
+        <p id="outcome-label" class="text-xs font-bold tracking-widest uppercase mb-3 text-white opacity-80"></p>
+        <p id="outcome-amount" class="text-6xl sm:text-7xl font-black tabular-nums mb-4 leading-none text-white"></p>
+        <p id="outcome-sub" class="text-sm mb-6 max-w-xs mx-auto text-white opacity-75"></p>
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+          class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide">
+          TAX RETURN REQUEST →
+        </a>
       </div>
 
-      <!-- Refund / Owing banner -->
-      <div id="outcome-banner" class="rounded-xl p-5 mb-6 text-center">
-        <p id="outcome-label" class="text-sm font-medium mb-1"></p>
-        <p id="outcome-amount" class="text-4xl font-black tabular-nums"></p>
-        <p id="outcome-sub" class="text-xs mt-1 opacity-75"></p>
+      <!-- Your Numbers breakdown -->
+      <div class="p-6">
+        <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
+
+        <div class="divide-y divide-gray-100 text-sm mb-5 border border-gray-100 rounded-xl overflow-hidden">
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Gross income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-gross" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-gross">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Tax withheld</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-payg" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-payg">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Total deductions</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-deductions" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-deductions">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
+            <span class="font-semibold text-gray-800">Taxable income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-taxable" class="font-bold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-taxable">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Tax on income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-income-tax" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-income-tax">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-lito-row" class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">LITO applied</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-lito" class="font-semibold tabular-nums text-brand-600 truncate"></span>
+              <button class="copy-btn" data-target="r-lito">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-medicare-row" class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Medicare levy</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-medicare" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-medicare">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-hecs-row" class="hidden items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">HECS/HELP repayment</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-hecs" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-hecs">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
+            <span class="font-semibold text-gray-800">Outcome</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-outcome" class="font-bold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-outcome">Copy</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bracket breakdown (collapsible) -->
+        <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
+          <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
+            <span>Tax bracket breakdown</span>
+            <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
+        </details>
+
+        <p class="text-xs text-gray-400 text-center">
+          <strong>Estimate only</strong> — not financial advice. Lodge via
+          <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ATO myTax</a>
+          or a registered tax agent.
+        </p>
       </div>
-
-      <!-- Breakdown table -->
-      <div class="space-y-0 divide-y divide-gray-100 text-sm mb-5">
-        <div class="flex justify-between py-2.5">
-          <span class="text-gray-600">Gross income</span>
-          <span id="r-gross" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-        <div class="flex justify-between py-2.5">
-          <span class="text-gray-600">Total deductions</span>
-          <span id="r-deductions" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-        <div class="flex justify-between py-2.5 font-semibold">
-          <span class="text-gray-800">Taxable income</span>
-          <span id="r-taxable" class="tabular-nums text-gray-900"></span>
-        </div>
-        <div class="flex justify-between py-2.5">
-          <span class="text-gray-600">Income tax</span>
-          <span id="r-income-tax" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-        <div id="r-lito-row" class="flex justify-between py-2.5">
-          <span class="text-gray-600">Low income tax offset (LITO)</span>
-          <span id="r-lito" class="font-medium tabular-nums text-brand-600"></span>
-        </div>
-        <div id="r-medicare-row" class="flex justify-between py-2.5">
-          <span class="text-gray-600">Medicare levy</span>
-          <span id="r-medicare" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-        <div id="r-hecs-row" class="hidden flex justify-between py-2.5">
-          <span class="text-gray-600">HECS/HELP repayment</span>
-          <span id="r-hecs" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-        <div class="flex justify-between py-2.5 font-semibold">
-          <span class="text-gray-800">Total tax liability</span>
-          <span id="r-liability" class="tabular-nums text-gray-900"></span>
-        </div>
-        <div class="flex justify-between py-2.5">
-          <span class="text-gray-600">PAYG withheld (already paid)</span>
-          <span id="r-payg" class="font-medium tabular-nums text-gray-900"></span>
-        </div>
-      </div>
-
-      <!-- Bracket breakdown (collapsible) -->
-      <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
-        <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
-          <span>Tax bracket breakdown</span>
-          <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </summary>
-        <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
-      </details>
-
-      <p class="text-xs text-gray-400 text-center">
-        This is an <strong>estimate only</strong> based on the information you provided. For official lodgement, use ATO myTax or speak to a registered tax agent.
-      </p>
     </div>
 
     <!-- ── Step 4: Next Steps ─────────────────────────────────────────────── -->
@@ -421,8 +467,10 @@
       if (hasHECS && r.hecsRepayment > 0) {
         document.getElementById('r-hecs').textContent = fmt(r.hecsRepayment);
         hecsRow.classList.remove('hidden');
+        hecsRow.classList.add('flex');
       } else {
         hecsRow.classList.add('hidden');
+        hecsRow.classList.remove('flex');
       }
 
       document.getElementById('r-liability').textContent = fmt(r.totalLiability);
@@ -430,15 +478,15 @@
 
       const isRefund = r.refundOrOwed >= 0;
       const banner   = document.getElementById('outcome-banner');
-      banner.className = `rounded-xl p-5 mb-6 text-center ${isRefund ? 'bg-brand-50 border border-brand-100' : 'bg-red-50 border border-red-100'}`;
-      document.getElementById('outcome-label').textContent  = isRefund ? 'Estimated refund' : 'Estimated tax owing';
-      document.getElementById('outcome-label').className    = `text-sm font-medium mb-1 ${isRefund ? 'text-brand-700' : 'text-red-700'}`;
+      banner.className = `p-8 text-center ${isRefund ? 'bg-brand-500' : 'bg-red-500'}`;
+      document.getElementById('outcome-label').textContent  = isRefund ? '🎉 Estimated Refund' : '⚠️ Estimated Tax Owing';
       document.getElementById('outcome-amount').textContent = fmt(r.refundOrOwed);
-      document.getElementById('outcome-amount').className   = `text-4xl font-black tabular-nums ${isRefund ? 'text-brand-600' : 'text-red-600'}`;
       document.getElementById('outcome-sub').textContent    = isRefund
         ? 'The ATO will deposit this into your nominated bank account.'
-        : 'You will need to pay this by the due date on your assessment notice.';
-      document.getElementById('outcome-sub').className      = `text-xs mt-1 opacity-75 ${isRefund ? 'text-brand-700' : 'text-red-700'}`;
+        : 'You will need to pay this by the due date on your notice of assessment.';
+
+      // Fill the Outcome row in "Your Numbers"
+      document.getElementById('r-outcome').textContent = fmt(r.refundOrOwed);
 
       document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `
         <div class="flex justify-between px-4 py-2.5 text-xs">
@@ -498,6 +546,46 @@
         btn.textContent = 'Find deductions';
       }
     });
+
+    // ── Copy buttons ──────────────────────────────────────────────────────────
+    document.getElementById('results-panel').addEventListener('click', (e) => {
+      const btn = e.target.closest('.copy-btn');
+      if (!btn) return;
+      const text = document.getElementById(btn.dataset.target)?.textContent?.trim() ?? '';
+      if (!text) return;
+
+      const finish = () => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        showCopyToast();
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      };
+
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).then(finish).catch(finish);
+      } else {
+        const ta = Object.assign(document.createElement('textarea'), {
+          value: text, style: 'position:fixed;opacity:0'
+        });
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        finish();
+      }
+    });
+
+    let _toastTimer;
+    function showCopyToast() {
+      const t = document.getElementById('copy-toast');
+      t.classList.remove('opacity-0');
+      t.classList.add('opacity-100');
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(() => {
+        t.classList.remove('opacity-100');
+        t.classList.add('opacity-0');
+      }, 2000);
+    }
 
     // ── Details arrow rotation ─────────────────────────────────────────────────
     document.querySelectorAll('details').forEach(d => {
@@ -653,6 +741,12 @@
       return data;
     }
   </script>
+
+  <!-- Clipboard toast -->
+  <div id="copy-toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none z-50">
+    Copied to clipboard ✓
+  </div>
 
   <footer class="mt-12 border-t border-gray-200 py-6">
     <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
