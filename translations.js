@@ -146,6 +146,8 @@ var translations = {
     'validation.negative': 'La valeur ne peut pas être négative',
 
     // Summary modal
+    'summary.button':           '📋 Résumé',
+    'summary.copied':           'Copié !',
     'summary.title':            '📋 Résumé Fiscal',
     'summary.print':            '🖨️ Imprimer',
     'summary.close':            'Fermer',
@@ -351,6 +353,8 @@ var translations = {
     'validation.negative': 'Value cannot be negative',
 
     // Summary modal
+    'summary.button':           '📋 Summary',
+    'summary.copied':           'Copied!',
     'summary.title':            '📋 Tax Summary',
     'summary.print':            '🖨️ Print',
     'summary.close':            'Close',
@@ -556,6 +560,8 @@ var translations = {
     'validation.negative': 'El valor no puede ser negativo',
 
     // Summary modal
+    'summary.button':           '📋 Resumen',
+    'summary.copied':           '¡Copiado!',
     'summary.title':            '📋 Resumen Fiscal',
     'summary.print':            '🖨️ Imprimir',
     'summary.close':            'Cerrar',
@@ -761,6 +767,8 @@ var translations = {
     'validation.negative': 'Il valore non può essere negativo',
 
     // Summary modal
+    'summary.button':           '📋 Riepilogo',
+    'summary.copied':           'Copiato!',
     'summary.title':            '📋 Riepilogo Fiscale',
     'summary.print':            '🖨️ Stampa',
     'summary.close':            'Chiudi',

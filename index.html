@@ -689,9 +689,9 @@
         <p id="hero-sub" class="outcome-banner__sub"></p>
       </div>
 
-      <!-- TAX RETURN REQUEST button -->
+      <!-- Summary button -->
       <button id="show-breakdown-btn" class="btn-calculate results-cta">
-        <span data-i18n="results.request.btn">TAX RETURN REQUEST →</span>
+        <span data-i18n="summary.button">📋 Résumé</span>
       </button>
 
       <!-- Full breakdown (hidden until button clicked) -->
@@ -705,41 +705,42 @@
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.income">Income</dt>
-            <div class="results-row"><dt data-i18n="results.grossIncome">Gross Income</dt><dd id="result-gross-income" class="result-value">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.totalDeductions">Total Deductions</dt><dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.taxableIncome">Taxable Income</dt><dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd></div>
+            <div class="results-row"><dt data-i18n="results.grossIncome">Gross Income</dt><dd id="result-gross-income" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-gross-income" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.totalDeductions">Total Deductions</dt><dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd><button type="button" class="copy-btn" data-copy="result-total-deductions" aria-label="Copy">📋</button></div>
+            <div class="results-row results-row--total"><dt data-i18n="results.taxableIncome">Taxable Income</dt><dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd><button type="button" class="copy-btn" data-copy="result-taxable-income" aria-label="Copy">📋</button></div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.tax">Tax Calculation</dt>
-            <div class="results-row"><dt data-i18n="results.incomeTax">Income Tax</dt><dd id="result-income-tax" class="result-value">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.medicareLevy">Medicare Levy</dt><dd id="result-medicare-levy" class="result-value">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt><dd id="result-medicare-surcharge" class="result-value">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt><dd id="result-hecs-repayment" class="result-value">$0.00</dd></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt><dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd></div>
+            <div class="results-row"><dt data-i18n="results.incomeTax">Income Tax</dt><dd id="result-income-tax" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-income-tax" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.medicareLevy">Medicare Levy</dt><dd id="result-medicare-levy" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-medicare-levy" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt><dd id="result-medicare-surcharge" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-medicare-surcharge" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt><dd id="result-hecs-repayment" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-hecs-repayment" aria-label="Copy">📋</button></div>
+            <div class="results-row results-row--total"><dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt><dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd><button type="button" class="copy-btn" data-copy="result-gross-tax" aria-label="Copy">📋</button></div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.offsets">Offsets &amp; Credits</dt>
-            <div class="results-row"><dt data-i18n="results.lito">LITO</dt><dd id="result-lito" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.lmito">LMITO</dt><dd id="result-lmito" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.sapto">SAPTO</dt><dd id="result-sapto" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.frankingCreditsResult">Franking Credits</dt><dd id="result-franking" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt><dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.otherOffsets">Other Offsets</dt><dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.totalOffsets">Total Offsets</dt><dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd></div>
+            <div class="results-row"><dt data-i18n="results.lito">LITO</dt><dd id="result-lito" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-lito" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.lmito">LMITO</dt><dd id="result-lmito" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-lmito" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.sapto">SAPTO</dt><dd id="result-sapto" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-sapto" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.frankingCreditsResult">Franking Credits</dt><dd id="result-franking" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-franking" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt><dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-foreign-offset" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.otherOffsets">Other Offsets</dt><dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-other-offsets" aria-label="Copy">📋</button></div>
+            <div class="results-row results-row--total"><dt data-i18n="results.totalOffsets">Total Offsets</dt><dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-total-offsets" aria-label="Copy">📋</button></div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.credits">Tax Already Paid</dt>
-            <div class="results-row"><dt data-i18n="results.taxWithheld">Tax Withheld</dt><dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd></div>
-            <div class="results-row"><dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt><dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd></div>
+            <div class="results-row"><dt data-i18n="results.taxWithheld">Tax Withheld</dt><dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-tax-withheld" aria-label="Copy">📋</button></div>
+            <div class="results-row"><dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt><dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-payg-credits" aria-label="Copy">📋</button></div>
           </div>
 
           <div class="results-group results-group--final">
             <div class="results-row results-row--outcome">
               <dt id="outcome-label" data-i18n="results.outcome.default">Tax Payable / Refund</dt>
               <dd id="result-outcome" class="result-value result-value--outcome">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-outcome" aria-label="Copy">📋</button>
             </div>
             <p class="outcome-note" id="outcome-note" aria-live="polite"></p>
           </div>
@@ -754,6 +755,8 @@
         </div>
 
       </div><!-- /breakdown-panel -->
+
+      <div id="copy-toast" class="copy-toast" hidden aria-live="polite"></div>
 
     </section><!-- /results-panel -->
 

@@ -259,6 +259,17 @@ function setLanguage(lang) {
   runCalculation();
 }
 
+// ── Copy toast ────────────────────────────────────────────────────────────
+let _toastTimer;
+function showToast(msg) {
+  const toast = document.getElementById('copy-toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.removeAttribute('hidden');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => toast.setAttribute('hidden', ''), 2000);
+}
+
 // ── Modal ──────────────────────────────────────────────────────────────────
 const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
@@ -291,6 +302,19 @@ document.addEventListener('DOMContentLoaded', () => {
       bp.removeAttribute('hidden');
       bp.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  });
+
+  document.getElementById('breakdown-panel')?.addEventListener('click', e => {
+    const btn = e.target.closest('.copy-btn');
+    if (!btn) return;
+    const el = document.getElementById(btn.dataset.copy);
+    if (!el) return;
+    const raw = el.textContent.replace(/[$,\s]/g, '').replace('-', '');
+    navigator.clipboard.writeText(raw).then(() => {
+      btn.textContent = '✅';
+      showToast(tr('summary.copied'));
+      setTimeout(() => { btn.textContent = '📋'; }, 2000);
+    }).catch(() => {});
   });
 
   // Reset: clear validation state then recalculate to show $0.00
