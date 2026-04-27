@@ -58,7 +58,7 @@
         <li>Payslip OCR — upload &amp; auto-fill your data</li>
         <li>One-time payment · No subscription · No expiry</li>
       </ul>
-      <button id="landing-pay-btn" class="landing-cta">Pay $40 AUD · Get Instant Access</button>
+      <button id="landing-pay-btn" class="landing-cta">Pay $45.99 AUD · Get Instant Access</button>
       <p id="landing-pay-error" class="landing-error"></p>
       <p class="landing-legal">Powered by Stripe · SSL encrypted · Not a registered tax agent · Estimates only</p>
     </div>
@@ -807,8 +807,6 @@
 
   </div><!-- /#app-section -->
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/config.js"></script>
   <script>
     document.getElementById('landing-pay-btn').addEventListener('click', async function () {
       var btn    = document.getElementById('landing-pay-btn');
@@ -817,7 +815,7 @@
       btn.textContent = 'Redirecting to checkout…';
       errEl.textContent = '';
       try {
-        var res  = await fetch(window.SUPABASE_URL + '/functions/v1/create-guest-checkout', {
+        var res  = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
         });
@@ -827,7 +825,7 @@
       } catch (err) {
         errEl.textContent = err.message;
         btn.disabled    = false;
-        btn.textContent = 'Pay $40 AUD · Get Instant Access';
+        btn.textContent = 'Pay $45.99 AUD · Get Instant Access';
       }
     });
   </script>
