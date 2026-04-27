@@ -263,6 +263,117 @@ details > summary::-webkit-details-marker { display: none; }
 }
 
 /* ================================================================
+   UPLOAD PAYSLIPS SECTION
+================================================================ */
+.upload-section {
+  background-color: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.375rem;
+  margin-bottom: 1rem;
+}
+
+.upload-section__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.375rem;
+}
+
+.upload-section__sub {
+  font-size: 0.8375rem;
+  color: var(--gray-600);
+  margin: 0 0 1rem;
+}
+
+.upload-section__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--green);
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background-color var(--t-fast);
+}
+
+.upload-section__btn:hover { background-color: var(--green-dark); }
+
+.upload-section__btn input[type="file"] { display: none; }
+
+.upload-section__list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.upload-section__item {
+  font-size: 0.8125rem;
+  padding: 0.25rem 0;
+  color: var(--gray-700);
+}
+
+.upload-section__item--ok  { color: var(--green-dark); }
+.upload-section__item--err { color: var(--red); }
+
+.upload-section__totals {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background-color: var(--green-xlight);
+  border: 1.5px solid var(--green-light);
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  color: var(--navy);
+  line-height: 1.6;
+}
+
+/* ================================================================
+   ATO GUIDE (inside breakdown panel)
+================================================================ */
+.ato-guide {
+  border-top: 1.5px solid var(--gray-100);
+  padding: 1.25rem 1.125rem;
+}
+
+.ato-guide__title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 0.75rem;
+}
+
+.ato-guide__steps {
+  margin: 0 0 0.875rem;
+  padding-left: 1.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ato-guide__steps li {
+  font-size: 0.8125rem;
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+
+.ato-guide__steps a {
+  color: var(--green-dark);
+}
+
+.ato-guide__link {
+  display: inline-block;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+
+/* ================================================================
    LANDING PAGE
 ================================================================ */
 #landing-page {

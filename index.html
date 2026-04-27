@@ -182,6 +182,20 @@
     </section>
 
     <!-- ====================================================
+         UPLOAD FICHES DE PAIE
+    ==================================================== -->
+    <section class="upload-section" id="payslip-section">
+      <h2 class="upload-section__title">📄 <span data-i18n="upload.title">Upload your payslips</span></h2>
+      <p class="upload-section__sub" data-i18n="upload.sub">Upload one or more payslips (PDF or image). The AI will automatically extract your gross salary, tax withheld and super.</p>
+      <label class="upload-section__btn" for="payslip-input">
+        <span data-i18n="upload.btn">Choose payslips</span>
+        <input type="file" id="payslip-input" accept=".pdf,.jpg,.jpeg,.png" multiple />
+      </label>
+      <ul id="payslip-file-list" class="upload-section__list"></ul>
+      <div id="payslip-totals" class="upload-section__totals" hidden></div>
+    </section>
+
+    <!-- ====================================================
          ACCORDION FORM
     ==================================================== -->
     <form id="tax-form" novalidate>
@@ -689,9 +703,9 @@
         <p id="hero-sub" class="outcome-banner__sub"></p>
       </div>
 
-      <!-- Summary button -->
+      <!-- Demande de Tax Return button -->
       <button id="show-breakdown-btn" class="btn-calculate results-cta">
-        <span data-i18n="summary.button">📋 Résumé</span>
+        📊 <span data-i18n="results.requestBtn">Demande de Tax Return</span>
       </button>
 
       <!-- Full breakdown (hidden until button clicked) -->
@@ -746,6 +760,21 @@
           </div>
 
         </dl>
+
+        <!-- ATO lodgement guide -->
+        <div class="ato-guide">
+          <h3 class="ato-guide__title" data-i18n="ato.guide.title">How to lodge your tax return</h3>
+          <ol class="ato-guide__steps">
+            <li>Log in to <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer">myGov</a> and open your ATO account</li>
+            <li>Go to <strong>Tax → Lodge a tax return</strong></li>
+            <li>Review the pre-filled information (income, withholding)</li>
+            <li>Add any deductions</li>
+            <li>Check the summary</li>
+            <li>Submit your return</li>
+            <li>Track your refund via myGov</li>
+          </ol>
+          <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/lodge-your-tax-return" target="_blank" rel="noopener noreferrer" class="ato-guide__link" data-i18n="ato.guide.link">Official ATO guide →</a>
+        </div>
 
         <div class="breakdown-panel__actions">
           <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="btn-calculate breakdown-panel__gov-link">
@@ -828,6 +857,88 @@
         btn.textContent = 'Pay $45.99 AUD · Get Instant Access';
       }
     });
+  </script>
+
+  <!-- ======================================================
+       PAYSLIP UPLOAD HANDLER
+  ====================================================== -->
+  <script>
+  (function () {
+    'use strict';
+    var input  = document.getElementById('payslip-input');
+    var list   = document.getElementById('payslip-file-list');
+    var totals = document.getElementById('payslip-totals');
+    if (!input) return;
+
+    function toB64(file) {
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onload  = function () { resolve(r.result.split(',')[1]); };
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function setField(id, val) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.value = val.toFixed(2);
+      el.dispatchEvent(new Event('input',  { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    input.addEventListener('change', async function () {
+      var files = Array.from(this.files);
+      if (!files.length) return;
+
+      list.innerHTML = '';
+      totals.hidden  = true;
+      var gross = 0, tax = 0, sup = 0;
+
+      for (var i = 0; i < files.length; i++) {
+        var f  = files[i];
+        var li = document.createElement('li');
+        li.className    = 'upload-section__item upload-section__item--loading';
+        li.textContent  = '⏳ ' + f.name;
+        list.appendChild(li);
+
+        try {
+          var b64  = await toB64(f);
+          var resp = await fetch('/api/analyze-payslip', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ base64: b64, mediaType: f.type || 'image/jpeg' }),
+          });
+          var data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || 'Analyse failed');
+
+          gross += data.gross_salary   || 0;
+          tax   += data.tax_withheld   || 0;
+          sup   += data.superannuation || 0;
+
+          li.className   = 'upload-section__item upload-section__item--ok';
+          li.textContent = '✅ ' + f.name;
+        } catch (e) {
+          li.className   = 'upload-section__item upload-section__item--err';
+          li.textContent = '❌ ' + f.name + ' — ' + e.message;
+        }
+      }
+
+      setField('salary-wages',       gross);
+      setField('tax-withheld-salary', tax);
+
+      var lang = localStorage.getItem('lang') || 'en';
+      var t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+      totals.hidden = false;
+      totals.innerHTML =
+        '<span>' + (t['upload.extracted'] || 'Extracted') + '</span> — ' +
+        '<span>' + (t['income.salary.label'] || 'Gross salary') + '</span>: <strong>$' + gross.toFixed(2) + '</strong>' +
+        ' &nbsp;|&nbsp; <span>' + (t['results.taxWithheld'] || 'Tax withheld') + '</span>: <strong>$' + tax.toFixed(2) + '</strong>' +
+        ' &nbsp;|&nbsp; Super: <strong>$' + sup.toFixed(2) + '</strong>';
+
+      if (typeof runCalculation === 'function') runCalculation();
+    });
+  })();
   </script>
 </body>
 </html>

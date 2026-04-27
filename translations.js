@@ -145,6 +145,19 @@ var translations = {
     // Validation
     'validation.negative': 'La valeur ne peut pas être négative',
 
+    // Upload payslips
+    'upload.title':     'Importer vos fiches de paie',
+    'upload.sub':       'Importez une ou plusieurs fiches de paie (PDF ou image). L\'IA extraira automatiquement votre salaire brut, l\'impôt retenu et la superannuation.',
+    'upload.btn':       'Choisir des fiches de paie',
+    'upload.extracted': 'Totaux extraits',
+
+    // Results
+    'results.requestBtn': 'Demande de Tax Return',
+
+    // ATO guide
+    'ato.guide.title': 'Comment faire votre déclaration',
+    'ato.guide.link':  'Guide officiel ATO →',
+
     // Summary modal
     'summary.button':           '📋 Résumé',
     'summary.copied':           'Copié !',
@@ -351,6 +364,19 @@ var translations = {
 
     // Validation
     'validation.negative': 'Value cannot be negative',
+
+    // Upload payslips
+    'upload.title':     'Upload your payslips',
+    'upload.sub':       'Upload one or more payslips (PDF or image). The AI will automatically extract your gross salary, tax withheld and super.',
+    'upload.btn':       'Choose payslips',
+    'upload.extracted': 'Extracted',
+
+    // Results
+    'results.requestBtn': 'Tax Return Request',
+
+    // ATO guide
+    'ato.guide.title': 'How to lodge your tax return',
+    'ato.guide.link':  'Official ATO guide →',
 
     // Summary modal
     'summary.button':           '📋 Summary',
@@ -559,6 +585,19 @@ var translations = {
     // Validation
     'validation.negative': 'El valor no puede ser negativo',
 
+    // Upload payslips
+    'upload.title':     'Sube tus recibos de sueldo',
+    'upload.sub':       'Sube uno o más recibos de sueldo (PDF o imagen). La IA extraerá automáticamente tu salario bruto, retención de impuestos y superanización.',
+    'upload.btn':       'Elegir recibos',
+    'upload.extracted': 'Totales extraídos',
+
+    // Results
+    'results.requestBtn': 'Solicitud de Devolución',
+
+    // ATO guide
+    'ato.guide.title': 'Cómo presentar tu declaración',
+    'ato.guide.link':  'Guía oficial ATO →',
+
     // Summary modal
     'summary.button':           '📋 Resumen',
     'summary.copied':           '¡Copiado!',
@@ -765,6 +804,19 @@ var translations = {
 
     // Validation
     'validation.negative': 'Il valore non può essere negativo',
+
+    // Upload payslips
+    'upload.title':     'Carica le tue buste paga',
+    'upload.sub':       'Carica una o più buste paga (PDF o immagine). L\'IA estrarrà automaticamente il tuo stipendio lordo, le ritenute fiscali e la superannuation.',
+    'upload.btn':       'Scegli buste paga',
+    'upload.extracted': 'Totali estratti',
+
+    // Results
+    'results.requestBtn': 'Richiesta di Rimborso',
+
+    // ATO guide
+    'ato.guide.title': 'Come presentare la dichiarazione',
+    'ato.guide.link':  'Guida ufficiale ATO →',
 
     // Summary modal
     'summary.button':           '📋 Riepilogo',
