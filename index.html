@@ -694,9 +694,6 @@
         <button type="button" id="btn-calculate" class="btn-calculate">
           <span data-i18n="form.calculate">Calculate</span>
         </button>
-        <button type="button" id="btn-summary" class="btn-summary">
-          📋 <span data-i18n="form.summary">Summary</span>
-        </button>
         <button type="reset" id="btn-reset" class="btn-reset">
           <span data-i18n="form.reset">Reset</span>
         </button>
@@ -707,125 +704,161 @@
     <!-- ====================================================
          RESULTS PANEL
     ==================================================== -->
-    <aside class="results-panel" id="results-panel" aria-labelledby="results-heading">
-      <h2 id="results-heading" data-i18n="results.heading">Your Tax Summary<span id="peek-outcome" class="peek-outcome" aria-hidden="true"></span></h2>
-      <p class="results-disclaimer" data-i18n="results.disclaimer">
-        Estimates only. Not financial advice. Always consult a registered tax agent.
-      </p>
+    <div id="results-panel" class="results-panel" hidden>
 
-      <dl class="results-list">
+      <!-- ── Step A: Hero outcome ── -->
+      <div id="outcome-hero" class="outcome-hero">
+        <p id="outcome-label" class="outcome-hero__label" data-i18n="results.outcome.default">Tax Payable / Refund</p>
+        <p id="result-outcome" class="outcome-hero__amount">$0.00</p>
+        <p id="outcome-note"   class="outcome-hero__sub"  aria-live="polite"></p>
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+           class="outcome-hero__cta" data-i18n="results.requestBtn">TAX RETURN REQUEST →</a>
+        <button type="button" id="show-breakdown-btn" class="outcome-hero__breakdown-btn"
+                data-i18n="results.showBreakdown">📋 See Full Breakdown</button>
+      </div>
 
-        <div class="results-group">
-          <dt class="results-group-title" data-i18n="results.group.income">Income</dt>
+      <!-- ── Step B: Full breakdown (hidden until button clicked) ── -->
+      <div id="breakdown-panel" class="breakdown-panel" hidden>
 
-          <div class="results-row">
-            <dt data-i18n="results.grossIncome">Gross Income</dt>
-            <dd id="result-gross-income" class="result-value">$0.00</dd>
+        <h2 class="breakdown-panel__heading" data-i18n="results.heading">Your Tax Summary</h2>
+        <p class="results-disclaimer" data-i18n="results.disclaimer">
+          Estimates only. Not financial advice. Always consult a registered tax agent.
+        </p>
+
+        <dl class="results-list">
+
+          <div class="results-group">
+            <dt class="results-group-title" data-i18n="results.group.income">Income</dt>
+            <div class="results-row">
+              <dt data-i18n="results.grossIncome">Gross Income</dt>
+              <dd id="result-gross-income" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-gross-income">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.totalDeductions">Total Deductions</dt>
+              <dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-total-deductions">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.taxableIncome">Taxable Income</dt>
+              <dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-taxable-income">Copy</button>
+            </div>
           </div>
 
-          <div class="results-row">
-            <dt data-i18n="results.totalDeductions">Total Deductions</dt>
-            <dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd>
+          <div class="results-group">
+            <dt class="results-group-title" data-i18n="results.group.tax">Tax Calculation</dt>
+            <div class="results-row">
+              <dt data-i18n="results.incomeTax">Income Tax</dt>
+              <dd id="result-income-tax" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-income-tax">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.medicareLevy">Medicare Levy</dt>
+              <dd id="result-medicare-levy" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-medicare-levy">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt>
+              <dd id="result-medicare-surcharge" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-medicare-surcharge">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt>
+              <dd id="result-hecs-repayment" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-hecs-repayment">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt>
+              <dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-gross-tax">Copy</button>
+            </div>
           </div>
 
-          <div class="results-row results-row--total">
-            <dt data-i18n="results.taxableIncome">Taxable Income</dt>
-            <dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd>
+          <div class="results-group">
+            <dt class="results-group-title" data-i18n="results.group.offsets">Offsets &amp; Credits</dt>
+            <div class="results-row">
+              <dt data-i18n="results.lito">LITO</dt>
+              <dd id="result-lito" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-lito">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.lmito">LMITO</dt>
+              <dd id="result-lmito" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-lmito">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.sapto">SAPTO</dt>
+              <dd id="result-sapto" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-sapto">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.frankingCreditsResult">Franking Credits</dt>
+              <dd id="result-franking" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-franking">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt>
+              <dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-foreign-offset">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.otherOffsets">Other Offsets</dt>
+              <dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-other-offsets">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.totalOffsets">Total Offsets</dt>
+              <dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-total-offsets">Copy</button>
+            </div>
           </div>
+
+          <div class="results-group">
+            <dt class="results-group-title" data-i18n="results.group.credits">Tax Already Paid</dt>
+            <div class="results-row">
+              <dt data-i18n="results.taxWithheld">Tax Withheld</dt>
+              <dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-tax-withheld">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt>
+              <dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-payg-credits">Copy</button>
+            </div>
+          </div>
+
+          <div class="results-group results-group--final">
+            <div class="results-row results-row--outcome">
+              <dt data-i18n="results.outcome.default">Outcome</dt>
+              <dd id="result-outcome-detail" class="result-value result-value--outcome">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-outcome-detail">Copy</button>
+            </div>
+          </div>
+
+        </dl>
+
+        <!-- ATO 7-step guide -->
+        <div class="ato-guide">
+          <h3 class="ato-guide__title" data-i18n="ato.guide.title">📋 How to Lodge Your Tax Return</h3>
+          <ol class="ato-guide__steps">
+            <li><strong>Create or log in to myGov</strong> — <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer">my.gov.au →</a></li>
+            <li><strong>Link the ATO</strong> to your myGov account (Services → Link → ATO).</li>
+            <li><strong>Open myTax</strong> — click Tax → Lodge return → Use myTax.</li>
+            <li><strong>Check pre-filled data</strong> — your employer &amp; bank data is loaded automatically.</li>
+            <li><strong>Add income &amp; deductions</strong> not pre-filled (rental, ABN, gifts).</li>
+            <li><strong>Submit your return</strong> — review summary, then lodge.</li>
+            <li><strong>Track your refund</strong> via the ATO app or myGov (usually 2 weeks).</li>
+          </ol>
+          <a class="ato-guide__link" href="https://www.ato.gov.au/individuals-and-families/your-tax-return"
+             target="_blank" rel="noopener noreferrer" data-i18n="ato.guide.link">
+            Full ATO guide →
+          </a>
         </div>
 
-        <div class="results-group">
-          <dt class="results-group-title" data-i18n="results.group.tax">Tax Calculation</dt>
+      </div><!-- /#breakdown-panel -->
 
-          <div class="results-row">
-            <dt data-i18n="results.incomeTax">Income Tax</dt>
-            <dd id="result-income-tax" class="result-value">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.medicareLevy">Medicare Levy</dt>
-            <dd id="result-medicare-levy" class="result-value">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt>
-            <dd id="result-medicare-surcharge" class="result-value">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt>
-            <dd id="result-hecs-repayment" class="result-value">$0.00</dd>
-          </div>
-
-          <div class="results-row results-row--total">
-            <dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt>
-            <dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd>
-          </div>
-        </div>
-
-        <div class="results-group">
-          <dt class="results-group-title" data-i18n="results.group.offsets">Offsets &amp; Credits</dt>
-
-          <div class="results-row">
-            <dt data-i18n="results.lito">LITO</dt>
-            <dd id="result-lito" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.lmito">LMITO</dt>
-            <dd id="result-lmito" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.sapto">SAPTO</dt>
-            <dd id="result-sapto" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.frankingCreditsResult">Franking Credits</dt>
-            <dd id="result-franking" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt>
-            <dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.otherOffsets">Other Offsets</dt>
-            <dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row results-row--total">
-            <dt data-i18n="results.totalOffsets">Total Offsets</dt>
-            <dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd>
-          </div>
-        </div>
-
-        <div class="results-group">
-          <dt class="results-group-title" data-i18n="results.group.credits">Tax Already Paid</dt>
-
-          <div class="results-row">
-            <dt data-i18n="results.taxWithheld">Tax Withheld</dt>
-            <dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd>
-          </div>
-
-          <div class="results-row">
-            <dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt>
-            <dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd>
-          </div>
-        </div>
-
-        <div class="results-group results-group--final">
-          <div class="results-row results-row--outcome">
-            <dt id="outcome-label" data-i18n="results.outcome.default">Tax Payable / Refund</dt>
-            <dd id="result-outcome" class="result-value result-value--outcome">$0.00</dd>
-          </div>
-          <p class="outcome-note" id="outcome-note" aria-live="polite"></p>
-        </div>
-
-      </dl>
-    </aside>
+    </div><!-- /#results-panel -->
 
   </main>
 
@@ -853,23 +886,6 @@
       <div class="tooltip-modal-body" id="tooltip-modal-body">
         <!-- Content injected by script.js -->
       </div>
-    </div>
-  </dialog>
-
-  <!-- ======================================================
-       SUMMARY MODAL
-  ====================================================== -->
-  <dialog id="summary-modal" class="summary-modal" aria-labelledby="summary-modal-title" aria-modal="true">
-    <div class="summary-modal-inner">
-      <header class="tooltip-modal-header">
-        <h3 id="summary-modal-title" class="tooltip-modal-title" data-i18n="summary.title">📋 Tax Summary</h3>
-        <button type="button" class="tooltip-modal-close" id="summary-modal-close" aria-label="Close">&#x2715;</button>
-      </header>
-      <div class="summary-modal-body" id="summary-modal-body"></div>
-      <footer class="summary-modal-footer">
-        <button type="button" id="summary-print-btn" class="btn-calculate" data-i18n="summary.print">🖨️ Print</button>
-        <button type="button" id="summary-close-btn" class="btn-reset" data-i18n="summary.close">Close</button>
-      </footer>
     </div>
   </dialog>
 
