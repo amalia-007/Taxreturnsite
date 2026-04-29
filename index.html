@@ -191,6 +191,21 @@
     </section>
 
     <!-- ====================================================
+         PAYSLIP UPLOAD
+    ==================================================== -->
+    <section class="upload-section" id="payslip-section">
+      <h2 class="upload-section__title">📄 <span data-i18n="upload.title">Upload Your Payslips</span></h2>
+      <p class="upload-section__sub" data-i18n="upload.subtitle">Drop your payslips and we'll fill in your income and tax automatically.</p>
+      <label class="upload-section__btn" for="payslip-input">
+        <span data-i18n="upload.dropzone">Drop payslips here or click to browse</span>
+        <input type="file" id="payslip-input" accept=".pdf,.jpg,.jpeg,.png" multiple />
+      </label>
+      <p class="upload-section__hint" data-i18n="upload.hint">PDF, JPG or PNG — up to 10 MB each</p>
+      <ul id="payslip-file-list" class="upload-section__list"></ul>
+      <div id="payslip-totals" class="upload-section__totals" hidden></div>
+    </section>
+
+    <!-- ====================================================
          ACCORDION FORM
     ==================================================== -->
     <form id="tax-form" novalidate>
@@ -980,6 +995,88 @@
         btn.textContent = t.button;
       }
     });
+  </script>
+
+  <!-- ======================================================
+       PAYSLIP UPLOAD HANDLER
+  ====================================================== -->
+  <script>
+  (function () {
+    'use strict';
+    var input  = document.getElementById('payslip-input');
+    var list   = document.getElementById('payslip-file-list');
+    var totals = document.getElementById('payslip-totals');
+    if (!input) return;
+
+    function toB64(file) {
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onload  = function () { resolve(r.result.split(',')[1]); };
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    function setField(id, val) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.value = val.toFixed(2);
+      el.dispatchEvent(new Event('input',  { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    input.addEventListener('change', async function () {
+      var files = Array.from(this.files);
+      if (!files.length) return;
+
+      list.innerHTML = '';
+      totals.hidden  = true;
+      var gross = 0, tax = 0, sup = 0;
+
+      for (var i = 0; i < files.length; i++) {
+        var f  = files[i];
+        var li = document.createElement('li');
+        li.className   = 'upload-section__item upload-section__item--loading';
+        li.textContent = '⏳ ' + f.name;
+        list.appendChild(li);
+
+        try {
+          var b64  = await toB64(f);
+          var resp = await fetch('/api/ocr', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ base64: b64, mediaType: f.type || 'image/jpeg' }),
+          });
+          var data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || 'Analysis failed');
+
+          gross += data.gross_income || 0;
+          tax   += data.tax_withheld || 0;
+          sup   += data.super        || 0;
+
+          li.className   = 'upload-section__item upload-section__item--ok';
+          li.textContent = '✅ ' + f.name;
+        } catch (e) {
+          li.className   = 'upload-section__item upload-section__item--err';
+          li.textContent = '❌ ' + f.name + ' — ' + e.message;
+        }
+      }
+
+      setField('salary-wages',        gross);
+      setField('tax-withheld-salary', tax);
+
+      var lang = localStorage.getItem('lang') || 'en';
+      var t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+      totals.hidden = false;
+      totals.innerHTML =
+        (t['upload.done'] || 'Done — fields filled!') + ' &nbsp;' +
+        'Gross: <strong>$' + gross.toFixed(2) + '</strong>' +
+        ' &nbsp;|&nbsp; Tax withheld: <strong>$' + tax.toFixed(2) + '</strong>' +
+        ' &nbsp;|&nbsp; Super: <strong>$' + sup.toFixed(2) + '</strong>';
+
+      if (typeof runCalculation === 'function') runCalculation();
+    });
+  })();
   </script>
 </body>
 </html>
