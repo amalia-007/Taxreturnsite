@@ -39,27 +39,23 @@ function formatNumberInput(input) {
   const raw = input.value;
   const isInt = input.inputMode === 'numeric';
 
-  // Count non-comma chars before cursor to restore position after reformatting
   let sigBefore = 0;
   for (let i = 0; i < sel; i++) {
     if (raw[i] !== ',') sigBefore++;
   }
 
-  // Strip invalid chars; allow one decimal point for non-integer fields
   let clean = raw.replace(isInt ? /[^0-9]/g : /[^0-9.]/g, '');
   if (!isInt) {
     const d = clean.indexOf('.');
     if (d >= 0) clean = clean.slice(0, d + 1) + clean.slice(d + 1).replace(/\./g, '');
   }
 
-  // Add thousand-separator commas to integer part
   const d = clean.indexOf('.');
   const intPart = (d >= 0 ? clean.slice(0, d) : clean).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   const formatted = intPart + (d >= 0 ? clean.slice(d) : '');
 
   input.value = formatted;
 
-  // Restore cursor: advance until sigBefore non-comma chars have been passed
   let count = 0, newSel = formatted.length;
   for (let i = 0; i < formatted.length; i++) {
     if (count === sigBefore) { newSel = i; break; }
@@ -112,6 +108,7 @@ function runCalculation() {
   const grossTax     = tax + medicareLevy + medicareSurcharge + hecs;
   const outcome      = grossTax - totalOffsets - withheld - payg;
 
+  // Populate breakdown numbers
   set('result-gross-income',      gross);
   set('result-total-deductions',  deductions);
   set('result-taxable-income',    taxable);
@@ -135,40 +132,45 @@ function runCalculation() {
   set('result-tax-withheld',      withheld);
   set('result-payg-credits',      payg);
 
-  const outcomeEl    = document.getElementById('result-outcome');
-  const outcomeLabel = document.getElementById('outcome-label');
-  const heroLabel    = document.getElementById('hero-label');
-  const heroAmount   = document.getElementById('hero-amount');
-  const heroSub      = document.getElementById('hero-sub');
-  const banner       = document.getElementById('outcome-banner');
-  const group        = document.querySelector('.results-group--final');
-  if (outcomeEl && group) {
+  // Populate hero AND breakdown outcome
+  const heroEl        = document.getElementById('outcome-hero');
+  const outcomeLabel  = document.getElementById('outcome-label');
+  const outcomeHero   = document.getElementById('result-outcome');
+  const outcomeDetail = document.getElementById('result-outcome-detail');
+  const outcomeNote   = document.getElementById('outcome-note');
+  const group         = document.querySelector('.results-group--final');
+
+  if (heroEl) {
+    heroEl.classList.remove('is-refund', 'is-owing');
+    void heroEl.offsetHeight;
+  }
+  if (group) {
     group.classList.remove('is-refund', 'is-owing');
     void group.offsetHeight;
-    if (outcome < 0) {
-      outcomeEl.textContent = fmt(Math.abs(outcome));
-      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.refund');
-      group.classList.add('is-refund');
-      if (banner)     banner.className           = 'outcome-banner outcome-banner--refund';
-      if (heroLabel)  heroLabel.textContent      = tr('results.outcome.refund');
-      if (heroAmount) heroAmount.textContent     = fmt(Math.abs(outcome));
-      if (heroSub)    heroSub.textContent        = tr('results.disclaimer');
-    } else if (outcome > 0) {
-      outcomeEl.textContent = fmt(outcome);
-      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.owing');
-      group.classList.add('is-owing');
-      if (banner)     banner.className           = 'outcome-banner outcome-banner--owing';
-      if (heroLabel)  heroLabel.textContent      = tr('results.outcome.owing');
-      if (heroAmount) heroAmount.textContent     = fmt(outcome);
-      if (heroSub)    heroSub.textContent        = tr('results.disclaimer');
-    } else {
-      outcomeEl.textContent = fmt(0);
-      if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.default');
-      if (banner)     banner.className           = 'outcome-banner';
-      if (heroLabel)  heroLabel.textContent      = tr('results.outcome.default');
-      if (heroAmount) heroAmount.textContent     = fmt(0);
-      if (heroSub)    heroSub.textContent        = '';
-    }
+  }
+
+  if (outcome < 0) {
+    const amount = fmt(Math.abs(outcome));
+    if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.refund');
+    if (outcomeHero)   outcomeHero.textContent  = amount;
+    if (outcomeDetail) outcomeDetail.textContent = amount;
+    if (outcomeNote)   outcomeNote.textContent   = tr('results.outcome.refundNote') || 'The ATO will deposit this into your nominated bank account.';
+    heroEl?.classList.add('is-refund');
+    group?.classList.add('is-refund');
+  } else if (outcome > 0) {
+    const amount = fmt(outcome);
+    if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.owing');
+    if (outcomeHero)   outcomeHero.textContent  = amount;
+    if (outcomeDetail) outcomeDetail.textContent = amount;
+    if (outcomeNote)   outcomeNote.textContent   = tr('results.outcome.owingNote') || 'You will need to pay this by the due date on your notice of assessment.';
+    heroEl?.classList.add('is-owing');
+    group?.classList.add('is-owing');
+  } else {
+    const amount = fmt(0);
+    if (outcomeLabel) outcomeLabel.textContent = tr('results.outcome.default');
+    if (outcomeHero)   outcomeHero.textContent  = amount;
+    if (outcomeDetail) outcomeDetail.textContent = amount;
+    if (outcomeNote)   outcomeNote.textContent   = '';
   }
 
   updateProgress();
@@ -220,7 +222,7 @@ function applyHecsRules() {
   runCalculation();
 }
 
-// ── Resident rules — sections that show/hide per resident type ─────────────
+// ── Resident rules ─────────────────────────────────────────────────────────
 const RESIDENT_RULES = {
   australian:  { hideSections: [],                     hideOffsets: [] },
   whm:         { hideSections: ['accordion-medicare'],  hideOffsets: ['lito-eligible','lmito-eligible','sapto-eligible'] },
@@ -259,18 +261,7 @@ function setLanguage(lang) {
   runCalculation();
 }
 
-// ── Copy toast ────────────────────────────────────────────────────────────
-let _toastTimer;
-function showToast(msg) {
-  const toast = document.getElementById('copy-toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.removeAttribute('hidden');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => toast.setAttribute('hidden', ''), 2000);
-}
-
-// ── Modal ──────────────────────────────────────────────────────────────────
+// ── Tooltip modal ──────────────────────────────────────────────────────────
 const modal     = document.getElementById('tooltip-modal');
 const modalBody = document.getElementById('tooltip-modal-body');
 
@@ -287,15 +278,20 @@ function closeModal() { modal?.close(); }
 
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Calculate button — run calc, reveal hero, hide breakdown
   document.getElementById('btn-calculate')?.addEventListener('click', () => {
     runCalculation();
     const panel = document.getElementById('results-panel');
+    const bp    = document.getElementById('breakdown-panel');
     if (panel) {
       panel.removeAttribute('hidden');
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    if (bp) bp.setAttribute('hidden', '');
   });
 
+  // Show breakdown button
   document.getElementById('show-breakdown-btn')?.addEventListener('click', () => {
     const bp = document.getElementById('breakdown-panel');
     if (bp) {
@@ -304,32 +300,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  document.getElementById('breakdown-panel')?.addEventListener('click', e => {
+  // Copy buttons in breakdown panel
+  document.getElementById('breakdown-panel')?.addEventListener('click', (e) => {
     const btn = e.target.closest('.copy-btn');
     if (!btn) return;
-    const el = document.getElementById(btn.dataset.copy);
-    if (!el) return;
-    const raw = el.textContent.replace(/[$,\s]/g, '').replace('-', '');
-    navigator.clipboard.writeText(raw).then(() => {
-      btn.textContent = '✅';
-      showToast(tr('summary.copied'));
-      setTimeout(() => { btn.textContent = '📋'; }, 2000);
-    }).catch(() => {});
+    const el   = document.getElementById(btn.dataset.copy);
+    const text = el?.textContent?.trim().replace(/[$,]/g, '') || '';
+    const done = () => {
+      btn.textContent = '✓';
+      btn.classList.add('is-copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 1500);
+    };
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      const ta = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta); done();
+    }
   });
 
-  // Reset: clear validation state then recalculate to show $0.00
+  // Reset
   document.getElementById('tax-form')?.addEventListener('reset', () => {
     document.querySelectorAll('#tax-form .is-invalid').forEach(el => el.classList.remove('is-invalid'));
     document.querySelectorAll('#tax-form .field-error').forEach(el => { el.textContent = ''; });
+    document.getElementById('results-panel')?.setAttribute('hidden', '');
+    document.getElementById('breakdown-panel')?.setAttribute('hidden', '');
     applyResidentRules('australian');
-    const panel = document.getElementById('results-panel');
-    if (panel) panel.setAttribute('hidden', '');
-    const bp = document.getElementById('breakdown-panel');
-    if (bp) bp.setAttribute('hidden', '');
     runCalculation();
     updateProgress();
   });
 
+  // Live recalc on every form change
   document.querySelectorAll('#tax-form input, #tax-form select').forEach(el => {
     el.addEventListener('change', runCalculation);
     el.addEventListener('input',  runCalculation);
@@ -362,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('tooltip-modal-close')?.addEventListener('click', closeModal);
   modal?.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
-  // Accordion: intercept close click to play exit animation before toggling
+  // Accordion close animation
   document.querySelectorAll('.accordion-summary').forEach(summary => {
     summary.addEventListener('click', e => {
       const details = summary.closest('details');

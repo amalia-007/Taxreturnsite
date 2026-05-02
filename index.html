@@ -19,7 +19,6 @@
   <link rel="stylesheet" href="styles.css" />
 
   <!-- Plausible Analytics (privacy-friendly, no cookies) -->
-  <!-- Replace data-domain with your Plausible site ID after creating an account at plausible.io -->
   <script defer data-domain="amalia-007.github.io/Taxreturnsite" src="https://plausible.io/js/script.js"></script>
 
   <!-- Payment gate: hide calculator until paid -->
@@ -48,19 +47,28 @@
        LANDING PAGE (shown before payment)
   ====================================================== -->
   <section id="landing-page">
+
+    <!-- Language switcher -->
+    <nav class="landing-lang" aria-label="Language">
+      <button class="lang-flag lang-flag--active" data-lang="en">🇦🇺 EN</button>
+      <button class="lang-flag" data-lang="fr">🇫🇷 FR</button>
+      <button class="lang-flag" data-lang="es">🇪🇸 ES</button>
+      <button class="lang-flag" data-lang="it">🇮🇹 IT</button>
+    </nav>
+
     <div class="landing-inner">
       <p class="landing-logo">GET MY TAX</p>
-      <h1 class="landing-title">Your 2024–25 Australian<br>Tax Refund Estimate</h1>
-      <p class="landing-sub">Upload your payslips, enter your deductions, and get an instant estimate — in minutes.</p>
+      <h1 class="landing-title" id="lp-title">Skip the stress. Upload your payslips and get an instant refund estimate.</h1>
       <ul class="landing-features">
-        <li>Instant refund or liability estimate</li>
-        <li>HECS/HELP, Medicare &amp; all deductions included</li>
-        <li>Payslip OCR — upload &amp; auto-fill your data</li>
-        <li>One-time payment · No subscription · No expiry</li>
+        <li id="lp-b1">Instant refund or liability estimate</li>
+        <li id="lp-b2">AI-powered payslip reading</li>
+        <li id="lp-b3">ATO lodgement guide included</li>
+        <li id="lp-b4">WHM &amp; DASP super recovery guide</li>
       </ul>
-      <button id="landing-pay-btn" class="landing-cta">Pay $45.99 AUD · Get Instant Access</button>
+      <button id="landing-pay-btn" class="landing-cta">GET MY TAX NOW →</button>
+      <p class="landing-price">$45.99 AUD · one-time payment</p>
       <p id="landing-pay-error" class="landing-error"></p>
-      <p class="landing-legal">Powered by Stripe · SSL encrypted · Not a registered tax agent · Estimates only</p>
+      <p class="landing-legal" id="lp-legal">Estimates only — not financial advice. Always consult a registered tax agent.</p>
     </div>
   </section>
 
@@ -182,15 +190,16 @@
     </section>
 
     <!-- ====================================================
-         UPLOAD FICHES DE PAIE
+         PAYSLIP UPLOAD
     ==================================================== -->
     <section class="upload-section" id="payslip-section">
-      <h2 class="upload-section__title">📄 <span data-i18n="upload.title">Upload your payslips</span></h2>
-      <p class="upload-section__sub" data-i18n="upload.sub">Upload one or more payslips (PDF or image). The AI will automatically extract your gross salary, tax withheld and super.</p>
+      <h2 class="upload-section__title">📄 <span data-i18n="upload.title">Upload Your Payslips</span></h2>
+      <p class="upload-section__sub" data-i18n="upload.subtitle">Drop your payslips and we'll fill in your income and tax automatically.</p>
       <label class="upload-section__btn" for="payslip-input">
-        <span data-i18n="upload.btn">Choose payslips</span>
+        <span data-i18n="upload.dropzone">Drop payslips here or click to browse</span>
         <input type="file" id="payslip-input" accept=".pdf,.jpg,.jpeg,.png" multiple />
       </label>
+      <p class="upload-section__hint" data-i18n="upload.hint">PDF, JPG or PNG — up to 10 MB each</p>
       <ul id="payslip-file-list" class="upload-section__list"></ul>
       <div id="payslip-totals" class="upload-section__totals" hidden></div>
     </section>
@@ -200,9 +209,7 @@
     ==================================================== -->
     <form id="tax-form" novalidate>
 
-      <!-- ------------------------------------------------
-           1. INCOME
-      ------------------------------------------------ -->
+      <!-- 1. INCOME -->
       <details class="accordion" id="accordion-income" open>
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">💼</span>
@@ -246,9 +253,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           1b. AUTRES SOURCES DE REVENUS
-      ------------------------------------------------ -->
+      <!-- 1b. OTHER INCOME SOURCES -->
       <details class="accordion" id="accordion-other-sources">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">💰</span>
@@ -324,9 +329,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           2. TAX PAID
-      ------------------------------------------------ -->
+      <!-- 2. TAX PAID -->
       <details class="accordion" id="accordion-taxpaid">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">🏦</span>
@@ -378,9 +381,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           3. DEDUCTIONS
-      ------------------------------------------------ -->
+      <!-- 3. DEDUCTIONS -->
       <details class="accordion" id="accordion-deductions">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">📋</span>
@@ -480,9 +481,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           4. OFFSETS
-      ------------------------------------------------ -->
+      <!-- 4. OFFSETS -->
       <details class="accordion" id="accordion-offsets">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">⚖️</span>
@@ -542,9 +541,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           5. MEDICARE
-      ------------------------------------------------ -->
+      <!-- 5. MEDICARE -->
       <details class="accordion" id="accordion-medicare">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">🏥</span>
@@ -617,9 +614,7 @@
         </div>
       </details>
 
-      <!-- ------------------------------------------------
-           6. HECS / HELP
-      ------------------------------------------------ -->
+      <!-- 6. HECS / HELP -->
       <details class="accordion" id="accordion-hecs">
         <summary class="accordion-summary">
           <span class="accordion-icon" aria-hidden="true">🎓</span>
@@ -692,25 +687,25 @@
     </form>
 
     <!-- ====================================================
-         RESULTS — hero + breakdown (shown after Calculate)
+         RESULTS PANEL
     ==================================================== -->
-    <section id="results-panel" class="results-inline" hidden aria-label="Tax results">
+    <div id="results-panel" class="results-panel" hidden>
 
-      <!-- Hero: big number -->
-      <div id="outcome-banner" class="outcome-banner">
-        <p id="hero-label" class="outcome-banner__label"></p>
-        <p id="hero-amount" class="outcome-banner__amount"></p>
-        <p id="hero-sub" class="outcome-banner__sub"></p>
+      <!-- Step A: Hero outcome -->
+      <div id="outcome-hero" class="outcome-hero">
+        <p id="outcome-label" class="outcome-hero__label" data-i18n="results.outcome.default">Tax Payable / Refund</p>
+        <p id="result-outcome" class="outcome-hero__amount">$0.00</p>
+        <p id="outcome-note"   class="outcome-hero__sub"  aria-live="polite"></p>
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+           class="outcome-hero__cta" data-i18n="results.requestBtn">TAX RETURN REQUEST →</a>
+        <button type="button" id="show-breakdown-btn" class="outcome-hero__breakdown-btn"
+                data-i18n="results.showBreakdown">📋 See Full Breakdown</button>
       </div>
 
-      <!-- Demande de Tax Return button -->
-      <button id="show-breakdown-btn" class="btn-calculate results-cta">
-        📊 <span data-i18n="results.requestBtn">Demande de Tax Return</span>
-      </button>
-
-      <!-- Full breakdown (hidden until button clicked) -->
+      <!-- Step B: Full breakdown (hidden until button clicked) -->
       <div id="breakdown-panel" class="breakdown-panel" hidden>
 
+        <h2 class="breakdown-panel__heading" data-i18n="results.heading">Your Tax Summary</h2>
         <p class="results-disclaimer" data-i18n="results.disclaimer">
           Estimates only. Not financial advice. Always consult a registered tax agent.
         </p>
@@ -719,81 +714,140 @@
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.income">Income</dt>
-            <div class="results-row"><dt data-i18n="results.grossIncome">Gross Income</dt><dd id="result-gross-income" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-gross-income" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.totalDeductions">Total Deductions</dt><dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd><button type="button" class="copy-btn" data-copy="result-total-deductions" aria-label="Copy">📋</button></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.taxableIncome">Taxable Income</dt><dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd><button type="button" class="copy-btn" data-copy="result-taxable-income" aria-label="Copy">📋</button></div>
+            <div class="results-row">
+              <dt data-i18n="results.grossIncome">Gross Income</dt>
+              <dd id="result-gross-income" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-gross-income">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.totalDeductions">Total Deductions</dt>
+              <dd id="result-total-deductions" class="result-value result-value--deduction">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-total-deductions">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.taxableIncome">Taxable Income</dt>
+              <dd id="result-taxable-income" class="result-value result-value--highlight">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-taxable-income">Copy</button>
+            </div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.tax">Tax Calculation</dt>
-            <div class="results-row"><dt data-i18n="results.incomeTax">Income Tax</dt><dd id="result-income-tax" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-income-tax" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.medicareLevy">Medicare Levy</dt><dd id="result-medicare-levy" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-medicare-levy" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt><dd id="result-medicare-surcharge" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-medicare-surcharge" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt><dd id="result-hecs-repayment" class="result-value">$0.00</dd><button type="button" class="copy-btn" data-copy="result-hecs-repayment" aria-label="Copy">📋</button></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt><dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd><button type="button" class="copy-btn" data-copy="result-gross-tax" aria-label="Copy">📋</button></div>
+            <div class="results-row">
+              <dt data-i18n="results.incomeTax">Income Tax</dt>
+              <dd id="result-income-tax" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-income-tax">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.medicareLevy">Medicare Levy</dt>
+              <dd id="result-medicare-levy" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-medicare-levy">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.medicareSurcharge">Medicare Levy Surcharge</dt>
+              <dd id="result-medicare-surcharge" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-medicare-surcharge">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.hecsRepayment">HECS / HELP Repayment</dt>
+              <dd id="result-hecs-repayment" class="result-value">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-hecs-repayment">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.grossTaxLiability">Gross Tax Liability</dt>
+              <dd id="result-gross-tax" class="result-value result-value--highlight">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-gross-tax">Copy</button>
+            </div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.offsets">Offsets &amp; Credits</dt>
-            <div class="results-row"><dt data-i18n="results.lito">LITO</dt><dd id="result-lito" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-lito" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.lmito">LMITO</dt><dd id="result-lmito" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-lmito" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.sapto">SAPTO</dt><dd id="result-sapto" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-sapto" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.frankingCreditsResult">Franking Credits</dt><dd id="result-franking" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-franking" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt><dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-foreign-offset" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.otherOffsets">Other Offsets</dt><dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-other-offsets" aria-label="Copy">📋</button></div>
-            <div class="results-row results-row--total"><dt data-i18n="results.totalOffsets">Total Offsets</dt><dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-total-offsets" aria-label="Copy">📋</button></div>
+            <div class="results-row">
+              <dt data-i18n="results.lito">LITO</dt>
+              <dd id="result-lito" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-lito">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.lmito">LMITO</dt>
+              <dd id="result-lmito" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-lmito">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.sapto">SAPTO</dt>
+              <dd id="result-sapto" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-sapto">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.frankingCreditsResult">Franking Credits</dt>
+              <dd id="result-franking" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-franking">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.foreignTaxOffset">Foreign Tax Offset</dt>
+              <dd id="result-foreign-offset" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-foreign-offset">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.otherOffsets">Other Offsets</dt>
+              <dd id="result-other-offsets" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-other-offsets">Copy</button>
+            </div>
+            <div class="results-row results-row--total">
+              <dt data-i18n="results.totalOffsets">Total Offsets</dt>
+              <dd id="result-total-offsets" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-total-offsets">Copy</button>
+            </div>
           </div>
 
           <div class="results-group">
             <dt class="results-group-title" data-i18n="results.group.credits">Tax Already Paid</dt>
-            <div class="results-row"><dt data-i18n="results.taxWithheld">Tax Withheld</dt><dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-tax-withheld" aria-label="Copy">📋</button></div>
-            <div class="results-row"><dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt><dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd><button type="button" class="copy-btn" data-copy="result-payg-credits" aria-label="Copy">📋</button></div>
+            <div class="results-row">
+              <dt data-i18n="results.taxWithheld">Tax Withheld</dt>
+              <dd id="result-tax-withheld" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-tax-withheld">Copy</button>
+            </div>
+            <div class="results-row">
+              <dt data-i18n="results.paygCredits">PAYG Instalment Credits</dt>
+              <dd id="result-payg-credits" class="result-value result-value--credit">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-payg-credits">Copy</button>
+            </div>
           </div>
 
           <div class="results-group results-group--final">
             <div class="results-row results-row--outcome">
-              <dt id="outcome-label" data-i18n="results.outcome.default">Tax Payable / Refund</dt>
-              <dd id="result-outcome" class="result-value result-value--outcome">$0.00</dd>
-              <button type="button" class="copy-btn" data-copy="result-outcome" aria-label="Copy">📋</button>
+              <dt data-i18n="results.outcome.default">Outcome</dt>
+              <dd id="result-outcome-detail" class="result-value result-value--outcome">$0.00</dd>
+              <button type="button" class="copy-btn" data-copy="result-outcome-detail">Copy</button>
             </div>
-            <p class="outcome-note" id="outcome-note" aria-live="polite"></p>
           </div>
 
         </dl>
 
-        <!-- ATO lodgement guide -->
+        <!-- ATO 7-step guide -->
         <div class="ato-guide">
-          <h3 class="ato-guide__title" data-i18n="ato.guide.title">How to lodge your tax return</h3>
+          <h3 class="ato-guide__title" data-i18n="ato.guide.title">📋 How to Lodge Your Tax Return</h3>
           <ol class="ato-guide__steps">
-            <li>Log in to <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer">myGov</a> and open your ATO account</li>
-            <li>Go to <strong>Tax → Lodge a tax return</strong></li>
-            <li>Review the pre-filled information (income, withholding)</li>
-            <li>Add any deductions</li>
-            <li>Check the summary</li>
-            <li>Submit your return</li>
-            <li>Track your refund via myGov</li>
+            <li><strong>Create or log in to myGov</strong> — <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer">my.gov.au →</a></li>
+            <li><strong>Link the ATO</strong> to your myGov account (Services → Link → ATO).</li>
+            <li><strong>Open myTax</strong> — click Tax → Lodge return → Use myTax.</li>
+            <li><strong>Check pre-filled data</strong> — your employer &amp; bank data is loaded automatically.</li>
+            <li><strong>Add income &amp; deductions</strong> not pre-filled (rental, ABN, gifts).</li>
+            <li><strong>Submit your return</strong> — review summary, then lodge.</li>
+            <li><strong>Track your refund</strong> via the ATO app or myGov (usually 2 weeks).</li>
           </ol>
-          <a href="https://www.ato.gov.au/individuals-and-families/your-tax-return/lodge-your-tax-return" target="_blank" rel="noopener noreferrer" class="ato-guide__link" data-i18n="ato.guide.link">Official ATO guide →</a>
-        </div>
-
-        <div class="breakdown-panel__actions">
-          <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="btn-calculate breakdown-panel__gov-link">
-            Go to myGov →
+          <a class="ato-guide__link" href="https://www.ato.gov.au/individuals-and-families/your-tax-return"
+             target="_blank" rel="noopener noreferrer" data-i18n="ato.guide.link">
+            Full ATO guide →
           </a>
-          <button type="button" onclick="window.print()" class="btn-reset">Print summary</button>
         </div>
 
-      </div><!-- /breakdown-panel -->
+      </div><!-- /#breakdown-panel -->
 
-      <div id="copy-toast" class="copy-toast" hidden aria-live="polite"></div>
-
-    </section><!-- /results-panel -->
+    </div><!-- /#results-panel -->
 
   </main>
 
-  <!-- ======================================================
-       FOOTER
-  ====================================================== -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <p data-i18n="footer.disclaimer">
       This calculator provides estimates only and does not constitute financial or tax advice.
@@ -803,9 +857,7 @@
     </p>
   </footer>
 
-  <!-- ======================================================
-       TOOLTIP MODAL
-  ====================================================== -->
+  <!-- TOOLTIP MODAL -->
   <dialog id="tooltip-modal" class="tooltip-modal" aria-labelledby="tooltip-modal-title" aria-modal="true">
     <div class="tooltip-modal-inner">
       <header class="tooltip-modal-header">
@@ -813,7 +865,7 @@
         <button type="button" class="tooltip-modal-close" id="tooltip-modal-close" aria-label="Close" data-i18n-aria="modal.close">&#x2715;</button>
       </header>
       <div class="tooltip-modal-body" id="tooltip-modal-body">
-        <!-- Content injected by script.js -->
+        <!-- Content injected by app.js -->
       </div>
     </div>
   </dialog>
@@ -836,32 +888,113 @@
 
   </div><!-- /#app-section -->
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/config.js"></script>
   <script>
+    // ── Landing page translations ──────────────────────────────
+    var LP_TRANS = {
+      en: {
+        title:  'Skip the stress. Upload your payslips and get an instant refund estimate.',
+        b1:     'Instant refund or liability estimate',
+        b2:     'AI-powered payslip reading',
+        b3:     'ATO lodgement guide included',
+        b4:     'WHM & DASP super recovery guide',
+        button: 'GET MY TAX NOW →',
+        legal:  'Estimates only — not financial advice. Always consult a registered tax agent.'
+      },
+      fr: {
+        title:  'Oubliez le stress. Téléversez vos bulletins de paie et obtenez une estimation de remboursement instantanée.',
+        b1:     'Estimation instantanée du remboursement ou de l\'impôt dû',
+        b2:     'Lecture des bulletins de paie par intelligence artificielle',
+        b3:     'Guide de dépôt ATO inclus',
+        b4:     'Guide WHM & récupération de la retraite DASP',
+        button: 'OBTENIR MON TAX →',
+        legal:  'Estimations uniquement — pas un conseil fiscal. Consultez toujours un agent fiscal agréé.'
+      },
+      es: {
+        title:  'Olvídate del estrés. Sube tus recibos de sueldo y obtén una estimación de reembolso al instante.',
+        b1:     'Estimación instantánea del reembolso o impuesto adeudado',
+        b2:     'Lectura de recibos de sueldo con inteligencia artificial',
+        b3:     'Guía de presentación ATO incluida',
+        b4:     'Guía WHM y recuperación de super DASP',
+        button: 'OBTENER MI TAX →',
+        legal:  'Solo estimaciones — no es asesoramiento fiscal. Consulte siempre a un agente fiscal registrado.'
+      },
+      it: {
+        title:  'Dimentica lo stress. Carica le tue buste paga e ottieni una stima del rimborso all\'istante.',
+        b1:     'Stima istantanea del rimborso o dell\'imposta dovuta',
+        b2:     'Lettura delle buste paga tramite intelligenza artificiale',
+        b3:     'Guida alla presentazione ATO inclusa',
+        b4:     'Guida WHM e recupero super DASP',
+        button: 'OTTIENI IL MIO TAX →',
+        legal:  'Solo stime — non un consiglio fiscale. Consulta sempre un agente fiscale registrato.'
+      }
+    };
+
+    var currentLang = 'en';
+
+    function applyLang(lang) {
+      var t = LP_TRANS[lang] || LP_TRANS.en;
+      document.getElementById('lp-title').textContent        = t.title;
+      document.getElementById('lp-b1').textContent           = t.b1;
+      document.getElementById('lp-b2').textContent           = t.b2;
+      document.getElementById('lp-b3').textContent           = t.b3;
+      document.getElementById('lp-b4').textContent           = t.b4;
+      document.getElementById('landing-pay-btn').textContent = t.button;
+      document.getElementById('lp-legal').textContent        = t.legal;
+      document.querySelectorAll('.lang-flag').forEach(function (btn) {
+        btn.classList.toggle('lang-flag--active', btn.dataset.lang === lang);
+      });
+      document.documentElement.setAttribute('lang', lang);
+      currentLang = lang;
+    }
+
+    document.querySelectorAll('.lang-flag').forEach(function (btn) {
+      btn.addEventListener('click', function () { applyLang(btn.dataset.lang); });
+    });
+
+    // ── Pay button ─────────────────────────────────────────────
     document.getElementById('landing-pay-btn').addEventListener('click', async function () {
-      var btn    = document.getElementById('landing-pay-btn');
-      var errEl  = document.getElementById('landing-pay-error');
+      var btn   = document.getElementById('landing-pay-btn');
+      var errEl = document.getElementById('landing-pay-error');
+      var t     = LP_TRANS[currentLang] || LP_TRANS.en;
+
       btn.disabled    = true;
       btn.textContent = 'Redirecting to checkout…';
       errEl.textContent = '';
+
+      var controller = new AbortController();
+      var timer = setTimeout(function () { controller.abort(); }, 15000);
+
       try {
-        var res  = await fetch('/api/checkout', {
-          method: 'POST',
+        var res = await fetch('/api/checkout', {
+          method:  'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal:  controller.signal,
         });
-        var data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Checkout failed. Please try again.');
-        window.location.href = data.url;
+        clearTimeout(timer);
+        var body;
+        try { body = await res.json(); } catch (_) { body = {}; }
+        if (!res.ok) {
+          console.error('[GET MY TAX] Checkout API error', res.status, body);
+          throw new Error(body.error || ('Server error ' + res.status + '. Please try again.'));
+        }
+        if (!body.url) throw new Error('No checkout URL returned. Please try again.');
+        window.location.href = body.url;
       } catch (err) {
-        errEl.textContent = err.message;
+        clearTimeout(timer);
+        var msg = err.name === 'AbortError'
+          ? 'Request timed out. Please try again.'
+          : (err.message || 'Checkout failed. Please try again.');
+        console.error('[GET MY TAX] Pay button error:', err);
+        errEl.textContent = msg;
         btn.disabled    = false;
-        btn.textContent = 'Pay $45.99 AUD · Get Instant Access';
+        btn.textContent = t.button;
       }
     });
   </script>
 
-  <!-- ======================================================
-       PAYSLIP UPLOAD HANDLER
-  ====================================================== -->
+  <!-- PAYSLIP UPLOAD HANDLER -->
   <script>
   (function () {
     'use strict';
@@ -898,23 +1031,23 @@
       for (var i = 0; i < files.length; i++) {
         var f  = files[i];
         var li = document.createElement('li');
-        li.className    = 'upload-section__item upload-section__item--loading';
-        li.textContent  = '⏳ ' + f.name;
+        li.className   = 'upload-section__item upload-section__item--loading';
+        li.textContent = '⏳ ' + f.name;
         list.appendChild(li);
 
         try {
           var b64  = await toB64(f);
-          var resp = await fetch('/api/analyze-payslip', {
+          var resp = await fetch('/api/ocr', {
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ base64: b64, mediaType: f.type || 'image/jpeg' }),
           });
           var data = await resp.json();
-          if (!resp.ok) throw new Error(data.error || 'Analyse failed');
+          if (!resp.ok) throw new Error(data.error || 'Analysis failed');
 
-          gross += data.gross_salary   || 0;
-          tax   += data.tax_withheld   || 0;
-          sup   += data.superannuation || 0;
+          gross += data.gross_income || 0;
+          tax   += data.tax_withheld || 0;
+          sup   += data.super        || 0;
 
           li.className   = 'upload-section__item upload-section__item--ok';
           li.textContent = '✅ ' + f.name;
@@ -924,16 +1057,16 @@
         }
       }
 
-      setField('salary-wages',       gross);
+      setField('salary-wages',        gross);
       setField('tax-withheld-salary', tax);
 
       var lang = localStorage.getItem('lang') || 'en';
       var t = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
       totals.hidden = false;
       totals.innerHTML =
-        '<span>' + (t['upload.extracted'] || 'Extracted') + '</span> — ' +
-        '<span>' + (t['income.salary.label'] || 'Gross salary') + '</span>: <strong>$' + gross.toFixed(2) + '</strong>' +
-        ' &nbsp;|&nbsp; <span>' + (t['results.taxWithheld'] || 'Tax withheld') + '</span>: <strong>$' + tax.toFixed(2) + '</strong>' +
+        (t['upload.done'] || 'Done — fields filled!') + ' &nbsp;' +
+        'Gross: <strong>$' + gross.toFixed(2) + '</strong>' +
+        ' &nbsp;|&nbsp; Tax withheld: <strong>$' + tax.toFixed(2) + '</strong>' +
         ' &nbsp;|&nbsp; Super: <strong>$' + sup.toFixed(2) + '</strong>';
 
       if (typeof runCalculation === 'function') runCalculation();
