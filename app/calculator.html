@@ -52,7 +52,7 @@
 
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
-    <!-- ── Upload Payslips ───────────────────────────────────────────────────── -->
+    <!-- ── Upload Payslips ────────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
 
       <div class="flex items-start justify-between mb-5">
@@ -92,7 +92,7 @@
 
     </div><!-- end Upload Payslips -->
 
-    <!-- ── Step 2: Calculator ──────────────────────────────────────────────── -->
+    <!-- ── Step 2: Calculator ────────────────────────────────────────── -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
 
       <div class="flex items-start justify-between mb-5">
@@ -216,7 +216,7 @@
 
     </div><!-- end Step 2 -->
 
-    <!-- ── Step 3: Results ───────────────────────────────────────────────── -->
+    <!-- ── Step 3: Results ───────────────────────────────────────────── -->
     <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
       <!-- Big outcome hero -->
@@ -224,13 +224,14 @@
         <p id="outcome-label" class="text-xs font-bold tracking-widest uppercase mb-3 text-white opacity-80"></p>
         <p id="outcome-amount" class="text-6xl sm:text-7xl font-black tabular-nums mb-4 leading-none text-white"></p>
         <p id="outcome-sub" class="text-sm mb-6 max-w-xs mx-auto text-white opacity-75"></p>
-        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-          class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide">
+        <button id="tax-return-btn"
+          class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide cursor-pointer bg-transparent">
           TAX RETURN REQUEST →
-        </a>
+        </button>
       </div>
 
-      <!-- Your Numbers breakdown -->
+      <!-- Your Numbers breakdown — hidden until TAX RETURN REQUEST is clicked -->
+      <div id="breakdown-section" class="hidden">
       <div class="p-6">
         <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
 
@@ -327,10 +328,10 @@
           or a registered tax agent.
         </p>
       </div>
+      </div><!-- /#breakdown-section -->
     </div>
 
-    <!-- ── Step 4: Next Steps ─────────────────────────────────────────────── -->
-    <!-- ── ATO 7-Step Lodgement Guide ──────────────────────────────────────── -->
+    <!-- ── Step 4: ATO 7-Step Lodgement Guide ───────────────────────────── -->
     <div id="next-steps-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
 
       <div class="flex items-start justify-between mb-5">
@@ -343,7 +344,6 @@
 
       <ol class="space-y-3 mb-6">
 
-        <!-- Step 1 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
           <div class="flex-1 min-w-0">
@@ -358,7 +358,6 @@
           </div>
         </li>
 
-        <!-- Step 2 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">2</div>
           <div class="flex-1 min-w-0">
@@ -373,7 +372,6 @@
           </div>
         </li>
 
-        <!-- Step 3 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">3</div>
           <div class="flex-1 min-w-0">
@@ -388,7 +386,6 @@
           </div>
         </li>
 
-        <!-- Step 4 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">4</div>
           <div class="flex-1 min-w-0">
@@ -397,7 +394,6 @@
           </div>
         </li>
 
-        <!-- Step 5 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">5</div>
           <div class="flex-1 min-w-0">
@@ -406,7 +402,6 @@
           </div>
         </li>
 
-        <!-- Step 6 -->
         <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">6</div>
           <div class="flex-1 min-w-0">
@@ -415,7 +410,6 @@
           </div>
         </li>
 
-        <!-- Step 7 — deadline warning -->
         <li class="flex gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 hover:border-amber-300 transition-colors">
           <div class="shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">7</div>
           <div class="flex-1 min-w-0">
@@ -433,7 +427,6 @@
 
       </ol>
 
-      <!-- Action buttons -->
       <div class="flex flex-col sm:flex-row gap-3 mb-4">
         <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
           class="flex-1 text-center bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">
@@ -462,35 +455,26 @@
   <script>
     'use strict';
 
-    // ── Helpers ────────────────────────────────────────────────────────────────
     const fmt = (n) => '$' + Math.abs(n).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
-
-    function radio(name) {
-      return document.querySelector(`input[name="${name}"]:checked`)?.value ?? null;
-    }
-
+    function radio(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value ?? null; }
     function esc(v) {
       if (v == null) return '';
       return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    // ── Auth guard & pre-fill ──────────────────────────────────────────────────
+    // ── Auth guard & pre-fill ──────────────────────────────────────────
     (async () => {
       const result = await requirePaid();
       if (!result) return;
-
       const { session } = result;
       document.getElementById('user-email').textContent = session.user.email;
-
       const { data: payslips } = await window.sb
         .from('payslips')
         .select('extracted_data')
         .eq('user_id', session.user.id)
         .order('created_at', { ascending: false })
         .limit(50);
-
       if (payslips && payslips.length > 0) {
         let totalGross = 0, totalTax = 0;
         for (const p of payslips) {
@@ -508,7 +492,7 @@
       }
     })();
 
-    // ── Residency note ─────────────────────────────────────────────────────────
+    // ── Residency note ────────────────────────────────────────────────
     document.querySelectorAll('input[name="residency"]').forEach(r => {
       r.addEventListener('change', () => {
         const notes = {
@@ -521,7 +505,7 @@
       });
     });
 
-    // ── Calculate ──────────────────────────────────────────────────────────────
+    // ── Calculate ──────────────────────────────────────────────────────
     document.getElementById('calculate-btn').addEventListener('click', () => {
       const grossIncome     = val('gross-income');
       const paygWithheld    = val('payg-withheld');
@@ -563,8 +547,14 @@
         hecsRow.classList.remove('flex');
       }
 
-      document.getElementById('r-liability').textContent = fmt(r.totalLiability);
-      document.getElementById('r-payg').textContent      = fmt(r.paygWithheld);
+      document.getElementById('r-payg').textContent    = fmt(r.paygWithheld);
+      document.getElementById('r-outcome').textContent = fmt(r.refundOrOwed);
+
+      document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `
+        <div class="flex justify-between px-4 py-2.5 text-xs">
+          <span class="text-gray-500">${fmt(b.from)} – ${b.to === Infinity ? 'above' : fmt(b.to)} @ ${(b.rate * 100).toFixed(0)}c/dollar</span>
+          <span class="font-medium text-gray-800 tabular-nums">${fmt(b.amount)}</span>
+        </div>`).join('');
 
       const isRefund = r.refundOrOwed >= 0;
       const banner   = document.getElementById('outcome-banner');
@@ -575,48 +565,43 @@
         ? 'The ATO will deposit this into your nominated bank account.'
         : 'You will need to pay this by the due date on your notice of assessment.';
 
-      // Fill the Outcome row in "Your Numbers"
-      document.getElementById('r-outcome').textContent = fmt(r.refundOrOwed);
-
-      document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `
-        <div class="flex justify-between px-4 py-2.5 text-xs">
-          <span class="text-gray-500">${fmt(b.from)} – ${b.to === Infinity ? 'above' : fmt(b.to)} @ ${(b.rate * 100).toFixed(0)}c/dollar</span>
-          <span class="font-medium text-gray-800 tabular-nums">${fmt(b.amount)}</span>
-        </div>`).join('');
-
       document.getElementById('results-panel').classList.remove('hidden');
-      document.getElementById('next-steps-panel').classList.remove('hidden');
+      document.getElementById('breakdown-section').classList.add('hidden');
+      document.getElementById('next-steps-panel').classList.add('hidden');
       document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    // ── AI Deduction Finder ────────────────────────────────────────────────────
+    // ── TAX RETURN REQUEST → reveal breakdown + ATO guide ─────────────────
+    document.getElementById('tax-return-btn').addEventListener('click', () => {
+      window.open('https://my.gov.au', '_blank', 'noopener,noreferrer');
+      document.getElementById('breakdown-section').classList.remove('hidden');
+      document.getElementById('next-steps-panel').classList.remove('hidden');
+      document.getElementById('breakdown-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ── AI Deduction Finder ──────────────────────────────────────────────
     document.getElementById('find-deductions-btn').addEventListener('click', async () => {
       const btn   = document.getElementById('find-deductions-btn');
       const input = document.getElementById('job-title');
       const err   = document.getElementById('deduction-error');
       const tips  = document.getElementById('deduction-tips');
       const job   = input.value.trim();
-
       if (!job) { err.textContent = 'Please enter a job title.'; err.classList.remove('hidden'); return; }
       err.classList.add('hidden');
       tips.classList.add('hidden');
       btn.disabled    = true;
       btn.textContent = 'Finding…';
-
       try {
         const session = await getSession();
         const headers = { 'Content-Type': 'application/json' };
         if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
-
         const res  = await fetch(`${window.SUPABASE_URL}/functions/v1/suggest-deductions`, {
           method: 'POST', headers, body: JSON.stringify({ job }),
         });
         const body = await res.json();
         if (!res.ok || body.error) throw new Error(body.error ?? 'Request failed');
-
         const deductions = body.deductions ?? [];
         if (deductions.length === 0) throw new Error('No deductions found for this role.');
-
         tips.innerHTML = deductions.map(d => `
           <div class="px-4 py-3">
             <div class="flex items-start justify-between gap-3">
@@ -637,30 +622,23 @@
       }
     });
 
-    // ── Copy buttons ──────────────────────────────────────────────────────────
+    // ── Copy buttons ──────────────────────────────────────────────────
     document.getElementById('results-panel').addEventListener('click', (e) => {
       const btn = e.target.closest('.copy-btn');
       if (!btn) return;
       const text = document.getElementById(btn.dataset.target)?.textContent?.trim() ?? '';
       if (!text) return;
-
       const finish = () => {
         btn.textContent = 'Copied!';
         btn.classList.add('copied');
         showCopyToast();
         setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
       };
-
       if (navigator.clipboard?.writeText) {
         navigator.clipboard.writeText(text).then(finish).catch(finish);
       } else {
-        const ta = Object.assign(document.createElement('textarea'), {
-          value: text, style: 'position:fixed;opacity:0'
-        });
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
+        const ta = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
         finish();
       }
     });
@@ -668,23 +646,17 @@
     let _toastTimer;
     function showCopyToast() {
       const t = document.getElementById('copy-toast');
-      t.classList.remove('opacity-0');
-      t.classList.add('opacity-100');
+      t.classList.remove('opacity-0'); t.classList.add('opacity-100');
       clearTimeout(_toastTimer);
-      _toastTimer = setTimeout(() => {
-        t.classList.remove('opacity-100');
-        t.classList.add('opacity-0');
-      }, 2000);
+      _toastTimer = setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2000);
     }
 
-    // ── Details arrow rotation ─────────────────────────────────────────────────
+    // ── Details arrow rotation ─────────────────────────────────────────────
     document.querySelectorAll('details').forEach(d => {
-      d.addEventListener('toggle', () => {
-        d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open);
-      });
+      d.addEventListener('toggle', () => { d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open); });
     });
 
-    // ── Upload section — 4-language text ─────────────────────────────────────
+    // ── Upload section — 4-language text ──────────────────────────────
     const UPLOAD_TRANS = {
       fr: {
         heading:  '📄 Téléverser vos bulletins de paie',
@@ -723,47 +695,25 @@
       if (dz) dz.textContent = t.dropzone;
     })();
 
-    // ── Payslip Upload ─────────────────────────────────────────────────────────
+    // ── Payslip Upload ───────────────────────────────────────────────────
     const dropzone  = document.getElementById('upload-dropzone');
     const fileInput = document.getElementById('upload-input');
     const fileList  = document.getElementById('upload-file-list');
     const summary   = document.getElementById('upload-summary');
-
-    // Tracks every uploaded file: { file, status, data, error }
     const uploadedPayslips = [];
 
     dropzone.addEventListener('click', () => fileInput.click());
-
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files);
-      fileInput.value = '';
-    });
-
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dz-over');
-    });
-
-    dropzone.addEventListener('dragleave', (e) => {
-      if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('dz-over');
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dz-over');
-      handleFiles(e.dataTransfer.files);
-    });
+    fileInput.addEventListener('change', () => { handleFiles(fileInput.files); fileInput.value = ''; });
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dz-over'); });
+    dropzone.addEventListener('dragleave', (e) => { if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('dz-over'); });
+    dropzone.addEventListener('drop', (e) => { e.preventDefault(); dropzone.classList.remove('dz-over'); handleFiles(e.dataTransfer.files); });
 
     async function handleFiles(files) {
       for (const file of [...files]) {
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`${file.name} exceeds the 10 MB limit and was skipped.`);
-          continue;
-        }
+        if (file.size > 10 * 1024 * 1024) { alert(`${file.name} exceeds the 10 MB limit and was skipped.`); continue; }
         const idx = uploadedPayslips.length;
         uploadedPayslips.push({ file, status: 'processing', data: {}, error: '' });
         renderFileList();
-
         try {
           const data = await runOCR(file);
           uploadedPayslips[idx].status = 'done';
@@ -781,32 +731,15 @@
       const lang = localStorage.getItem('lang') || 'en';
       const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
       fileList.innerHTML = uploadedPayslips.map(p => {
-        if (p.status === 'processing') {
-          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg">
-            <span class="spinner flex-shrink-0"></span>
-            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-            <span class="text-xs flex-shrink-0 text-gray-400">Reading… (5–10 s)</span>
-          </li>`;
-        }
-        if (p.status === 'done') {
-          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-brand-50 rounded-lg">
-            <span class="text-base flex-shrink-0">✅</span>
-            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-            <span class="text-xs flex-shrink-0 text-brand-600 font-semibold">${t.badge}</span>
-          </li>`;
-        }
-        return `<li class="flex items-center gap-3 text-sm p-2.5 bg-red-50 rounded-lg">
-          <span class="text-base flex-shrink-0">❌</span>
-          <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-          <span class="text-xs flex-shrink-0 text-red-500">${esc(p.error) || 'Could not read — fill in manually.'}</span>
-        </li>`;
+        if (p.status === 'processing') return `<li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg"><span class="spinner flex-shrink-0"></span><span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span><span class="text-xs flex-shrink-0 text-gray-400">Reading… (5–10 s)</span></li>`;
+        if (p.status === 'done')       return `<li class="flex items-center gap-3 text-sm p-2.5 bg-brand-50 rounded-lg"><span class="text-base flex-shrink-0">✅</span><span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span><span class="text-xs flex-shrink-0 text-brand-600 font-semibold">${t.badge}</span></li>`;
+        return `<li class="flex items-center gap-3 text-sm p-2.5 bg-red-50 rounded-lg"><span class="text-base flex-shrink-0">❌</span><span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span><span class="text-xs flex-shrink-0 text-red-500">${esc(p.error) || 'Could not read — fill in manually.'}</span></li>`;
       }).join('');
     }
 
     function updateUploadSummary() {
       const done = uploadedPayslips.filter(p => p.status === 'done');
       if (done.length === 0) { summary.classList.add('hidden'); return; }
-
       const lang  = localStorage.getItem('lang') || 'en';
       const t     = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
       let totalGross = 0, totalTax = 0, totalSuper = 0;
@@ -815,37 +748,27 @@
         totalTax   += parseFloat(p.data.tax_withheld) || 0;
         totalSuper += parseFloat(p.data.super)        || 0;
       }
-
-      // Auto-fill calculator fields
       document.getElementById('gross-income').value  = totalGross.toFixed(2);
       document.getElementById('payg-withheld').value = totalTax.toFixed(2);
-
-      // Show "Filled by AI" badges
       const badgeGross = document.getElementById('badge-gross');
       const badgePayg  = document.getElementById('badge-payg');
       if (badgeGross) { badgeGross.textContent = t.badge; badgeGross.classList.remove('hidden'); }
       if (badgePayg)  { badgePayg.textContent  = t.badge; badgePayg.classList.remove('hidden'); }
-
       document.getElementById('sum-gross').textContent = fmt(totalGross);
       document.getElementById('sum-tax').textContent   = fmt(totalTax);
-
       const superLabel = document.getElementById('sum-super-label');
       const superVal   = document.getElementById('sum-super');
       if (totalSuper > 0) {
         superVal.textContent = fmt(totalSuper);
-        superLabel.classList.remove('hidden');
-        superVal.classList.remove('hidden');
+        superLabel.classList.remove('hidden'); superVal.classList.remove('hidden');
       } else {
-        superLabel.classList.add('hidden');
-        superVal.classList.add('hidden');
+        superLabel.classList.add('hidden'); superVal.classList.add('hidden');
       }
-
       summary.classList.remove('hidden');
-      // Scroll income fields into view so user sees the auto-fill
       document.getElementById('gross-income').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // ── Claude OCR via /api/ocr ───────────────────────────────────────────────
+    // ── Claude OCR via /api/ocr ───────────────────────────────────────────
     async function runOCR(file) {
       const base64 = await new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -853,7 +776,6 @@
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
-
       const res  = await fetch('/api/ocr', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
