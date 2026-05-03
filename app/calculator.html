@@ -22,6 +22,12 @@
     details > summary { list-style:none; cursor:pointer; }
     details > summary::-webkit-details-marker { display:none; }
     #upload-dropzone.dz-over { border-color:#00A86B; background-color:#f0faf6; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .spinner {
+      display:inline-block; width:1em; height:1em; vertical-align:middle;
+      border:2px solid #d1d5db; border-top-color:#00A86B;
+      border-radius:50%; animation:spin .7s linear infinite;
+    }
     .copy-btn {
       font-size:.7rem; color:#9ca3af; padding:.15rem .45rem;
       border:1px solid #e5e7eb; border-radius:4px; cursor:pointer;
@@ -52,10 +58,10 @@
       <div class="flex items-start justify-between mb-5">
         <div>
           <div class="flex items-center gap-2 mb-0.5">
-            <h2 class="text-lg font-semibold text-gray-900">Upload Your Payslips</h2>
+            <h2 id="upload-heading" class="text-lg font-semibold text-gray-900">📄 Upload Your Payslips</h2>
             <span class="text-xs bg-brand-100 text-brand-700 font-semibold px-2 py-0.5 rounded-full">AI</span>
           </div>
-          <p class="text-sm text-gray-500">Drop your payslips and we'll fill in your income and tax automatically.</p>
+          <p id="upload-sub" class="text-sm text-gray-500">Drop your payslips and we'll fill in your income and tax automatically.</p>
         </div>
       </div>
 
@@ -64,7 +70,7 @@
         class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer transition-colors hover:border-brand-400 hover:bg-brand-50 select-none">
         <input type="file" id="upload-input" accept=".pdf,.jpg,.jpeg,.png" multiple class="hidden" />
         <p class="text-3xl mb-2 pointer-events-none">📄</p>
-        <p class="text-sm font-medium text-gray-700 pointer-events-none">Drop payslips here or click to browse</p>
+        <p id="upload-dropzone-label" class="text-sm font-medium text-gray-700 pointer-events-none">Drop payslips here or click to browse</p>
         <p class="text-xs text-gray-400 mt-1 pointer-events-none">PDF, JPG or PNG — up to 10 MB each</p>
       </div>
 
@@ -111,6 +117,7 @@
             <input id="gross-income" type="number" min="0" step="0.01" value="0"
               class="w-full pl-7 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
           </div>
+          <p id="badge-gross" class="hidden mt-1 text-xs font-semibold text-brand-600">✅ Filled by AI</p>
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -122,6 +129,7 @@
             <input id="payg-withheld" type="number" min="0" step="0.01" value="0"
               class="w-full pl-7 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
           </div>
+          <p id="badge-payg" class="hidden mt-1 text-xs font-semibold text-brand-600">✅ Filled by AI</p>
         </div>
       </div>
 
@@ -218,13 +226,228 @@
     <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div id="outcome-banner" class="p-10 text-center">
         <p id="outcome-label" class="text-xs font-bold tracking-widest uppercase mb-3 text-white opacity-80"></p>
-        <p id="outcome-amount" class="text-6xl sm:text-7xl font-black tabular-nums mb-3 leading-none text-white"></p>
-        <p id="outcome-sub" class="text-sm text-white opacity-75"></p>
-      </div>
-      <div class="px-6 py-5">
-        <button id="show-breakdown-btn"
-          class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-4 rounded-xl text-sm tracking-wide transition-colors">
+        <p id="outcome-amount" class="text-6xl sm:text-7xl font-black tabular-nums mb-4 leading-none text-white"></p>
+        <p id="outcome-sub" class="text-sm mb-6 max-w-xs mx-auto text-white opacity-75"></p>
+        <button id="tax-return-btn"
+          class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide cursor-pointer bg-transparent">
           TAX RETURN REQUEST →
+        </button>
+      </div>
+
+      <!-- Your Numbers breakdown — hidden until TAX RETURN REQUEST is clicked -->
+      <div id="breakdown-section" class="hidden">
+      <div class="p-6">
+        <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
+
+        <div class="divide-y divide-gray-100 text-sm mb-5 border border-gray-100 rounded-xl overflow-hidden">
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Gross income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-gross" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-gross">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Tax withheld</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-payg" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-payg">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Total deductions</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-deductions" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-deductions">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
+            <span class="font-semibold text-gray-800">Taxable income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-taxable" class="font-bold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-taxable">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Tax on income</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-income-tax" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-income-tax">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-lito-row" class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">LITO applied</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-lito" class="font-semibold tabular-nums text-brand-600 truncate"></span>
+              <button class="copy-btn" data-target="r-lito">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-medicare-row" class="flex items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">Medicare levy</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-medicare" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-medicare">Copy</button>
+            </div>
+          </div>
+
+          <div id="r-hecs-row" class="hidden items-center justify-between px-4 py-3 gap-3">
+            <span class="text-gray-600">HECS/HELP repayment</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-hecs" class="font-semibold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-hecs">Copy</button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
+            <span class="font-semibold text-gray-800">Outcome</span>
+            <div class="flex items-center gap-2 min-w-0">
+              <span id="r-outcome" class="font-bold tabular-nums text-gray-900 truncate"></span>
+              <button class="copy-btn" data-target="r-outcome">Copy</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Bracket breakdown (collapsible) -->
+        <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
+          <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
+            <span>Tax bracket breakdown</span>
+            <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+          <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
+        </details>
+
+        <p class="text-xs text-gray-400 text-center">
+          <strong>Estimate only</strong> — not financial advice. Lodge via
+          <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ATO myTax</a>
+          or a registered tax agent.
+        </p>
+      </div>
+      </div><!-- /#breakdown-section -->
+    </div>
+
+    <!-- ── Step 4: Next Steps ─────────────────────────────────────────────── -->
+    <!-- ── ATO 7-Step Lodgement Guide ──────────────────────────────────────── -->
+    <div id="next-steps-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+
+      <div class="flex items-start justify-between mb-5">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">How to Lodge Your Tax Return</h2>
+          <p class="text-sm text-gray-500 mt-0.5">7 steps to lodge via ATO myTax — takes about 20 minutes.</p>
+        </div>
+        <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
+      </div>
+
+      <ol class="space-y-3 mb-6">
+
+        <!-- Step 1 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-gray-800">Create or log in to myGov</p>
+              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
+                myGov →
+              </a>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Go to my.gov.au and sign in or create an account.</p>
+          </div>
+        </li>
+
+        <!-- Step 2 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">2</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-gray-800">Link to ATO</p>
+              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
+                myGov →
+              </a>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">In myGov, link the ATO service to your account if you haven't already.</p>
+          </div>
+        </li>
+
+        <!-- Step 3 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">3</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-gray-800">Open myTax</p>
+              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
+                myTax →
+              </a>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Select <strong>Tax → Lodge return</strong> and open myTax for the 2024–25 year.</p>
+          </div>
+        </li>
+
+        <!-- Step 4 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">4</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-800">Check pre-filled data</p>
+            <p class="text-xs text-gray-500 mt-1">The ATO pre-fills income from employers and banks — review and correct any figures if needed.</p>
+          </div>
+        </li>
+
+        <!-- Step 5 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">5</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-800">Add deductions</p>
+            <p class="text-xs text-gray-500 mt-1">Enter work-related expenses, charitable donations, and any other eligible deductions. Keep receipts for 5 years.</p>
+          </div>
+        </li>
+
+        <!-- Step 6 -->
+        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">6</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold text-gray-800">Review and submit</p>
+            <p class="text-xs text-gray-500 mt-1">Check your summary, then click <strong>Submit</strong>. Most refunds arrive within <strong>2 weeks</strong>.</p>
+          </div>
+        </li>
+
+        <!-- Step 7 — deadline warning -->
+        <li class="flex gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 hover:border-amber-300 transition-colors">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">7</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <p class="text-sm font-semibold text-amber-800">Lodge before 31 October ⚠️</p>
+              <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge"
+                target="_blank" rel="noopener noreferrer"
+                class="shrink-0 text-xs text-amber-700 hover:text-amber-900 font-semibold border border-amber-300 hover:border-amber-500 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
+                ATO →
+              </a>
+            </div>
+            <p class="text-xs text-amber-700 mt-1">Late lodgement may result in penalties of <strong>$313 per 28 days</strong> overdue.</p>
+          </div>
+        </li>
+
+      </ol>
+
+      <!-- Action buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
+          class="flex-1 text-center bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">
+          Go to myGov →
+        </a>
+        <button onclick="window.print()"
+          class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors">
+          Print summary
         </button>
       </div>
     </div>
@@ -557,17 +780,7 @@
         hecsRow.classList.remove('flex');
       }
 
-      const superRow = document.getElementById('r-super-row');
-      if (superFromPayslips > 0) {
-        document.getElementById('r-super').textContent = fmt(superFromPayslips);
-        superRow.classList.remove('hidden');
-        superRow.classList.add('flex');
-      } else {
-        superRow.classList.add('hidden');
-        superRow.classList.remove('flex');
-      }
-
-      document.getElementById('r-payg').textContent = fmt(r.paygWithheld);
+      document.getElementById('r-payg').textContent      = fmt(r.paygWithheld);
 
       const isRefund = r.refundOrOwed >= 0;
       const banner   = document.getElementById('outcome-banner');
@@ -588,6 +801,8 @@
         </div>`).join('');
 
       document.getElementById('results-panel').classList.remove('hidden');
+      document.getElementById('breakdown-section').classList.add('hidden');
+      document.getElementById('next-steps-panel').classList.add('hidden');
       document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
@@ -685,6 +900,14 @@
       }, 2000);
     }
 
+    // ── TAX RETURN REQUEST → reveal breakdown + guide ────────────────────────
+    document.getElementById('tax-return-btn').addEventListener('click', () => {
+      window.open('https://my.gov.au', '_blank', 'noopener,noreferrer');
+      document.getElementById('breakdown-section').classList.remove('hidden');
+      document.getElementById('next-steps-panel').classList.remove('hidden');
+      document.getElementById('breakdown-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
     // ── Details arrow rotation ─────────────────────────────────────────────────
     document.querySelectorAll('details').forEach(d => {
       d.addEventListener('toggle', () => {
@@ -692,13 +915,52 @@
       });
     });
 
+    // ── Upload section — 4-language text ─────────────────────────────────────
+    const UPLOAD_TRANS = {
+      fr: {
+        heading:  '📄 Téléverser vos bulletins de paie',
+        sub:      'Déposez vos bulletins de paie et nous remplirons automatiquement vos revenus et impôts.',
+        dropzone: 'Déposez les bulletins ici ou cliquez pour parcourir',
+        badge:    '✅ Rempli par l\'IA',
+      },
+      es: {
+        heading:  '📄 Subir sus recibos de sueldo',
+        sub:      'Suba sus recibos y rellenaremos sus ingresos e impuestos automáticamente.',
+        dropzone: 'Suelte los recibos aquí o haga clic para buscar',
+        badge:    '✅ Rellenado por IA',
+      },
+      it: {
+        heading:  '📄 Carica le tue buste paga',
+        sub:      'Carica le buste paga e compileremo automaticamente i tuoi redditi e imposte.',
+        dropzone: 'Trascina le buste paga qui o clicca per sfogliare',
+        badge:    '✅ Compilato dall\'IA',
+      },
+      en: {
+        heading:  '📄 Upload Your Payslips',
+        sub:      'Drop your payslips and we\'ll fill in your income and tax automatically.',
+        dropzone: 'Drop payslips here or click to browse',
+        badge:    '✅ Filled by AI',
+      },
+    };
+
+    (function applyUploadLang() {
+      const lang = localStorage.getItem('lang') || 'en';
+      const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
+      const h    = document.getElementById('upload-heading');
+      const s    = document.getElementById('upload-sub');
+      const dz   = document.getElementById('upload-dropzone-label');
+      if (h)  h.textContent  = t.heading;
+      if (s)  s.textContent  = t.sub;
+      if (dz) dz.textContent = t.dropzone;
+    })();
+
     // ── Payslip Upload ─────────────────────────────────────────────────────────
     const dropzone  = document.getElementById('upload-dropzone');
     const fileInput = document.getElementById('upload-input');
     const fileList  = document.getElementById('upload-file-list');
     const summary   = document.getElementById('upload-summary');
 
-    // Tracks every uploaded file: { file, status, data }
+    // Tracks every uploaded file: { file, status, data, error }
     const uploadedPayslips = [];
 
     dropzone.addEventListener('click', () => fileInput.click());
@@ -730,15 +992,16 @@
           continue;
         }
         const idx = uploadedPayslips.length;
-        uploadedPayslips.push({ file, status: 'processing', data: {} });
+        uploadedPayslips.push({ file, status: 'processing', data: {}, error: '' });
         renderFileList();
 
         try {
           const data = await runOCR(file);
           uploadedPayslips[idx].status = 'done';
           uploadedPayslips[idx].data   = data;
-        } catch (_) {
+        } catch (err) {
           uploadedPayslips[idx].status = 'error';
+          uploadedPayslips[idx].error  = err.message || 'Could not read payslip.';
         }
         renderFileList();
         updateUploadSummary();
@@ -746,24 +1009,37 @@
     }
 
     function renderFileList() {
-      const icons  = { processing: '⏳', done: '✅', error: '❌' };
-      const labels = {
-        processing: 'Reading payslip…',
-        done:       'Filled by AI ✅',
-        error:      'Could not read — please fill in manually.',
-      };
-      fileList.innerHTML = uploadedPayslips.map(p => `
-        <li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg">
-          <span class="text-base flex-shrink-0">${icons[p.status]}</span>
+      const lang = localStorage.getItem('lang') || 'en';
+      const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
+      fileList.innerHTML = uploadedPayslips.map(p => {
+        if (p.status === 'processing') {
+          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg">
+            <span class="spinner flex-shrink-0"></span>
+            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
+            <span class="text-xs flex-shrink-0 text-gray-400">Reading… (5–10 s)</span>
+          </li>`;
+        }
+        if (p.status === 'done') {
+          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-brand-50 rounded-lg">
+            <span class="text-base flex-shrink-0">✅</span>
+            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
+            <span class="text-xs flex-shrink-0 text-brand-600 font-semibold">${t.badge}</span>
+          </li>`;
+        }
+        return `<li class="flex items-center gap-3 text-sm p-2.5 bg-red-50 rounded-lg">
+          <span class="text-base flex-shrink-0">❌</span>
           <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-          <span class="text-xs flex-shrink-0 ${p.status === 'error' ? 'text-red-500' : 'text-gray-400'}">${labels[p.status]}</span>
-        </li>`).join('');
+          <span class="text-xs flex-shrink-0 text-red-500">${esc(p.error) || 'Could not read — fill in manually.'}</span>
+        </li>`;
+      }).join('');
     }
 
     function updateUploadSummary() {
       const done = uploadedPayslips.filter(p => p.status === 'done');
       if (done.length === 0) { summary.classList.add('hidden'); return; }
 
+      const lang  = localStorage.getItem('lang') || 'en';
+      const t     = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
       let totalGross = 0, totalTax = 0, totalSuper = 0;
       for (const p of done) {
         totalGross += parseFloat(p.data.gross_income) || 0;
@@ -771,17 +1047,22 @@
         totalSuper += parseFloat(p.data.super)        || 0;
       }
 
-      // Auto-fill the calculator fields
+      // Auto-fill calculator fields
       document.getElementById('gross-income').value  = totalGross.toFixed(2);
       document.getElementById('payg-withheld').value = totalTax.toFixed(2);
       superFromPayslips = totalSuper;
       document.getElementById('gross-income-badge').classList.remove('hidden');
       document.getElementById('payg-withheld-badge').classList.remove('hidden');
 
+      // Show "Filled by AI" badges
+      const badgeGross = document.getElementById('badge-gross');
+      const badgePayg  = document.getElementById('badge-payg');
+      if (badgeGross) { badgeGross.textContent = t.badge; badgeGross.classList.remove('hidden'); }
+      if (badgePayg)  { badgePayg.textContent  = t.badge; badgePayg.classList.remove('hidden'); }
+
       document.getElementById('sum-gross').textContent = fmt(totalGross);
       document.getElementById('sum-tax').textContent   = fmt(totalTax);
 
-      // Show super row only if at least one payslip had super data
       const superLabel = document.getElementById('sum-super-label');
       const superVal   = document.getElementById('sum-super');
       if (totalSuper > 0) {
@@ -794,51 +1075,26 @@
       }
 
       summary.classList.remove('hidden');
+      // Scroll income fields into view so user sees the auto-fill
+      document.getElementById('gross-income').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // ── Claude OCR via process-payslip Edge Function ──────────────────────────
+    // ── Claude OCR via /api/ocr ───────────────────────────────────────────────
     async function runOCR(file) {
-      const session = await getSession();
-      if (!session) throw new Error('Not authenticated — please sign in again.');
+      const base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload  = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
 
-      // 1. Upload file to Supabase Storage so the Edge Function can read it
-      const safeName    = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storagePath = `${session.user.id}/${Date.now()}_${safeName}`;
-
-      const { error: uploadErr } = await window.sb.storage
-        .from('payslips')
-        .upload(storagePath, file, { contentType: file.type, upsert: false });
-
-      if (uploadErr) throw new Error('Upload failed: ' + uploadErr.message);
-
-      // 2. Call the Edge Function — it reads from Storage, runs Claude, returns JSON
-      let body;
-      try {
-        const res = await fetch(`${window.SUPABASE_URL}/functions/v1/process-payslip`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ path: storagePath }),
-        });
-        body = await res.json();
-        if (!res.ok || body.error) throw new Error(body.error || 'OCR request failed.');
-      } catch (err) {
-        // Clean up orphaned storage object on failure
-        await window.sb.storage.from('payslips').remove([storagePath]).catch(() => {});
-        throw err;
-      }
-
-      const data = body.data ?? {};
-
-      // 3. Persist extracted data to the payslips table for future pre-fill
-      await window.sb.from('payslips').insert({
-        user_id:        session.user.id,
-        file_url:       storagePath,
-        extracted_data: data,
-      }).catch(err => console.warn('Could not save payslip to DB:', err));
-
+      const res  = await fetch('/api/ocr', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ base64, mediaType: file.type || 'image/jpeg' }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || 'OCR request failed.');
       return data;
     }
   </script>

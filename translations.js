@@ -133,6 +133,12 @@ var translations = {
     'results.outcome.default':      'Impôt à Payer / Remboursement',
     'results.outcome.refund':       '🎉 Remboursement Fiscal',
     'results.outcome.owing':        '⚠️ Impôt à Payer',
+    'results.outcome.refundNote':   'L\'ATO versera ce montant sur votre compte bancaire.',
+    'results.outcome.owingNote':    'Vous devez payer ce montant avant la date d\'échéance.',
+    'results.requestBtn':           'DEMANDE DE DÉCLARATION →',
+    'results.showBreakdown':        '📋 Voir le Détail Complet',
+    'ato.guide.title':              '📋 Comment Déposer Votre Déclaration',
+    'ato.guide.link':               'Guide complet de l\'ATO →',
 
     // Footer
     'footer.disclaimer': 'Ce calculateur fournit des estimations uniquement et ne constitue pas un conseil fiscal.',
@@ -404,6 +410,12 @@ var translations = {
     'results.outcome.default':      'Tax Payable / Refund',
     'results.outcome.refund':       '🎉 Tax Refund',
     'results.outcome.owing':        '⚠️ Tax Owing',
+    'results.outcome.refundNote':   'The ATO will deposit this into your nominated bank account.',
+    'results.outcome.owingNote':    'You will need to pay this by the due date on your notice of assessment.',
+    'results.requestBtn':           'TAX RETURN REQUEST →',
+    'results.showBreakdown':        '📋 See Full Breakdown',
+    'ato.guide.title':              '📋 How to Lodge Your Tax Return',
+    'ato.guide.link':               'Full ATO guide →',
 
     // Footer
     'footer.disclaimer': 'This calculator provides estimates only and does not constitute financial or tax advice.',
@@ -675,6 +687,12 @@ var translations = {
     'results.outcome.default':      'Impuesto a Pagar / Devolución',
     'results.outcome.refund':       '🎉 Devolución Fiscal',
     'results.outcome.owing':        '⚠️ Impuesto a Pagar',
+    'results.outcome.refundNote':   'La ATO depositará este monto en su cuenta bancaria.',
+    'results.outcome.owingNote':    'Deberá pagar este monto antes de la fecha de vencimiento.',
+    'results.requestBtn':           'SOLICITUD DE DECLARACIÓN →',
+    'results.showBreakdown':        '📋 Ver Desglose Completo',
+    'ato.guide.title':              '📋 Cómo Presentar su Declaración',
+    'ato.guide.link':               'Guía completa de la ATO →',
 
     // Footer
     'footer.disclaimer': 'Esta calculadora proporciona solo estimaciones y no constituye asesoramiento fiscal.',
@@ -946,6 +964,12 @@ var translations = {
     'results.outcome.default':      'Imposta da Pagare / Rimborso',
     'results.outcome.refund':       '🎉 Rimborso Fiscale',
     'results.outcome.owing':        '⚠️ Imposta da Pagare',
+    'results.outcome.refundNote':   'L\'ATO depositerà questo importo sul tuo conto bancario.',
+    'results.outcome.owingNote':    'Dovrai pagare questo importo entro la data di scadenza.',
+    'results.requestBtn':           'RICHIESTA DICHIARAZIONE →',
+    'results.showBreakdown':        '📋 Vedi Dettaglio Completo',
+    'ato.guide.title':              '📋 Come Presentare la Dichiarazione',
+    'ato.guide.link':               'Guida completa ATO →',
 
     // Footer
     'footer.disclaimer': 'Questo calcolatore fornisce solo stime e non costituisce consulenza fiscale.',
