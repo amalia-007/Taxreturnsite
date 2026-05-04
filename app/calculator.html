@@ -518,7 +518,8 @@
           totalGross += parseFloat(d.gross_income) || 0;
           totalTax   += parseFloat(d.tax_withheld)  || 0;
         }
-        if (totalGross > 0 || totalTax > 0) {
+        // Only pre-fill from DB if the user hasn't already uploaded files this session
+        if ((totalGross > 0 || totalTax > 0) && uploadedPayslips.length === 0) {
           document.getElementById('gross-income').value  = totalGross.toFixed(2);
           document.getElementById('payg-withheld').value = totalTax.toFixed(2);
           const note = document.getElementById('prefill-note');
@@ -763,8 +764,6 @@
     const uploadedPayslips = [];
     let _payslipCounter = 0;
 
-    const ICON_EYE = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
-    const ICON_X   = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
 
     dropzone.addEventListener('click', () => fileInput.click());
 
@@ -863,8 +862,8 @@
       const lang = localStorage.getItem('lang') || 'en';
       const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
       const actionBtns = (id) => `
-        <button class="payslip-preview shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" data-id="${id}" title="Preview file" type="button">${ICON_EYE}</button>
-        <button class="payslip-delete  shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-red-300 hover:text-red-600 hover:bg-red-50 transition-colors"  data-id="${id}" title="Remove file"    type="button">${ICON_X}</button>`;
+        <button class="payslip-preview" data-id="${id}" title="Preview file" type="button" style="min-width:36px;min-height:36px;border:none;background:transparent;cursor:pointer;font-size:16px;line-height:1;border-radius:8px;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">👁</button>
+        <button class="payslip-delete"  data-id="${id}" title="Remove file"  type="button" style="min-width:36px;min-height:36px;border:none;background:transparent;cursor:pointer;font-size:14px;line-height:1;border-radius:8px;color:#ef4444;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700">✕</button>`;
 
       fileList.innerHTML = uploadedPayslips.map(p => {
         if (p.status === 'processing') {
