@@ -455,6 +455,25 @@
 
   </main>
 
+  <!-- Payslip preview modal -->
+  <div id="preview-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0 bg-gray-50">
+        <span id="preview-filename" class="text-sm font-semibold text-gray-800 truncate mr-3"></span>
+        <button id="preview-close" type="button"
+          class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 font-bold text-lg transition-colors"
+          aria-label="Close preview">✕</button>
+      </div>
+      <div id="preview-content" class="flex-1 overflow-auto bg-gray-100 min-h-[60vh]"></div>
+    </div>
+  </div>
+
+  <!-- Clipboard toast -->
+  <div id="copy-toast"
+    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none z-50">
+    Copied to clipboard ✓
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/config.js"></script>
   <script src="../assets/js/supabase-client.js"></script>
@@ -937,25 +956,6 @@
       return data;
     }
   </script>
-
-  <!-- Payslip preview modal -->
-  <div id="preview-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true">
-    <div class="relative w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-2xl">
-      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0 bg-gray-50">
-        <span id="preview-filename" class="text-sm font-semibold text-gray-800 truncate mr-3"></span>
-        <button id="preview-close" type="button"
-          class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 font-bold text-lg transition-colors"
-          aria-label="Close preview">✕</button>
-      </div>
-      <div id="preview-content" class="flex-1 overflow-auto bg-gray-100 min-h-[60vh]"></div>
-    </div>
-  </div>
-
-  <!-- Clipboard toast -->
-  <div id="copy-toast"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none z-50">
-    Copied to clipboard ✓
-  </div>
 
   <footer class="mt-12 border-t border-gray-200 py-6">
     <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
