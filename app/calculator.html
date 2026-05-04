@@ -452,219 +452,6 @@
       </div>
     </div>
 
-    <!-- ── Breakdown panel (revealed when TAX RETURN REQUEST is clicked) ───── -->
-    <div id="breakdown-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-
-      <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
-
-      <div class="divide-y divide-gray-100 text-sm mb-2 border border-gray-100 rounded-xl overflow-hidden">
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Gross income</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-gross" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-gross">📋</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Tax withheld</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-payg" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-payg">📋</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Total deductions</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-deductions" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-deductions">📋</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
-          <span class="font-semibold text-gray-800">Taxable income</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-taxable" class="font-bold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-taxable">📋</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Tax on income</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-income-tax" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-income-tax">📋</button>
-          </div>
-        </div>
-
-        <div id="r-lito-row" class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">LITO applied</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-lito" class="font-semibold tabular-nums text-brand-600 truncate"></span>
-            <button class="copy-btn" data-target="r-lito">📋</button>
-          </div>
-        </div>
-
-        <div id="r-medicare-row" class="flex items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Medicare levy</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-medicare" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-medicare">📋</button>
-          </div>
-        </div>
-
-        <div id="r-hecs-row" class="hidden items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">HECS/HELP repayment</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-hecs" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-hecs">📋</button>
-          </div>
-        </div>
-
-        <div id="r-super-row" class="hidden items-center justify-between px-4 py-3 gap-3">
-          <span class="text-gray-600">Super paid</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-super" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-super">📋</button>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
-          <span class="font-semibold text-gray-800">Estimated outcome</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <span id="r-outcome" class="font-bold tabular-nums text-gray-900 truncate"></span>
-            <button class="copy-btn" data-target="r-outcome">📋</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Bracket breakdown (collapsible) -->
-      <details class="border border-gray-100 rounded-xl overflow-hidden mb-5 mt-3">
-        <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
-          <span>Tax bracket breakdown</span>
-          <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </summary>
-        <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
-      </details>
-
-      <p class="text-xs text-gray-400 text-center mb-6">
-        <strong>Estimate only</strong> — not financial advice. Lodge via
-        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ATO myTax</a>
-        or a registered tax agent.
-      </p>
-
-      <!-- ── ATO 7-Step Lodgement Guide ──────────────────────────────────────── -->
-      <div class="border-t border-gray-100 pt-6">
-
-        <div class="flex items-start justify-between mb-5">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900">How to Lodge Your Tax Return</h2>
-            <p class="text-sm text-gray-500 mt-0.5">7 steps via ATO myTax — takes about 20 minutes.</p>
-          </div>
-          <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
-        </div>
-
-        <ol class="space-y-3 mb-6">
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-3">
-                <p class="text-sm font-semibold text-gray-800">Create or log in to myGov</p>
-                <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                  class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">myGov →</a>
-              </div>
-              <p class="text-xs text-gray-500 mt-1">Go to my.gov.au and sign in or create an account.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">2</div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-3">
-                <p class="text-sm font-semibold text-gray-800">Link to ATO</p>
-                <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                  class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">myGov →</a>
-              </div>
-              <p class="text-xs text-gray-500 mt-1">In myGov, link the ATO service to your account if you haven't already.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">3</div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-3">
-                <p class="text-sm font-semibold text-gray-800">Open myTax</p>
-                <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                  class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">myTax →</a>
-              </div>
-              <p class="text-xs text-gray-500 mt-1">Select <strong>Tax → Lodge return</strong> and open myTax for the 2024–25 year.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">4</div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-gray-800">Check pre-filled data</p>
-              <p class="text-xs text-gray-500 mt-1">The ATO pre-fills income from employers and banks — review and correct any figures if needed.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">5</div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-gray-800">Add deductions</p>
-              <p class="text-xs text-gray-500 mt-1">Enter work-related expenses, charitable donations, and any other eligible deductions. Keep receipts for 5 years.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">6</div>
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-semibold text-gray-800">Review and submit</p>
-              <p class="text-xs text-gray-500 mt-1">Check your summary, then click <strong>Submit</strong>. Most refunds arrive within <strong>2 weeks</strong>.</p>
-            </div>
-          </li>
-
-          <li class="flex gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 hover:border-amber-300 transition-colors">
-            <div class="shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">7</div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-start justify-between gap-3">
-                <p class="text-sm font-semibold text-amber-800">Lodge before 31 October ⚠️</p>
-                <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge"
-                  target="_blank" rel="noopener noreferrer"
-                  class="shrink-0 text-xs text-amber-700 hover:text-amber-900 font-semibold border border-amber-300 hover:border-amber-500 px-2 py-0.5 rounded transition-colors whitespace-nowrap">ATO →</a>
-              </div>
-              <p class="text-xs text-amber-700 mt-1">Late lodgement may result in penalties of <strong>$313 per 28 days</strong> overdue.</p>
-            </div>
-          </li>
-
-        </ol>
-
-        <div class="flex flex-col sm:flex-row gap-3 mb-4">
-          <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-            class="flex-1 text-center bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl text-sm transition-colors">
-            Go to myGov →
-          </a>
-          <button onclick="window.print()"
-            class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors">
-            Print summary
-          </button>
-        </div>
-
-        <p class="text-xs text-gray-400 text-center">
-          Always verify steps on
-          <a href="https://www.ato.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ato.gov.au</a>.
-        </p>
-
-      </div><!-- /ATO guide -->
-    </div><!-- /breakdown-panel -->
-
 
   </main>
 
@@ -739,7 +526,6 @@
     let superFromPayslips = 0;
 
     document.getElementById('calculate-btn').addEventListener('click', () => {
-      document.getElementById('breakdown-panel').classList.add('hidden');
       const grossIncome     = val('gross-income');
       const paygWithheld    = val('payg-withheld');
       const type            = radio('residency') ?? 'australian';
@@ -855,7 +641,7 @@
     });
 
     // ── Copy buttons ──────────────────────────────────────────────────────────
-    document.getElementById('breakdown-panel').addEventListener('click', (e) => {
+    document.getElementById('results-panel').addEventListener('click', (e) => {
       const btn = e.target.closest('.copy-btn');
       if (!btn) return;
       const text = document.getElementById(btn.dataset.target)?.textContent?.trim() ?? '';
@@ -865,7 +651,7 @@
         btn.textContent = 'Copied!';
         btn.classList.add('copied');
         showCopyToast();
-        setTimeout(() => { btn.textContent = '📋'; btn.classList.remove('copied'); }, 2000);
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
       };
 
       if (navigator.clipboard?.writeText) {
@@ -880,12 +666,6 @@
         document.body.removeChild(ta);
         finish();
       }
-    });
-
-    // ── Show breakdown panel ──────────────────────────────────────────────────
-    document.getElementById('show-breakdown-btn').addEventListener('click', () => {
-      document.getElementById('breakdown-panel').classList.remove('hidden');
-      document.getElementById('breakdown-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
     let _toastTimer;
@@ -960,8 +740,12 @@
     const fileList  = document.getElementById('upload-file-list');
     const summary   = document.getElementById('upload-summary');
 
-    // Tracks every uploaded file: { file, status, data, error }
+    // Tracks every uploaded file: { id, file, status, data, error }
     const uploadedPayslips = [];
+    let _payslipCounter = 0;
+
+    const ICON_EYE = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`;
+    const ICON_X   = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
 
     dropzone.addEventListener('click', () => fileInput.click());
 
@@ -991,45 +775,100 @@
           alert(`${file.name} exceeds the 10 MB limit and was skipped.`);
           continue;
         }
-        const idx = uploadedPayslips.length;
-        uploadedPayslips.push({ file, status: 'processing', data: {}, error: '' });
+        const entry = { id: _payslipCounter++, file, status: 'processing', data: {}, error: '' };
+        uploadedPayslips.push(entry);
         renderFileList();
 
         try {
           const data = await runOCR(file);
-          uploadedPayslips[idx].status = 'done';
-          uploadedPayslips[idx].data   = data;
+          const e = uploadedPayslips.find(p => p.id === entry.id);
+          if (e) { e.status = 'done'; e.data = data; }
         } catch (err) {
-          uploadedPayslips[idx].status = 'error';
-          uploadedPayslips[idx].error  = err.message || 'Could not read payslip.';
+          const e = uploadedPayslips.find(p => p.id === entry.id);
+          if (e) { e.status = 'error'; e.error = err.message || 'Could not read payslip.'; }
         }
         renderFileList();
         updateUploadSummary();
       }
     }
 
+    // ── Delete / Preview action buttons ──────────────────────────────────────
+    fileList.addEventListener('click', (e) => {
+      const previewBtn = e.target.closest('.payslip-preview');
+      const deleteBtn  = e.target.closest('.payslip-delete');
+      if (previewBtn) previewPayslip(Number(previewBtn.dataset.id));
+      if (deleteBtn)  deletePayslip(Number(deleteBtn.dataset.id));
+    });
+
+    function deletePayslip(id) {
+      const idx = uploadedPayslips.findIndex(p => p.id === id);
+      if (idx === -1) return;
+      uploadedPayslips.splice(idx, 1);
+      renderFileList();
+      updateUploadSummary();
+    }
+
+    function previewPayslip(id) {
+      const p = uploadedPayslips.find(e => e.id === id);
+      if (!p) return;
+      const url     = URL.createObjectURL(p.file);
+      const modal   = document.getElementById('preview-modal');
+      const content = document.getElementById('preview-content');
+      const isImage = p.file.type.startsWith('image/');
+      content.innerHTML = isImage
+        ? `<img src="${url}" class="w-full h-auto" alt="${esc(p.file.name)}" />`
+        : `<object data="${url}" type="application/pdf" class="w-full min-h-[70vh]"><p class="p-6 text-sm text-gray-500">PDF preview not supported in this browser. <a href="${url}" download="${esc(p.file.name)}" class="underline text-brand-600">Download instead</a></p></object>`;
+      document.getElementById('preview-filename').textContent = p.file.name;
+      modal._revokeUrl = () => URL.revokeObjectURL(url);
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePreview() {
+      const modal = document.getElementById('preview-modal');
+      modal.classList.add('hidden');
+      document.getElementById('preview-content').innerHTML = '';
+      document.body.style.overflow = '';
+      if (modal._revokeUrl) { modal._revokeUrl(); modal._revokeUrl = null; }
+    }
+
+    document.getElementById('preview-close').addEventListener('click', closePreview);
+    document.getElementById('preview-modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('preview-modal')) closePreview();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePreview();
+    });
+
     function renderFileList() {
       const lang = localStorage.getItem('lang') || 'en';
       const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
+      const actionBtns = (id) => `
+        <button class="payslip-preview shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors" data-id="${id}" title="Preview file" type="button">${ICON_EYE}</button>
+        <button class="payslip-delete  shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-red-300 hover:text-red-600 hover:bg-red-50 transition-colors"  data-id="${id}" title="Remove file"    type="button">${ICON_X}</button>`;
+
       fileList.innerHTML = uploadedPayslips.map(p => {
         if (p.status === 'processing') {
-          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-gray-50 rounded-lg">
+          return `<li class="flex items-center gap-2 text-sm p-2.5 bg-gray-50 rounded-lg">
             <span class="spinner flex-shrink-0"></span>
             <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-            <span class="text-xs flex-shrink-0 text-gray-400">Reading… (5–10 s)</span>
+            <span class="text-xs flex-shrink-0 text-gray-400">Reading…</span>
+            ${actionBtns(p.id)}
           </li>`;
         }
         if (p.status === 'done') {
-          return `<li class="flex items-center gap-3 text-sm p-2.5 bg-brand-50 rounded-lg">
+          return `<li class="flex items-center gap-2 text-sm p-2.5 bg-brand-50 rounded-lg">
             <span class="text-base flex-shrink-0">✅</span>
             <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
             <span class="text-xs flex-shrink-0 text-brand-600 font-semibold">${t.badge}</span>
+            ${actionBtns(p.id)}
           </li>`;
         }
-        return `<li class="flex items-center gap-3 text-sm p-2.5 bg-red-50 rounded-lg">
+        return `<li class="flex items-center gap-2 text-sm p-2.5 bg-red-50 rounded-lg">
           <span class="text-base flex-shrink-0">❌</span>
           <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
           <span class="text-xs flex-shrink-0 text-red-500">${esc(p.error) || 'Could not read — fill in manually.'}</span>
+          ${actionBtns(p.id)}
         </li>`;
       }).join('');
     }
@@ -1098,6 +937,19 @@
       return data;
     }
   </script>
+
+  <!-- Payslip preview modal -->
+  <div id="preview-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true">
+    <div class="relative w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+      <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0 bg-gray-50">
+        <span id="preview-filename" class="text-sm font-semibold text-gray-800 truncate mr-3"></span>
+        <button id="preview-close" type="button"
+          class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 font-bold text-lg transition-colors"
+          aria-label="Close preview">✕</button>
+      </div>
+      <div id="preview-content" class="flex-1 overflow-auto bg-gray-100 min-h-[60vh]"></div>
+    </div>
+  </div>
 
   <!-- Clipboard toast -->
   <div id="copy-toast"
