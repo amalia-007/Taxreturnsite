@@ -519,7 +519,7 @@
           totalTax   += parseFloat(d.tax_withheld)  || 0;
         }
         // Only pre-fill from DB if the user hasn't already uploaded files this session
-        if ((totalGross > 0 || totalTax > 0) && uploadedPayslips.length === 0) {
+        if ((totalGross > 0 || totalTax > 0) && window._slips.length === 0) {
           document.getElementById('gross-income').value  = totalGross.toFixed(2);
           document.getElementById('payg-withheld').value = totalTax.toFixed(2);
           const note = document.getElementById('prefill-note');
@@ -755,205 +755,172 @@
     })();
 
     // ── Payslip Upload ─────────────────────────────────────────────────────────
-    const dropzone  = document.getElementById('upload-dropzone');
-    const fileInput = document.getElementById('upload-input');
-    const fileList  = document.getElementById('upload-file-list');
-    const summary   = document.getElementById('upload-summary');
+    // window._slips / window._slipId are global to avoid any closure/scope issues
+    window._slips  = [];  // { id, file, status:'processing'|'done'|'error', gross, tax, sup, err }
+    window._slipId = 0;
 
-    // Tracks every uploaded file: { id, file, status, data, error }
-    const uploadedPayslips = [];
-    let _payslipCounter = 0;
+    (function setupUpload() {
+      var dz   = document.getElementById('upload-dropzone');
+      var inp  = document.getElementById('upload-input');
+      var list = document.getElementById('upload-file-list');
+      var sumEl= document.getElementById('upload-summary');
+      if (!dz || !inp || !list || !sumEl) return;
 
+      dz.addEventListener('click', function() { inp.click(); });
 
-    dropzone.addEventListener('click', () => fileInput.click());
+      inp.addEventListener('change', function() {
+        var files = Array.from(inp.files);
+        inp.value = '';
+        processFiles(files);
+      });
 
-    fileInput.addEventListener('change', () => {
-      handleFiles(fileInput.files);
-      fileInput.value = '';
-    });
+      dz.addEventListener('dragover', function(e) { e.preventDefault(); dz.classList.add('dz-over'); });
+      dz.addEventListener('dragleave', function(e) { if (!dz.contains(e.relatedTarget)) dz.classList.remove('dz-over'); });
+      dz.addEventListener('drop', function(e) {
+        e.preventDefault(); dz.classList.remove('dz-over');
+        processFiles(Array.from(e.dataTransfer.files));
+      });
 
-    dropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropzone.classList.add('dz-over');
-    });
+      list.addEventListener('click', function(e) {
+        var pb = e.target.closest('[data-preview-id]');
+        var db = e.target.closest('[data-delete-id]');
+        if (pb) openPreview(parseInt(pb.getAttribute('data-preview-id'), 10));
+        if (db) removeSlip(parseInt(db.getAttribute('data-delete-id'), 10));
+      });
 
-    dropzone.addEventListener('dragleave', (e) => {
-      if (!dropzone.contains(e.relatedTarget)) dropzone.classList.remove('dz-over');
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropzone.classList.remove('dz-over');
-      handleFiles(e.dataTransfer.files);
-    });
-
-    async function handleFiles(files) {
-      for (const file of [...files]) {
-        if (file.size > 10 * 1024 * 1024) {
-          alert(`${file.name} exceeds the 10 MB limit and was skipped.`);
-          continue;
-        }
-        const entry = { id: _payslipCounter++, file, status: 'processing', data: {}, error: '' };
-        uploadedPayslips.push(entry);
-        renderFileList();
-
-        try {
-          const data = await runOCR(file);
-          const e = uploadedPayslips.find(p => p.id === entry.id);
-          if (e) { e.status = 'done'; e.data = data; }
-        } catch (err) {
-          const e = uploadedPayslips.find(p => p.id === entry.id);
-          if (e) { e.status = 'error'; e.error = err.message || 'Could not read payslip.'; }
-        }
-        renderFileList();
-        updateUploadSummary();
-      }
-    }
-
-    // ── Delete / Preview action buttons ──────────────────────────────────────
-    fileList.addEventListener('click', (e) => {
-      const previewBtn = e.target.closest('.payslip-preview');
-      const deleteBtn  = e.target.closest('.payslip-delete');
-      if (previewBtn) previewPayslip(Number(previewBtn.dataset.id));
-      if (deleteBtn)  deletePayslip(Number(deleteBtn.dataset.id));
-    });
-
-    function deletePayslip(id) {
-      const idx = uploadedPayslips.findIndex(p => p.id === id);
-      if (idx === -1) return;
-      uploadedPayslips.splice(idx, 1);
-      renderFileList();
-      updateUploadSummary();
-    }
-
-    function previewPayslip(id) {
-      const p = uploadedPayslips.find(e => e.id === id);
-      if (!p) return;
-      const url     = URL.createObjectURL(p.file);
-      const modal   = document.getElementById('preview-modal');
-      const content = document.getElementById('preview-content');
-      const isImage = p.file.type.startsWith('image/');
-      content.innerHTML = isImage
-        ? `<img src="${url}" class="w-full h-auto" alt="${esc(p.file.name)}" />`
-        : `<object data="${url}" type="application/pdf" class="w-full min-h-[70vh]"><p class="p-6 text-sm text-gray-500">PDF preview not supported in this browser. <a href="${url}" download="${esc(p.file.name)}" class="underline text-brand-600">Download instead</a></p></object>`;
-      document.getElementById('preview-filename').textContent = p.file.name;
-      modal._revokeUrl = () => URL.revokeObjectURL(url);
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closePreview() {
-      const modal = document.getElementById('preview-modal');
-      modal.classList.add('hidden');
-      document.getElementById('preview-content').innerHTML = '';
-      document.body.style.overflow = '';
-      if (modal._revokeUrl) { modal._revokeUrl(); modal._revokeUrl = null; }
-    }
-
-    document.getElementById('preview-close').addEventListener('click', closePreview);
-    document.getElementById('preview-modal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('preview-modal')) closePreview();
-    });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closePreview();
-    });
-
-    function renderFileList() {
-      const lang = localStorage.getItem('lang') || 'en';
-      const t    = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
-      const actionBtns = (id) => `
-        <button class="payslip-preview" data-id="${id}" title="Preview file" type="button" style="min-width:36px;min-height:36px;border:none;background:transparent;cursor:pointer;font-size:16px;line-height:1;border-radius:8px;color:#6b7280;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0">👁</button>
-        <button class="payslip-delete"  data-id="${id}" title="Remove file"  type="button" style="min-width:36px;min-height:36px;border:none;background:transparent;cursor:pointer;font-size:14px;line-height:1;border-radius:8px;color:#ef4444;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700">✕</button>`;
-
-      fileList.innerHTML = uploadedPayslips.map(p => {
-        if (p.status === 'processing') {
-          return `<li class="flex items-center gap-2 text-sm p-2.5 bg-gray-50 rounded-lg">
-            <span class="spinner flex-shrink-0"></span>
-            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-            <span class="text-xs flex-shrink-0 text-gray-400">Reading…</span>
-            ${actionBtns(p.id)}
-          </li>`;
-        }
-        if (p.status === 'done') {
-          return `<li class="flex items-center gap-2 text-sm p-2.5 bg-brand-50 rounded-lg">
-            <span class="text-base flex-shrink-0">✅</span>
-            <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-            <span class="text-xs flex-shrink-0 text-brand-600 font-semibold">${t.badge}</span>
-            ${actionBtns(p.id)}
-          </li>`;
-        }
-        return `<li class="flex items-center gap-2 text-sm p-2.5 bg-red-50 rounded-lg">
-          <span class="text-base flex-shrink-0">❌</span>
-          <span class="flex-1 truncate text-gray-700 font-medium">${esc(p.file.name)}</span>
-          <span class="text-xs flex-shrink-0 text-red-500">${esc(p.error) || 'Could not read — fill in manually.'}</span>
-          ${actionBtns(p.id)}
-        </li>`;
-      }).join('');
-    }
-
-    function updateUploadSummary() {
-      const done = uploadedPayslips.filter(p => p.status === 'done');
-      if (done.length === 0) { summary.classList.add('hidden'); return; }
-
-      const lang  = localStorage.getItem('lang') || 'en';
-      const t     = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
-      let totalGross = 0, totalTax = 0, totalSuper = 0;
-      for (const p of done) {
-        totalGross += parseFloat(p.data.gross_income) || 0;
-        totalTax   += parseFloat(p.data.tax_withheld) || 0;
-        totalSuper += parseFloat(p.data.super)        || 0;
+      function processFiles(files) {
+        files.forEach(function(file) {
+          if (file.size > 10 * 1024 * 1024) { alert(file.name + ' exceeds 10 MB — skipped.'); return; }
+          var id = ++window._slipId;
+          window._slips.push({ id: id, file: file, status: 'processing', gross: 0, tax: 0, sup: 0, err: '' });
+          redraw();
+          ocrFile(file, id);
+        });
       }
 
-      // Auto-fill calculator fields
-      document.getElementById('gross-income').value  = totalGross.toFixed(2);
-      document.getElementById('payg-withheld').value = totalTax.toFixed(2);
-      superFromPayslips = totalSuper;
-      document.getElementById('gross-income-badge').classList.remove('hidden');
-      document.getElementById('payg-withheld-badge').classList.remove('hidden');
-
-      // Show "Filled by AI" badges
-      const badgeGross = document.getElementById('badge-gross');
-      const badgePayg  = document.getElementById('badge-payg');
-      if (badgeGross) { badgeGross.textContent = t.badge; badgeGross.classList.remove('hidden'); }
-      if (badgePayg)  { badgePayg.textContent  = t.badge; badgePayg.classList.remove('hidden'); }
-
-      document.getElementById('sum-gross').textContent = fmt(totalGross);
-      document.getElementById('sum-tax').textContent   = fmt(totalTax);
-
-      const superLabel = document.getElementById('sum-super-label');
-      const superVal   = document.getElementById('sum-super');
-      if (totalSuper > 0) {
-        superVal.textContent = fmt(totalSuper);
-        superLabel.classList.remove('hidden');
-        superVal.classList.remove('hidden');
-      } else {
-        superLabel.classList.add('hidden');
-        superVal.classList.add('hidden');
-      }
-
-      summary.classList.remove('hidden');
-      // Scroll income fields into view so user sees the auto-fill
-      document.getElementById('gross-income').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    // ── Claude OCR via /api/ocr ───────────────────────────────────────────────
-    async function runOCR(file) {
-      const base64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload  = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
+      function ocrFile(file, id) {
+        var reader = new FileReader();
+        reader.onload = function() {
+          var b64 = reader.result.split(',')[1];
+          fetch('/api/ocr', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ base64: b64, mediaType: file.type || 'image/jpeg' })
+          })
+          .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, d: d }; }); })
+          .then(function(r) {
+            if (!r.ok || r.d.error) throw new Error(r.d.error || 'OCR failed');
+            var s = window._slips.find(function(x) { return x.id === id; });
+            if (s) { s.status = 'done'; s.gross = parseFloat(r.d.gross_income)||0; s.tax = parseFloat(r.d.tax_withheld)||0; s.sup = parseFloat(r.d.super)||0; }
+            redraw(); recalcTotals();
+          })
+          .catch(function(err) {
+            var s = window._slips.find(function(x) { return x.id === id; });
+            if (s) { s.status = 'error'; s.err = err.message || 'Could not read'; }
+            redraw();
+          });
+        };
+        reader.onerror = function() {
+          var s = window._slips.find(function(x) { return x.id === id; });
+          if (s) { s.status = 'error'; s.err = 'File read failed'; }
+          redraw();
+        };
         reader.readAsDataURL(file);
-      });
+      }
 
-      const res  = await fetch('/api/ocr', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ base64, mediaType: file.type || 'image/jpeg' }),
+      function removeSlip(id) {
+        window._slips = window._slips.filter(function(s) { return s.id !== id; });
+        redraw(); recalcTotals();
+      }
+
+      function safeName(n) { return n.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+      function redraw() {
+        if (window._slips.length === 0) { list.innerHTML = ''; return; }
+        list.innerHTML = window._slips.map(function(s) {
+          var nm  = safeName(s.file.name);
+          var bg  = s.status === 'done' ? '#f0faf6' : s.status === 'error' ? '#fef2f2' : '#f9fafb';
+          var ico = s.status === 'processing' ? '<span class="spinner"></span>'
+                  : s.status === 'done'       ? '<span>&#x2705;</span>' : '<span>&#x274C;</span>';
+          var lbl = s.status === 'processing'
+            ? '<span style="font-size:11px;color:#9ca3af;flex-shrink:0">Reading&hellip;</span>'
+            : s.status === 'done'
+            ? '<span style="font-size:11px;color:#009960;font-weight:600;flex-shrink:0">&#x2705;&nbsp;Filled by AI</span>'
+            : '<span style="font-size:11px;color:#ef4444;flex-shrink:0">' + safeName(s.err||'Error') + '</span>';
+          var eyeBtn = '<button data-preview-id="' + s.id + '" type="button" title="Preview"'
+            + ' style="display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;'
+            + 'border:1px solid #e5e7eb;background:#fff;cursor:pointer;font-size:16px;color:#6b7280;'
+            + 'flex-shrink:0;border-radius:6px;padding:0">&#128065;</button>';
+          var delBtn = '<button data-delete-id="' + s.id + '" type="button" title="Remove"'
+            + ' style="display:inline-flex;align-items:center;justify-content:center;min-width:36px;min-height:36px;'
+            + 'border:1px solid #fca5a5;background:#fff;cursor:pointer;font-size:15px;font-weight:700;color:#ef4444;'
+            + 'flex-shrink:0;border-radius:6px;padding:0">&times;</button>';
+          return '<li style="display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;background:'
+            + bg + ';font-size:13px;list-style:none">'
+            + ico
+            + '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">' + nm + '</span>'
+            + lbl + eyeBtn + delBtn + '</li>';
+        }).join('');
+      }
+
+      function recalcTotals() {
+        var done = window._slips.filter(function(s) { return s.status === 'done'; });
+        if (done.length === 0) { sumEl.classList.add('hidden'); return; }
+        var tG = 0, tT = 0, tS = 0;
+        done.forEach(function(s) { tG += s.gross; tT += s.tax; tS += s.sup; });
+
+        document.getElementById('gross-income').value  = tG.toFixed(2);
+        document.getElementById('payg-withheld').value = tT.toFixed(2);
+        superFromPayslips = tS;
+
+        var el;
+        el = document.getElementById('gross-income-badge');  if (el) el.classList.remove('hidden');
+        el = document.getElementById('payg-withheld-badge'); if (el) el.classList.remove('hidden');
+        el = document.getElementById('badge-gross'); if (el) { el.textContent = '✅ Filled by AI'; el.classList.remove('hidden'); }
+        el = document.getElementById('badge-payg');  if (el) { el.textContent = '✅ Filled by AI'; el.classList.remove('hidden'); }
+        document.getElementById('sum-gross').textContent = fmt(tG);
+        document.getElementById('sum-tax').textContent   = fmt(tT);
+        el = document.getElementById('sum-super-label');
+        var ev = document.getElementById('sum-super');
+        if (tS > 0) { if (ev) ev.textContent = fmt(tS); if (el) el.classList.remove('hidden'); if (ev) ev.classList.remove('hidden'); }
+        else        { if (el) el.classList.add('hidden'); if (ev) ev.classList.add('hidden'); }
+
+        sumEl.classList.remove('hidden');
+        document.getElementById('gross-income').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Preview modal wiring
+      function openPreview(id) {
+        var s = window._slips.find(function(x) { return x.id === id; });
+        if (!s) return;
+        var url = URL.createObjectURL(s.file);
+        var modal = document.getElementById('preview-modal');
+        var content = document.getElementById('preview-content');
+        content.innerHTML = s.file.type.startsWith('image/')
+          ? '<img src="' + url + '" style="width:100%;height:auto" />'
+          : '<object data="' + url + '" type="application/pdf" style="width:100%;min-height:70vh">'
+            + '<p style="padding:24px;font-size:13px;color:#6b7280">PDF preview unavailable. '
+            + '<a href="' + url + '" download style="color:#009960;text-decoration:underline">Download</a></p></object>';
+        document.getElementById('preview-filename').textContent = s.file.name;
+        modal._revokeUrl = function() { URL.revokeObjectURL(url); };
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closePreviewModal() {
+        var modal = document.getElementById('preview-modal');
+        modal.classList.add('hidden');
+        document.getElementById('preview-content').innerHTML = '';
+        document.body.style.overflow = '';
+        if (modal._revokeUrl) { modal._revokeUrl(); modal._revokeUrl = null; }
+      }
+
+      document.getElementById('preview-close').addEventListener('click', closePreviewModal);
+      document.getElementById('preview-modal').addEventListener('click', function(e) {
+        if (e.target === document.getElementById('preview-modal')) closePreviewModal();
       });
-      const data = await res.json();
-      if (!res.ok || data.error) throw new Error(data.error || 'OCR request failed.');
-      return data;
-    }
+      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePreviewModal(); });
+    })();
   </script>
 
   <footer class="mt-12 border-t border-gray-200 py-6">
