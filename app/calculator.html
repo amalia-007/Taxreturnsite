@@ -35,6 +35,23 @@
       flex-shrink:0; white-space:nowrap; line-height:1.5;
     }
     .copy-btn:hover,.copy-btn.copied { color:#00A86B; border-color:#00A86B; }
+    /* ATO Accordion */
+    .ato-wrap { background:#1a2e44; border-radius:16px; padding:20px; }
+    .ato-step { border-radius:10px; margin-bottom:6px; background:rgba(255,255,255,0.1); overflow:hidden; }
+    .ato-step-header { width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 15px; background:none; border:none; cursor:pointer; text-align:left; color:#fff; font-size:13.5px; font-weight:600; }
+    .ato-step-header:hover { background:rgba(255,255,255,0.07); }
+    .ato-arrow { font-size:11px; flex-shrink:0; transition:transform .2s; color:rgba(255,255,255,0.6); }
+    .ato-step.open .ato-arrow { transform:rotate(180deg); }
+    .ato-step-body { display:none; padding:0 15px 13px; font-size:13px; color:rgba(255,255,255,0.8); line-height:1.65; }
+    .ato-step.open .ato-step-body { display:block; }
+    .ato-step-body a { color:#6ee7b7; text-decoration:underline; }
+    /* Tooltip */
+    .tip-backdrop { display:none; position:fixed; inset:0; z-index:199; background:rgba(0,0,0,0.45); }
+    .tip-backdrop.show { display:block; }
+    .tip-popup { display:none; position:fixed; z-index:200; top:50%; left:50%; transform:translate(-50%,-50%); width:min(420px,92vw); background:#fff; border:1.5px solid #d1d5db; border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,0.18); padding:20px 20px 18px; }
+    .tip-popup.show { display:block; }
+    .tip-btn { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:#f3f4f6; border:1px solid #d1d5db; color:#6b7280; font-size:10px; font-weight:700; cursor:pointer; vertical-align:middle; margin-left:4px; flex-shrink:0; line-height:1; }
+    .tip-btn:hover { background:#e5e7eb; border-color:#9ca3af; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50">
@@ -43,7 +60,7 @@
     <div class="max-w-3xl mx-auto flex items-center justify-between">
       <a href="../index.html" class="text-xl font-black text-brand-700 tracking-tight">GET MY TAX</a>
       <div class="flex items-center gap-4">
-        <a href="dashboard.html" class="text-sm text-gray-500 hover:text-gray-700">← Dashboard</a>
+        <a href="dashboard.html" class="text-sm text-gray-500 hover:text-gray-700">&larr; Dashboard</a>
         <span id="user-email" class="text-sm text-gray-400 hidden sm:block"></span>
         <button onclick="signOut()" class="text-sm text-gray-600 hover:text-gray-900 font-medium">Sign out</button>
       </div>
@@ -75,7 +92,7 @@
       </div>
 
       <!-- Per-file status list -->
-      <ul id="upload-file-list" class="mt-4 space-y-2"></ul>
+      <div id="upload-file-list" class="mt-4 space-y-2"></div>
 
       <!-- Aggregate AI summary (shown when at least one file is done) -->
       <div id="upload-summary" class="hidden mt-5 p-4 bg-brand-50 border border-brand-100 rounded-xl">
@@ -170,25 +187,25 @@
         <h3 class="text-sm font-semibold text-gray-800 mb-4">Deductions</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Work-related expenses</label>
+            <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Work-related expenses<button type="button" class="tip-btn" onclick="showTip('tip-work')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
               <input id="work-related" type="number" min="0" step="0.01" value="0"
                 class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Charitable donations</label>
+            <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Charitable donations<button type="button" class="tip-btn" onclick="showTip('tip-donations')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
               <input id="donations" type="number" min="0" step="0.01" value="0"
                 class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Self-education expenses</label>
+            <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Self-education expenses<button type="button" class="tip-btn" onclick="showTip('tip-education')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
               <input id="self-education" type="number" min="0" step="0.01" value="0"
                 class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Other deductions</label>
+            <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Other deductions<button type="button" class="tip-btn" onclick="showTip('tip-other')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
               <input id="other-deductions" type="number" min="0" step="0.01" value="0"
                 class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
@@ -217,7 +234,7 @@
 
       <button id="calculate-btn"
         class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition text-sm tracking-wide">
-        Calculate my tax →
+        Calculate my tax &rarr;
       </button>
 
     </div><!-- end Step 2 -->
@@ -230,7 +247,7 @@
         <p id="outcome-sub" class="text-sm mb-6 max-w-xs mx-auto text-white opacity-75"></p>
         <button id="tax-return-btn"
           class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide cursor-pointer bg-transparent">
-          TAX RETURN REQUEST →
+          TAX RETURN REQUEST &rarr;
         </button>
       </div>
 
@@ -341,109 +358,94 @@
 
       <div class="flex items-start justify-between mb-5">
         <div>
-          <h2 class="text-lg font-semibold text-gray-900">How to Lodge Your Tax Return</h2>
-          <p class="text-sm text-gray-500 mt-0.5">7 steps to lodge via ATO myTax — takes about 20 minutes.</p>
+          <h2 id="ato-guide-heading" class="text-lg font-semibold text-gray-900">How to Lodge Your Tax Return</h2>
+          <p id="ato-guide-sub" class="text-sm text-gray-500 mt-0.5">7 steps to lodge via ATO myTax — takes about 20 minutes.</p>
         </div>
         <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
       </div>
 
-      <ol class="space-y-3 mb-6">
+      <!-- Navy accordion card -->
+      <div class="ato-wrap mb-6">
 
-        <!-- Step 1 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">1</div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-sm font-semibold text-gray-800">Create or log in to myGov</p>
-              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
-                myGov →
-              </a>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Go to my.gov.au and sign in or create an account.</p>
+        <div class="ato-step" id="ato-s1">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s1')">
+            <span id="ato-s1-title">1️⃣ Create or log in to myGov</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s1-body">
+            <p id="ato-s1-text">Go to <a href="https://my.gov.au" target="_blank" rel="noopener">my.gov.au</a> and sign in with your username and password, or create a free account if you don't have one. You'll need a valid email address and a mobile number for SMS verification. Once logged in, you'll see your myGov inbox and linked services. Make sure you use the same account you used previously — creating a duplicate account will cause problems. If you've forgotten your password, use the "Forgot password" link on the login page.</p>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 2 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">2</div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-sm font-semibold text-gray-800">Link to ATO</p>
-              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
-                myGov →
-              </a>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">In myGov, link the ATO service to your account if you haven't already.</p>
+        <div class="ato-step" id="ato-s2">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s2')">
+            <span id="ato-s2-title">2️⃣ Link the ATO to your myGov account</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s2-body">
+            <p id="ato-s2-text">From the myGov home screen, click <strong style="color:#6ee7b7">Services</strong>, then <strong style="color:#6ee7b7">Link a service</strong>, and select <strong style="color:#6ee7b7">Australian Taxation Office</strong>. You'll be asked to verify your identity using your Tax File Number (TFN), date of birth, and a document such as your Notice of Assessment. If you've never lodged before, use your TFN and bank account details. The linking process takes 2–3 minutes. Once linked, "Australian Taxation Office" will appear on your myGov home screen as a tile.</p>
+            <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; my.gov.au</a>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 3 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">3</div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-sm font-semibold text-gray-800">Open myTax</p>
-              <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-                class="shrink-0 text-xs text-brand-600 hover:text-brand-700 font-semibold border border-brand-200 hover:border-brand-400 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
-                myTax →
-              </a>
-            </div>
-            <p class="text-xs text-gray-500 mt-1">Select <strong>Tax → Lodge return</strong> and open myTax for the 2024–25 year.</p>
+        <div class="ato-step" id="ato-s3">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s3')">
+            <span id="ato-s3-title">3️⃣ Open myTax</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s3-body">
+            <p id="ato-s3-text">Click the <strong style="color:#6ee7b7">ATO</strong> tile on your myGov home screen. Once inside the ATO portal, click <strong style="color:#6ee7b7">Tax &rarr; Lodge return</strong> from the top menu. Select the <strong style="color:#6ee7b7">2024–25</strong> income year when prompted. The system will open myTax, which is the ATO's online tax return form. This works on desktop and mobile browsers — no app download required. If you see a "Not yet available" message, the ATO usually opens lodgement from 1 July each year.</p>
+            <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; Open myTax</a>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 4 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">4</div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-800">Check pre-filled data</p>
-            <p class="text-xs text-gray-500 mt-1">The ATO pre-fills income from employers and banks — review and correct any figures if needed.</p>
+        <div class="ato-step" id="ato-s4">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s4')">
+            <span id="ato-s4-title">4️⃣ Check pre-filled data</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s4-body">
+            <p id="ato-s4-text">The ATO automatically pre-fills income data from your employers, banks, and government agencies — this is called "ATO pre-fill". Review every pre-filled number carefully: check that your gross income and PAYG withholding match your payment summary or payslips. If you have multiple employers, all should appear. Interest income from bank accounts and government payments (Centrelink, JobSeeker) will also be pre-filled. If anything is wrong or missing, click the field to edit it. Wait until after 31 July for the most complete pre-fill data.</p>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 5 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">5</div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-800">Add deductions</p>
-            <p class="text-xs text-gray-500 mt-1">Enter work-related expenses, charitable donations, and any other eligible deductions. Keep receipts for 5 years.</p>
+        <div class="ato-step" id="ato-s5">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s5')">
+            <span id="ato-s5-title">5️⃣ Add your deductions</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s5-body">
+            <p id="ato-s5-text">Navigate to the <strong style="color:#6ee7b7">Deductions</strong> section and enter all work-related expenses, self-education costs, charitable donations, and any other eligible deductions. Each category has its own field — use the totals from your receipts. You can claim home office expenses at 67c/hour, vehicle expenses at 88c/km (up to 5,000 km), union fees, professional subscriptions, tools, uniforms, and income protection insurance premiums. Keep all receipts for 5 years in case of an ATO audit. You don't submit receipts with your return — only keep them as records.</p>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 6 -->
-        <li class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-brand-100 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center text-brand-600 font-bold text-sm">6</div>
-          <div class="flex-1 min-w-0">
-            <p class="text-sm font-semibold text-gray-800">Review and submit</p>
-            <p class="text-xs text-gray-500 mt-1">Check your summary, then click <strong>Submit</strong>. Most refunds arrive within <strong>2 weeks</strong>.</p>
+        <div class="ato-step" id="ato-s6">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s6')">
+            <span id="ato-s6-title">6️⃣ Review your return and submit</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s6-body">
+            <p id="ato-s6-text">Once all sections are complete, myTax shows a <strong style="color:#6ee7b7">Summary</strong> page with your estimated refund or amount owing. Check that your bank account BSB and account number are correct — this is where your refund will be deposited. Read the declaration carefully, tick the checkbox to confirm the information is true and correct, then click <strong style="color:#6ee7b7">Submit</strong>. You'll receive a receipt number immediately. Most refunds are processed within 2 business weeks. You'll receive a <strong style="color:#6ee7b7">Notice of Assessment</strong> by email within 28 days.</p>
           </div>
-        </li>
+        </div>
 
-        <!-- Step 7 — deadline warning -->
-        <li class="flex gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 hover:border-amber-300 transition-colors">
-          <div class="shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold text-sm">7</div>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-start justify-between gap-3">
-              <p class="text-sm font-semibold text-amber-800">Lodge before 31 October ⚠️</p>
-              <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge"
-                target="_blank" rel="noopener noreferrer"
-                class="shrink-0 text-xs text-amber-700 hover:text-amber-900 font-semibold border border-amber-300 hover:border-amber-500 px-2 py-0.5 rounded transition-colors whitespace-nowrap">
-                ATO →
-              </a>
-            </div>
-            <p class="text-xs text-amber-700 mt-1">Late lodgement may result in penalties of <strong>$313 per 28 days</strong> overdue.</p>
+        <div class="ato-step" id="ato-s7" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3)">
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s7')" style="color:#fbbf24">
+            <span id="ato-s7-title">⚠️ Lodge before 31 October</span>
+            <span class="ato-arrow">▼</span>
+          </button>
+          <div class="ato-step-body" id="ato-s7-body" style="color:rgba(251,191,36,0.9)">
+            <p id="ato-s7-text">The deadline to lodge your own tax return is <strong>31 October 2025</strong> for the 2024–25 income year. If you miss this deadline without an extension, the ATO can issue a Failure to Lodge (FTL) penalty of <strong>$313 for every 28 days</strong> you are late, up to a maximum of $1,565. If you can't lodge in time, contact the ATO before 31 October to request a deferral — they are generally understanding for first-time requests. Using a registered tax agent automatically extends your deadline (often to May the following year). <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge" target="_blank" rel="noopener" style="color:#fbbf24">&rarr; ATO lodgement dates</a></p>
           </div>
-        </li>
+        </div>
 
-      </ol>
+      </div><!-- /.ato-wrap -->
 
       <!-- Action buttons -->
       <div class="flex flex-col sm:flex-row gap-3 mb-4">
         <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
           class="flex-1 text-center bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">
-          Go to myGov →
+          Go to myGov &rarr;
         </a>
         <button onclick="window.print()"
           class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors">
@@ -454,6 +456,16 @@
 
 
   </main>
+
+  <!-- Tooltip backdrop + popup -->
+  <div class="tip-backdrop" id="tip-backdrop" onclick="hideTip()"></div>
+  <div class="tip-popup" id="tip-popup">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px">
+      <p id="tip-title" style="font-size:14px;font-weight:700;color:#111827;margin:0"></p>
+      <button type="button" onclick="hideTip()" style="border:none;background:none;cursor:pointer;font-size:18px;color:#6b7280;line-height:1;flex-shrink:0;padding:0">&#10005;</button>
+    </div>
+    <p id="tip-body" style="font-size:13px;color:#374151;line-height:1.65;margin:0"></p>
+  </div>
 
   <!-- Payslip preview modal -->
   <div id="preview-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" role="dialog" aria-modal="true">
@@ -936,11 +948,135 @@
       document.body.style.overflow = '';
       if (modal._revokeUrl) { modal._revokeUrl(); modal._revokeUrl = null; }
     }
+
+    // ── ATO Accordion ────────────────────────────────────────────────────────
+    function toggleAtoStep(id) {
+      var step = document.getElementById(id);
+      if (!step) return;
+      var isOpen = step.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.ato-step.open').forEach(function(s) { s.classList.remove('open'); });
+      // Open clicked if it wasn't open
+      if (!isOpen) step.classList.add('open');
+    }
+
+    // ── Tooltip system ───────────────────────────────────────────────────────
+    var TIP_DATA = {
+      'tip-work': {
+        en: { title: 'Work-related Expenses', body: 'Vehicles: claim 88c/km up to 5,000 km/year without a logbook (cents-per-kilometre method). Home office: 67c/hour using the fixed rate method (covers electricity, internet, phone). Uniforms with employer logo, protective gear, tools under $300, and union fees are all deductible. Commuting from home to your regular workplace is NOT deductible. Keep all receipts for 5 years.' },
+        fr: { title: 'Frais Professionnels', body: 'Véhicule : 88 cents/km jusqu\'à 5 000 km/an sans carnet de bord. Bureau à domicile : 67 cents/heure (couvre électricité, internet, téléphone). Uniformes avec logo employeur, équipements de sécurité, outils < 300 $, cotisations syndicales sont déductibles. Trajets domicile-travail NON déductibles. Conservez vos reçus 5 ans.' },
+        es: { title: 'Gastos de Trabajo', body: 'Vehículo: 88 centavos/km hasta 5.000 km/año sin libro de registro. Oficina en casa: 67 centavos/hora. Uniformes con logo del empleador, equipos de seguridad, herramientas < $300 y cuotas sindicales son deducibles. Los viajes hogar-trabajo NO son deducibles. Guarda los recibos 5 años.' },
+        it: { title: 'Spese Lavorative', body: 'Veicolo: 88 centesimi/km fino a 5.000 km/anno senza libretto. Ufficio a casa: 67 centesimi/ora. Uniformi con logo datore, dispositivi di sicurezza, attrezzi < $300 e quote sindacali sono deducibili. Tragitti casa-lavoro NON deducibili. Conserva le ricevute 5 anni.' }
+      },
+      'tip-donations': {
+        en: { title: 'Charitable Donations', body: 'Only donations to Deductible Gift Recipient (DGR)-registered organisations qualify. The donation must be $2 or more and you must have a receipt. You cannot claim the value of time, labour, or items you donated — only cash. Check if an organisation is DGR-registered at abr.business.gov.au. Crowd-funding donations are generally NOT deductible unless the platform is DGR-registered.' },
+        fr: { title: 'Dons Caritatifs (DGR)', body: 'Uniquement les dons à des organisations enregistrées DGR. Montant minimum : 2 $, avec reçu. Vous ne pouvez pas déduire la valeur de votre temps ou d\'objets donnés — uniquement les dons en espèces. Vérifiez sur abr.business.gov.au. Les dons via crowd-funding ne sont généralement PAS déductibles.' },
+        es: { title: 'Donaciones Caritativas (DGR)', body: 'Solo donativos a organizaciones registradas como DGR. Mínimo $2 con recibo. No puedes deducir el valor de tu tiempo u objetos donados — solo efectivo. Verifica en abr.business.gov.au. Las donaciones por crowdfunding generalmente NO son deducibles.' },
+        it: { title: 'Donazioni Benefiche (DGR)', body: 'Solo donazioni a organizzazioni registrate DGR. Minimo $2 con ricevuta. Non puoi dedurre il valore del tuo tempo o oggetti donati — solo contanti. Verifica su abr.business.gov.au. Le donazioni via crowdfunding generalmente NON sono deducibili.' }
+      },
+      'tip-education': {
+        en: { title: 'Self-Education Expenses', body: 'Deductible ONLY if the course directly relates to your current job and maintains or improves your skills for that job. NOT deductible if studying for a new career. Claimable items: tuition fees, textbooks, stationery, internet costs (work-study portion), travel to classes. A $250 threshold applies — the first $250 of combined self-education expenses is not deductible. HECS/HELP repayments are NOT a deduction.' },
+        fr: { title: 'Frais de Formation', body: 'Déductible UNIQUEMENT si la formation est directement liée à votre emploi actuel. NON déductible si vous vous formez pour un nouveau métier. Éléments déductibles : frais de scolarité, manuels, papeterie, internet (part professionnelle), transport vers les cours. Un seuil de 250 $ s\'applique — les 250 premiers $ ne sont pas déductibles. Les remboursements HECS ne sont PAS une déduction.' },
+        es: { title: 'Gastos de Autoformación', body: 'Deducible SOLO si el curso está directamente relacionado con tu trabajo actual. NO deducible si estudias para una nueva carrera. Se puede reclamar: matrícula, libros, papelería, internet (parte laboral), viaje a clases. Se aplica un umbral de $250 — los primeros $250 no son deducibles. Los reembolsos HECS NO son deducción.' },
+        it: { title: 'Spese di Autoformazione', body: 'Deducibile SOLO se il corso è direttamente correlato al tuo lavoro attuale. NON deducibile se studi per una nuova carriera. Elementi deducibili: tasse scolastiche, libri, cancelleria, internet (parte lavorativa), viaggio alle lezioni. Si applica una soglia di $250 — i primi $250 non sono deducibili. I rimborsi HECS NON sono deducibili.' }
+      },
+      'tip-other': {
+        en: { title: 'Other Deductions', body: 'Income protection insurance: 100% deductible (NOT life insurance or total/permanent disability). Union fees and professional association memberships: 100% deductible. Tools and equipment under $300: fully deductible in the year of purchase; over $300: depreciated over time. Tax agent fees from last year\'s return are deductible this year. Home office phone/internet: claim the work-related percentage only.' },
+        fr: { title: 'Autres Déductions', body: 'Assurance protection des revenus : 100% déductible (PAS l\'assurance-vie ni invalidité totale). Cotisations syndicales et ordres professionnels : 100% déductibles. Outils < 300 $ : déductibles en totalité l\'année d\'achat ; > 300 $ : amortis sur plusieurs années. Honoraires d\'agent fiscal de l\'année précédente : déductibles cette année. Téléphone/internet : déduire uniquement le pourcentage professionnel.' },
+        es: { title: 'Otras Deducciones', body: 'Seguro de protección de ingresos: 100% deducible (NO seguro de vida ni invalidez total). Cuotas sindicales y colegios profesionales: 100% deducibles. Herramientas < $300: deducibles en su totalidad el año de compra; > $300: amortizadas. Honorarios del agente fiscal del año pasado: deducibles este año. Teléfono/internet: solo el porcentaje laboral.' },
+        it: { title: 'Altre Deduzioni', body: 'Assicurazione protezione reddito: 100% deducibile (NON assicurazione vita né invalidità totale). Quote sindacali e ordini professionali: 100% deducibili. Attrezzi < $300: deducibili interamente nell\'anno di acquisto; > $300: ammortizzati. Onorari agente fiscale dell\'anno scorso: deducibili quest\'anno. Telefono/internet: solo la percentuale lavorativa.' }
+      }
+    };
+
+    function showTip(key) {
+      var lang = localStorage.getItem('lang') || 'en';
+      var data = (TIP_DATA[key] && (TIP_DATA[key][lang] || TIP_DATA[key]['en'])) || null;
+      if (!data) return;
+      document.getElementById('tip-title').textContent = data.title;
+      document.getElementById('tip-body').textContent  = data.body;
+      document.getElementById('tip-popup').classList.add('show');
+      document.getElementById('tip-backdrop').classList.add('show');
+    }
+
+    function hideTip() {
+      document.getElementById('tip-popup').classList.remove('show');
+      document.getElementById('tip-backdrop').classList.remove('show');
+    }
+
+    // ── ATO guide i18n ───────────────────────────────────────────────────────
+    var ATO_I18N = {
+      en: {
+        heading: 'How to Lodge Your Tax Return',
+        sub: '7 steps to lodge via ATO myTax — takes about 20 minutes.',
+        steps: [
+          '1️⃣ Create or log in to myGov',
+          '2️⃣ Link the ATO to your myGov account',
+          '3️⃣ Open myTax',
+          '4️⃣ Check pre-filled data',
+          '5️⃣ Add your deductions',
+          '6️⃣ Review your return and submit',
+          '⚠️ Lodge before 31 October'
+        ]
+      },
+      fr: {
+        heading: 'Comment Déposer Votre Déclaration',
+        sub: '7 étapes pour déposer via ATO myTax — environ 20 minutes.',
+        steps: [
+          '1️⃣ Créer ou se connecter à myGov',
+          '2️⃣ Lier l\'ATO à votre compte myGov',
+          '3️⃣ Ouvrir myTax',
+          '4️⃣ Vérifier les données pré-remplies',
+          '5️⃣ Ajouter vos déductions',
+          '6️⃣ Vérifier et soumettre',
+          '⚠️ Déposer avant le 31 octobre'
+        ]
+      },
+      es: {
+        heading: 'Cómo Presentar su Declaración',
+        sub: '7 pasos para presentar via ATO myTax — unos 20 minutos.',
+        steps: [
+          '1️⃣ Crear o iniciar sesión en myGov',
+          '2️⃣ Vincular ATO a tu cuenta myGov',
+          '3️⃣ Abrir myTax',
+          '4️⃣ Verificar los datos prellenados',
+          '5️⃣ Añadir tus deducciones',
+          '6️⃣ Revisar y enviar',
+          '⚠️ Presentar antes del 31 de octubre'
+        ]
+      },
+      it: {
+        heading: 'Come Presentare la Dichiarazione',
+        sub: '7 passi per presentare tramite ATO myTax — circa 20 minuti.',
+        steps: [
+          '1️⃣ Creare o accedere a myGov',
+          '2️⃣ Collegare ATO al tuo account myGov',
+          '3️⃣ Aprire myTax',
+          '4️⃣ Verificare i dati precompilati',
+          '5️⃣ Aggiungere le deduzioni',
+          '6️⃣ Rivedere e inviare',
+          '⚠️ Presentare entro il 31 ottobre'
+        ]
+      }
+    };
+
+    function applyAtoLang() {
+      var lang = localStorage.getItem('lang') || 'en';
+      var d = ATO_I18N[lang] || ATO_I18N.en;
+      var h = document.getElementById('ato-guide-heading');
+      var s = document.getElementById('ato-guide-sub');
+      if (h) h.textContent = d.heading;
+      if (s) s.textContent = d.sub;
+      ['s1','s2','s3','s4','s5','s6','s7'].forEach(function(k, i) {
+        var el = document.getElementById('ato-' + k + '-title');
+        if (el) el.textContent = d.steps[i];
+      });
+    }
+    applyAtoLang();
   </script>
 
   <footer class="mt-12 border-t border-gray-200 py-6">
     <div class="max-w-3xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-      <span>© 2025 GET MY TAX · Not a registered tax agent · Estimates only</span>
+      <span>&copy; 2025 GET MY TAX &middot; Not a registered tax agent &middot; Estimates only</span>
       <div class="flex gap-4">
         <a href="../legal/privacy.html" class="hover:text-gray-600">Privacy</a>
         <a href="../legal/terms.html" class="hover:text-gray-600">Terms</a>
