@@ -69,9 +69,8 @@
 
   <main class="max-w-3xl mx-auto px-4 py-8 space-y-6">
 
-    <!-- ── Upload Payslips ───────────────────────────────────────────────────── -->
+    <!-- Upload Payslips -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-
       <div class="flex items-start justify-between mb-5">
         <div>
           <div class="flex items-center gap-2 mb-0.5">
@@ -81,8 +80,6 @@
           <p id="upload-sub" class="text-sm text-gray-500">Drop your payslips and we'll fill in your income and tax automatically.</p>
         </div>
       </div>
-
-      <!-- Drop zone -->
       <div id="upload-dropzone"
         class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer transition-colors hover:border-brand-400 hover:bg-brand-50 select-none">
         <input type="file" id="upload-input" accept=".pdf,.jpg,.jpeg,.png" multiple class="hidden" />
@@ -90,11 +87,7 @@
         <p id="upload-dropzone-label" class="text-sm font-medium text-gray-700 pointer-events-none">Drop payslips here or click to browse</p>
         <p class="text-xs text-gray-400 mt-1 pointer-events-none">PDF, JPG or PNG — up to 10 MB each</p>
       </div>
-
-      <!-- Per-file status list -->
       <div id="upload-file-list" class="mt-4 space-y-2"></div>
-
-      <!-- Aggregate AI summary (shown when at least one file is done) -->
       <div id="upload-summary" class="hidden mt-5 p-4 bg-brand-50 border border-brand-100 rounded-xl">
         <p class="text-xs font-semibold text-brand-700 mb-3">Filled by AI ✅ — edit the fields below if needed</p>
         <div class="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm">
@@ -106,12 +99,10 @@
           <span id="sum-super" class="hidden font-semibold text-gray-800 text-right tabular-nums"></span>
         </div>
       </div>
+    </div>
 
-    </div><!-- end Upload Payslips -->
-
-    <!-- ── Step 2: Calculator ──────────────────────────────────────────────── -->
+    <!-- Step 2: Calculator -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-
       <div class="flex items-start justify-between mb-5">
         <div>
           <h2 class="text-lg font-semibold text-gray-900">Step 2 — Tax Calculator</h2>
@@ -119,10 +110,7 @@
         </div>
         <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
       </div>
-
       <div id="prefill-note" class="hidden mb-5 p-3 bg-brand-50 border border-brand-100 rounded-lg text-brand-800 text-xs font-medium"></div>
-
-      <!-- Income -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -149,10 +137,7 @@
           <p id="badge-payg" class="hidden mt-1 text-xs font-semibold text-brand-600">✅ Filled by AI</p>
         </div>
       </div>
-
-      <!-- Tax details -->
       <div class="border-t border-gray-100 pt-5 space-y-5 mb-5">
-
         <div>
           <p class="text-sm font-medium text-gray-700 mb-2">Residency status</p>
           <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
@@ -162,7 +147,6 @@
           </div>
           <p id="residency-note" class="mt-1.5 text-xs text-gray-400">Residents get the $18,200 tax-free threshold, LITO, and Medicare levy.</p>
         </div>
-
         <div>
           <p class="text-sm font-medium text-gray-700 mb-2">HECS/HELP debt?</p>
           <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
@@ -170,7 +154,6 @@
             <label class="yn-btn relative border-l border-gray-200"><input type="radio" name="hecs" value="no" checked /><span>No</span></label>
           </div>
         </div>
-
         <div id="medicare-row">
           <p class="text-sm font-medium text-gray-700 mb-2">Medicare levy exemption?</p>
           <div class="inline-flex rounded-lg border border-gray-200 overflow-hidden">
@@ -179,41 +162,32 @@
           </div>
           <p class="mt-1.5 text-xs text-gray-400">Select Yes if you hold a full exemption certificate or are not eligible for Medicare.</p>
         </div>
-
       </div>
-
-      <!-- Deductions -->
       <div class="border-t border-gray-100 pt-5 mb-5">
         <h3 class="text-sm font-semibold text-gray-800 mb-4">Deductions</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Work-related expenses<button type="button" class="tip-btn" onclick="showTip('tip-work')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
-              <input id="work-related" type="number" min="0" step="0.01" value="0"
-                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+              <input id="work-related" type="number" min="0" step="0.01" value="0" class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Charitable donations<button type="button" class="tip-btn" onclick="showTip('tip-donations')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
-              <input id="donations" type="number" min="0" step="0.01" value="0"
-                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+              <input id="donations" type="number" min="0" step="0.01" value="0" class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Self-education expenses<button type="button" class="tip-btn" onclick="showTip('tip-education')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
-              <input id="self-education" type="number" min="0" step="0.01" value="0"
-                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+              <input id="self-education" type="number" min="0" step="0.01" value="0" class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
           <div>
             <label class="block text-xs font-medium text-gray-600 mb-1 flex items-center">Other deductions<button type="button" class="tip-btn" onclick="showTip('tip-other')">?</button></label>
             <div class="relative"><span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm pointer-events-none">$</span>
-              <input id="other-deductions" type="number" min="0" step="0.01" value="0"
-                class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
+              <input id="other-deductions" type="number" min="0" step="0.01" value="0" class="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" /></div>
           </div>
         </div>
       </div>
-
-      <!-- AI Deduction Finder -->
       <div class="border-t border-gray-100 pt-5 mb-6">
         <div class="flex items-center gap-2 mb-2">
           <h3 class="text-sm font-semibold text-gray-800">Deduction Finder</h3>
@@ -223,138 +197,50 @@
         <div class="flex gap-2">
           <input id="job-title" type="text" placeholder="e.g. nurse, electrician, teacher, Uber driver"
             class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent" />
-          <button id="find-deductions-btn"
-            class="shrink-0 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">
-            Find deductions
-          </button>
+          <button id="find-deductions-btn" class="shrink-0 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-2 rounded-lg text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">Find deductions</button>
         </div>
         <p id="deduction-error" class="hidden mt-2 text-xs text-red-500"></p>
         <div id="deduction-tips" class="hidden mt-4 border border-gray-100 rounded-xl overflow-hidden divide-y divide-gray-50"></div>
       </div>
+      <button id="calculate-btn" class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition text-sm tracking-wide">Calculate my tax &rarr;</button>
+    </div>
 
-      <button id="calculate-btn"
-        class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3.5 rounded-xl transition text-sm tracking-wide">
-        Calculate my tax &rarr;
-      </button>
-
-    </div><!-- end Step 2 -->
-
-    <!-- ── Results: big number only ─────────────────────────────────────────── -->
+    <!-- Results -->
     <div id="results-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       <div id="outcome-banner" class="p-10 text-center">
         <p id="outcome-label" class="text-xs font-bold tracking-widest uppercase mb-3 text-white opacity-80"></p>
         <p id="outcome-amount" class="text-6xl sm:text-7xl font-black tabular-nums mb-4 leading-none text-white"></p>
         <p id="outcome-sub" class="text-sm mb-6 max-w-xs mx-auto text-white opacity-75"></p>
-        <button id="tax-return-btn"
-          class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide cursor-pointer bg-transparent">
-          TAX RETURN REQUEST &rarr;
-        </button>
+        <button id="tax-return-btn" class="inline-block border-2 border-white/60 hover:border-white text-white font-bold px-7 py-3 rounded-xl text-sm transition-colors tracking-wide cursor-pointer bg-transparent">TAX RETURN REQUEST &rarr;</button>
       </div>
-
-      <!-- Your Numbers breakdown — hidden until TAX RETURN REQUEST is clicked -->
       <div id="breakdown-section" class="hidden">
-      <div class="p-6">
-        <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
-
-        <div class="divide-y divide-gray-100 text-sm mb-5 border border-gray-100 rounded-xl overflow-hidden">
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">Gross income</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-gross" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-gross">Copy</button>
-            </div>
+        <div class="p-6">
+          <h3 class="text-xs font-bold tracking-widest uppercase text-gray-400 mb-4">Your Numbers</h3>
+          <div class="divide-y divide-gray-100 text-sm mb-5 border border-gray-100 rounded-xl overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">Gross income</span><div class="flex items-center gap-2 min-w-0"><span id="r-gross" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-gross">Copy</button></div></div>
+            <div class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">Tax withheld</span><div class="flex items-center gap-2 min-w-0"><span id="r-payg" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-payg">Copy</button></div></div>
+            <div class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">Total deductions</span><div class="flex items-center gap-2 min-w-0"><span id="r-deductions" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-deductions">Copy</button></div></div>
+            <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50"><span class="font-semibold text-gray-800">Taxable income</span><div class="flex items-center gap-2 min-w-0"><span id="r-taxable" class="font-bold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-taxable">Copy</button></div></div>
+            <div class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">Tax on income</span><div class="flex items-center gap-2 min-w-0"><span id="r-income-tax" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-income-tax">Copy</button></div></div>
+            <div id="r-lito-row" class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">LITO applied</span><div class="flex items-center gap-2 min-w-0"><span id="r-lito" class="font-semibold tabular-nums text-brand-600 truncate"></span><button class="copy-btn" data-target="r-lito">Copy</button></div></div>
+            <div id="r-medicare-row" class="flex items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">Medicare levy</span><div class="flex items-center gap-2 min-w-0"><span id="r-medicare" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-medicare">Copy</button></div></div>
+            <div id="r-hecs-row" class="hidden items-center justify-between px-4 py-3 gap-3"><span class="text-gray-600">HECS/HELP repayment</span><div class="flex items-center gap-2 min-w-0"><span id="r-hecs" class="font-semibold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-hecs">Copy</button></div></div>
+            <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50"><span class="font-semibold text-gray-800">Outcome</span><div class="flex items-center gap-2 min-w-0"><span id="r-outcome" class="font-bold tabular-nums text-gray-900 truncate"></span><button class="copy-btn" data-target="r-outcome">Copy</button></div></div>
           </div>
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">Tax withheld</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-payg" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-payg">Copy</button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">Total deductions</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-deductions" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-deductions">Copy</button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
-            <span class="font-semibold text-gray-800">Taxable income</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-taxable" class="font-bold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-taxable">Copy</button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">Tax on income</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-income-tax" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-income-tax">Copy</button>
-            </div>
-          </div>
-
-          <div id="r-lito-row" class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">LITO applied</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-lito" class="font-semibold tabular-nums text-brand-600 truncate"></span>
-              <button class="copy-btn" data-target="r-lito">Copy</button>
-            </div>
-          </div>
-
-          <div id="r-medicare-row" class="flex items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">Medicare levy</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-medicare" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-medicare">Copy</button>
-            </div>
-          </div>
-
-          <div id="r-hecs-row" class="hidden items-center justify-between px-4 py-3 gap-3">
-            <span class="text-gray-600">HECS/HELP repayment</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-hecs" class="font-semibold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-hecs">Copy</button>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-between px-4 py-3 gap-3 bg-gray-50">
-            <span class="font-semibold text-gray-800">Outcome</span>
-            <div class="flex items-center gap-2 min-w-0">
-              <span id="r-outcome" class="font-bold tabular-nums text-gray-900 truncate"></span>
-              <button class="copy-btn" data-target="r-outcome">Copy</button>
-            </div>
-          </div>
-
+          <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
+            <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
+              <span>Tax bracket breakdown</span>
+              <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
+          </details>
+          <p class="text-xs text-gray-400 text-center"><strong>Estimate only</strong> — not financial advice. Lodge via <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ATO myTax</a> or a registered tax agent.</p>
         </div>
-
-        <!-- Bracket breakdown (collapsible) -->
-        <details class="border border-gray-100 rounded-xl overflow-hidden mb-5">
-          <summary class="flex items-center justify-between px-4 py-3 bg-gray-50 text-sm font-medium text-gray-700 select-none">
-            <span>Tax bracket breakdown</span>
-            <svg class="h-4 w-4 text-gray-400 transition-transform details-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-            </svg>
-          </summary>
-          <div id="bracket-breakdown" class="divide-y divide-gray-50 text-sm"></div>
-        </details>
-
-        <p class="text-xs text-gray-400 text-center">
-          <strong>Estimate only</strong> — not financial advice. Lodge via
-          <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="underline hover:text-gray-600">ATO myTax</a>
-          or a registered tax agent.
-        </p>
       </div>
-      </div><!-- /#breakdown-section -->
     </div>
 
-    <!-- ── ATO 7-Step Lodgement Guide ──────────────────────────────────────── -->
+    <!-- ATO 7-Step Lodgement Guide -->
     <div id="next-steps-panel" class="hidden bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-
       <div class="flex items-start justify-between mb-5">
         <div>
           <h2 id="ato-guide-heading" class="text-lg font-semibold text-gray-900">How to Lodge Your Tax Return</h2>
@@ -362,97 +248,41 @@
         </div>
         <span class="shrink-0 ml-4 text-xs bg-gray-100 text-gray-600 font-semibold px-3 py-1 rounded-full">2024-25</span>
       </div>
-
-      <!-- Navy accordion card -->
       <div class="ato-wrap mb-6">
-
         <div class="ato-step" id="ato-s1">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s1')">
-            <span id="ato-s1-title">1️⃣ Create or log in to myGov</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s1-body">
-            <p id="ato-s1-text">Go to <a href="https://my.gov.au" target="_blank" rel="noopener">my.gov.au</a> and sign in with your username and password, or create a free account if you don't have one. You'll need a valid email address and a mobile number for SMS verification. Once logged in, you'll see your myGov inbox and linked services. Make sure you use the same account you used previously — creating a duplicate account will cause problems. If you've forgotten your password, use the "Forgot password" link on the login page.</p>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s1')"><span id="ato-s1-title">1️⃣ Create or log in to myGov</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>Go to <a href="https://my.gov.au" target="_blank" rel="noopener">my.gov.au</a> and sign in with your username and password, or create a free account if you don't have one. You'll need a valid email address and a mobile number for SMS verification. Once logged in, you'll see your myGov inbox and linked services. Make sure you use the same account you used previously — creating a duplicate account will cause problems.</p></div>
         </div>
-
         <div class="ato-step" id="ato-s2">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s2')">
-            <span id="ato-s2-title">2️⃣ Link the ATO to your myGov account</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s2-body">
-            <p id="ato-s2-text">From the myGov home screen, click <strong style="color:#6ee7b7">Services</strong>, then <strong style="color:#6ee7b7">Link a service</strong>, and select <strong style="color:#6ee7b7">Australian Taxation Office</strong>. You'll be asked to verify your identity using your Tax File Number (TFN), date of birth, and a document such as your Notice of Assessment. If you've never lodged before, use your TFN and bank account details. The linking process takes 2–3 minutes. Once linked, "Australian Taxation Office" will appear on your myGov home screen as a tile.</p>
-            <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; my.gov.au</a>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s2')"><span id="ato-s2-title">2️⃣ Link the ATO to your myGov account</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>From the myGov home screen, click <strong style="color:#6ee7b7">Services</strong>, then <strong style="color:#6ee7b7">Link a service</strong>, and select <strong style="color:#6ee7b7">Australian Taxation Office</strong>. You'll be asked to verify your identity using your TFN, date of birth, and a document such as your Notice of Assessment. The linking process takes 2–3 minutes. <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; my.gov.au</a></p></div>
         </div>
-
         <div class="ato-step" id="ato-s3">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s3')">
-            <span id="ato-s3-title">3️⃣ Open myTax</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s3-body">
-            <p id="ato-s3-text">Click the <strong style="color:#6ee7b7">ATO</strong> tile on your myGov home screen. Once inside the ATO portal, click <strong style="color:#6ee7b7">Tax &rarr; Lodge return</strong> from the top menu. Select the <strong style="color:#6ee7b7">2024–25</strong> income year when prompted. The system will open myTax, which is the ATO's online tax return form. This works on desktop and mobile browsers — no app download required. If you see a "Not yet available" message, the ATO usually opens lodgement from 1 July each year.</p>
-            <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; Open myTax</a>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s3')"><span id="ato-s3-title">3️⃣ Open myTax</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>Click the <strong style="color:#6ee7b7">ATO</strong> tile on your myGov home screen. Once inside the ATO portal, click <strong style="color:#6ee7b7">Tax &rarr; Lodge return</strong> from the top menu. Select the <strong style="color:#6ee7b7">2024–25</strong> income year when prompted. This works on desktop and mobile browsers — no app download required. <a href="https://my.gov.au" target="_blank" rel="noopener">&rarr; Open myTax</a></p></div>
         </div>
-
         <div class="ato-step" id="ato-s4">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s4')">
-            <span id="ato-s4-title">4️⃣ Check pre-filled data</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s4-body">
-            <p id="ato-s4-text">The ATO automatically pre-fills income data from your employers, banks, and government agencies — this is called "ATO pre-fill". Review every pre-filled number carefully: check that your gross income and PAYG withholding match your payment summary or payslips. If you have multiple employers, all should appear. Interest income from bank accounts and government payments (Centrelink, JobSeeker) will also be pre-filled. If anything is wrong or missing, click the field to edit it. Wait until after 31 July for the most complete pre-fill data.</p>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s4')"><span id="ato-s4-title">4️⃣ Check pre-filled data</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>The ATO automatically pre-fills income data from your employers, banks, and government agencies. Review every pre-filled number carefully: check that your gross income and PAYG withholding match your payslips. If you have multiple employers, all should appear. Wait until after 31 July for the most complete pre-fill data.</p></div>
         </div>
-
         <div class="ato-step" id="ato-s5">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s5')">
-            <span id="ato-s5-title">5️⃣ Add your deductions</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s5-body">
-            <p id="ato-s5-text">Navigate to the <strong style="color:#6ee7b7">Deductions</strong> section and enter all work-related expenses, self-education costs, charitable donations, and any other eligible deductions. Each category has its own field — use the totals from your receipts. You can claim home office expenses at 67c/hour, vehicle expenses at 88c/km (up to 5,000 km), union fees, professional subscriptions, tools, uniforms, and income protection insurance premiums. Keep all receipts for 5 years in case of an ATO audit. You don't submit receipts with your return — only keep them as records.</p>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s5')"><span id="ato-s5-title">5️⃣ Add your deductions</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>Navigate to the <strong style="color:#6ee7b7">Deductions</strong> section and enter all work-related expenses, self-education costs, charitable donations, and other eligible deductions. You can claim home office at 67c/hour, vehicle at 88c/km (up to 5,000 km), union fees, tools, uniforms, and income protection insurance. Keep all receipts for 5 years.</p></div>
         </div>
-
         <div class="ato-step" id="ato-s6">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s6')">
-            <span id="ato-s6-title">6️⃣ Review your return and submit</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s6-body">
-            <p id="ato-s6-text">Once all sections are complete, myTax shows a <strong style="color:#6ee7b7">Summary</strong> page with your estimated refund or amount owing. Check that your bank account BSB and account number are correct — this is where your refund will be deposited. Read the declaration carefully, tick the checkbox to confirm the information is true and correct, then click <strong style="color:#6ee7b7">Submit</strong>. You'll receive a receipt number immediately. Most refunds are processed within 2 business weeks. You'll receive a <strong style="color:#6ee7b7">Notice of Assessment</strong> by email within 28 days.</p>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s6')"><span id="ato-s6-title">6️⃣ Review your return and submit</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body"><p>myTax shows a <strong style="color:#6ee7b7">Summary</strong> page with your estimated refund or amount owing. Check your bank account BSB and number are correct. Read the declaration, tick the checkbox, then click <strong style="color:#6ee7b7">Submit</strong>. Most refunds are processed within 2 business weeks. You'll receive a <strong style="color:#6ee7b7">Notice of Assessment</strong> within 28 days.</p></div>
         </div>
-
         <div class="ato-step" id="ato-s7" style="background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3)">
-          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s7')" style="color:#fbbf24">
-            <span id="ato-s7-title">⚠️ Lodge before 31 October</span>
-            <span class="ato-arrow">▼</span>
-          </button>
-          <div class="ato-step-body" id="ato-s7-body" style="color:rgba(251,191,36,0.9)">
-            <p id="ato-s7-text">The deadline to lodge your own tax return is <strong>31 October 2025</strong> for the 2024–25 income year. If you miss this deadline without an extension, the ATO can issue a Failure to Lodge (FTL) penalty of <strong>$313 for every 28 days</strong> you are late, up to a maximum of $1,565. If you can't lodge in time, contact the ATO before 31 October to request a deferral — they are generally understanding for first-time requests. Using a registered tax agent automatically extends your deadline (often to May the following year). <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge" target="_blank" rel="noopener" style="color:#fbbf24">&rarr; ATO lodgement dates</a></p>
-          </div>
+          <button type="button" class="ato-step-header" onclick="toggleAtoStep('ato-s7')" style="color:#fbbf24"><span id="ato-s7-title">⚠️ Lodge before 31 October</span><span class="ato-arrow">▼</span></button>
+          <div class="ato-step-body" style="color:rgba(251,191,36,0.9)"><p>The deadline is <strong>31 October 2025</strong> for the 2024–25 income year. Missing it without an extension risks a Failure to Lodge penalty of <strong>$313 per 28 days</strong>, up to $1,565. Contact the ATO before 31 October to request a deferral if needed. <a href="https://www.ato.gov.au/individuals-and-families/lodging-your-tax-return/when-to-lodge" target="_blank" rel="noopener" style="color:#fbbf24">&rarr; ATO lodgement dates</a></p></div>
         </div>
-
-      </div><!-- /.ato-wrap -->
-
-      <!-- Action buttons -->
+      </div>
       <div class="flex flex-col sm:flex-row gap-3 mb-4">
-        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer"
-          class="flex-1 text-center bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">
-          Go to myGov &rarr;
-        </a>
-        <button onclick="window.print()"
-          class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors">
-          Print summary
-        </button>
+        <a href="https://my.gov.au" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-bold py-3 rounded-xl text-sm transition-colors">Go to myGov &rarr;</a>
+        <button onclick="window.print()" class="flex-1 text-center border border-gray-200 hover:border-gray-300 text-gray-700 font-semibold py-3 rounded-xl text-sm transition-colors">Print summary</button>
       </div>
     </div>
-
 
   </main>
 
@@ -471,19 +301,14 @@
     <div class="relative w-full max-w-3xl max-h-[92vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-2xl">
       <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 shrink-0 bg-gray-50">
         <span id="preview-filename" class="text-sm font-semibold text-gray-800 truncate mr-3"></span>
-        <button id="preview-close" type="button"
-          class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 font-bold text-lg transition-colors"
-          aria-label="Close preview">✕</button>
+        <button id="preview-close" type="button" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 text-gray-500 font-bold text-lg transition-colors" aria-label="Close preview">✕</button>
       </div>
       <div id="preview-content" class="flex-1 overflow-auto bg-gray-100 min-h-[60vh]"></div>
     </div>
   </div>
 
   <!-- Clipboard toast -->
-  <div id="copy-toast"
-    class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none z-50">
-    Copied to clipboard ✓
-  </div>
+  <div id="copy-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs font-semibold px-4 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-200 pointer-events-none z-50">Copied to clipboard ✓</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../assets/js/config.js"></script>
@@ -492,35 +317,26 @@
   <script src="../taxCalc.js"></script>
   <script>
     'use strict';
-
     const fmt = (n) => '$' + Math.abs(n).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
     function radio(name) { return document.querySelector(`input[name="${name}"]:checked`)?.value ?? null; }
-    function esc(v) {
-      if (v == null) return '';
-      return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
+    function esc(v) { if (v == null) return ''; return String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
     (async () => {
       const result = await requirePaid();
       if (!result) return;
       const { session } = result;
       document.getElementById('user-email').textContent = session.user.email;
-      const { data: payslips } = await window.sb
-        .from('payslips').select('extracted_data')
+      const { data: payslips } = await window.sb.from('payslips').select('extracted_data')
         .eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(50);
       if (payslips && payslips.length > 0) {
         let totalGross = 0, totalTax = 0;
-        for (const p of payslips) {
-          const d = p.extracted_data ?? {};
-          totalGross += parseFloat(d.gross_income) || 0;
-          totalTax   += parseFloat(d.tax_withheld)  || 0;
-        }
+        for (const p of payslips) { const d = p.extracted_data ?? {}; totalGross += parseFloat(d.gross_income)||0; totalTax += parseFloat(d.tax_withheld)||0; }
         if ((totalGross > 0 || totalTax > 0) && window.uploadedPayslips.length === 0) {
-          document.getElementById('gross-income').value  = totalGross.toFixed(2);
+          document.getElementById('gross-income').value = totalGross.toFixed(2);
           document.getElementById('payg-withheld').value = totalTax.toFixed(2);
           const note = document.getElementById('prefill-note');
-          note.textContent = `Pre-filled from ${payslips.length} saved payslip${payslips.length > 1 ? 's' : ''} — gross ${fmt(totalGross)}, PAYG ${fmt(totalTax)}. Edit any field if needed.`;
+          note.textContent = `Pre-filled from ${payslips.length} saved payslip${payslips.length>1?'s':''} — gross ${fmt(totalGross)}, PAYG ${fmt(totalTax)}. Edit any field if needed.`;
           note.classList.remove('hidden');
         }
       }
@@ -528,11 +344,7 @@
 
     document.querySelectorAll('input[name="residency"]').forEach(r => {
       r.addEventListener('change', () => {
-        const notes = {
-          australian: 'Residents get the $18,200 tax-free threshold, LITO, and Medicare levy.',
-          foreign:    'Foreign residents pay tax from $1 (no tax-free threshold) and are not subject to Medicare levy.',
-          whm:        'Working Holiday Makers pay 15% on the first $45,000, then standard rates — no LITO, no Medicare levy.',
-        };
+        const notes = { australian:'Residents get the $18,200 tax-free threshold, LITO, and Medicare levy.', foreign:'Foreign residents pay tax from $1 (no tax-free threshold) and are not subject to Medicare levy.', whm:'Working Holiday Makers pay 15% on the first $45,000, then standard rates — no LITO, no Medicare levy.' };
         document.getElementById('residency-note').textContent = notes[r.value] ?? '';
         document.getElementById('medicare-row').style.display = r.value === 'australian' ? '' : 'none';
       });
@@ -541,321 +353,251 @@
     let superFromPayslips = 0;
 
     document.getElementById('calculate-btn').addEventListener('click', () => {
-      const grossIncome     = val('gross-income');
-      const paygWithheld    = val('payg-withheld');
-      const type            = radio('residency') ?? 'australian';
-      const hasHECS         = radio('hecs') === 'yes';
-      const medicareExempt  = radio('medicare-exempt') === 'yes';
+      const grossIncome = val('gross-income'), paygWithheld = val('payg-withheld');
+      const type = radio('residency') ?? 'australian', hasHECS = radio('hecs') === 'yes', medicareExempt = radio('medicare-exempt') === 'yes';
       const totalDeductions = val('work-related') + val('donations') + val('self-education') + val('other-deductions');
       const r = calculateFullTax({ grossIncome, totalDeductions, type, hasHECS, medicareExempt, paygWithheld });
-      document.getElementById('r-gross').textContent      = fmt(r.grossIncome);
-      document.getElementById('r-deductions').textContent = r.totalDeductions > 0 ? '−' + fmt(r.totalDeductions) : '$0.00';
-      document.getElementById('r-taxable').textContent    = fmt(r.taxableIncome);
+      document.getElementById('r-gross').textContent = fmt(r.grossIncome);
+      document.getElementById('r-deductions').textContent = r.totalDeductions > 0 ? '−'+fmt(r.totalDeductions) : '$0.00';
+      document.getElementById('r-taxable').textContent = fmt(r.taxableIncome);
       document.getElementById('r-income-tax').textContent = fmt(r.incomeTax);
       const litoRow = document.getElementById('r-lito-row');
-      if (r.lito > 0) { document.getElementById('r-lito').textContent = '−' + fmt(r.lito); litoRow.classList.remove('hidden'); }
-      else { litoRow.classList.add('hidden'); }
+      if (r.lito > 0) { document.getElementById('r-lito').textContent = '−'+fmt(r.lito); litoRow.classList.remove('hidden'); } else { litoRow.classList.add('hidden'); }
       const medRow = document.getElementById('r-medicare-row');
-      if (type === 'australian' && !medicareExempt) { document.getElementById('r-medicare').textContent = fmt(r.medicareLevy); medRow.classList.remove('hidden'); }
-      else { medRow.classList.add('hidden'); }
+      if (type === 'australian' && !medicareExempt) { document.getElementById('r-medicare').textContent = fmt(r.medicareLevy); medRow.classList.remove('hidden'); } else { medRow.classList.add('hidden'); }
       const hecsRow = document.getElementById('r-hecs-row');
-      if (hasHECS && r.hecsRepayment > 0) { document.getElementById('r-hecs').textContent = fmt(r.hecsRepayment); hecsRow.classList.remove('hidden'); hecsRow.classList.add('flex'); }
-      else { hecsRow.classList.add('hidden'); hecsRow.classList.remove('flex'); }
+      if (hasHECS && r.hecsRepayment > 0) { document.getElementById('r-hecs').textContent = fmt(r.hecsRepayment); hecsRow.classList.remove('hidden'); hecsRow.classList.add('flex'); } else { hecsRow.classList.add('hidden'); hecsRow.classList.remove('flex'); }
       document.getElementById('r-payg').textContent = fmt(r.paygWithheld);
       const isRefund = r.refundOrOwed >= 0;
-      const banner   = document.getElementById('outcome-banner');
-      banner.className = `p-8 text-center ${isRefund ? 'bg-brand-500' : 'bg-red-500'}`;
-      document.getElementById('outcome-label').textContent  = isRefund ? '🎉 Estimated Refund' : '⚠️ Estimated Tax Owing';
+      document.getElementById('outcome-banner').className = `p-8 text-center ${isRefund ? 'bg-brand-500' : 'bg-red-500'}`;
+      document.getElementById('outcome-label').textContent = isRefund ? '🎉 Estimated Refund' : '⚠️ Estimated Tax Owing';
       document.getElementById('outcome-amount').textContent = fmt(r.refundOrOwed);
-      document.getElementById('outcome-sub').textContent    = isRefund
-        ? 'The ATO will deposit this into your nominated bank account.'
-        : 'You will need to pay this by the due date on your notice of assessment.';
+      document.getElementById('outcome-sub').textContent = isRefund ? 'The ATO will deposit this into your nominated bank account.' : 'You will need to pay this by the due date on your notice of assessment.';
       document.getElementById('r-outcome').textContent = (r.refundOrOwed >= 0 ? '+' : '−') + fmt(r.refundOrOwed);
-      document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `
-        <div class="flex justify-between px-4 py-2.5 text-xs">
-          <span class="text-gray-500">${fmt(b.from)} – ${b.to === Infinity ? 'above' : fmt(b.to)} @ ${(b.rate * 100).toFixed(0)}c/dollar</span>
-          <span class="font-medium text-gray-800 tabular-nums">${fmt(b.amount)}</span>
-        </div>`).join('');
+      document.getElementById('bracket-breakdown').innerHTML = r.bracketBreakdown.map(b => `<div class="flex justify-between px-4 py-2.5 text-xs"><span class="text-gray-500">${fmt(b.from)} – ${b.to===Infinity?'above':fmt(b.to)} @ ${(b.rate*100).toFixed(0)}c/dollar</span><span class="font-medium text-gray-800 tabular-nums">${fmt(b.amount)}</span></div>`).join('');
       document.getElementById('results-panel').classList.remove('hidden');
       document.getElementById('breakdown-section').classList.add('hidden');
       document.getElementById('next-steps-panel').classList.add('hidden');
-      document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('results-panel').scrollIntoView({ behavior:'smooth', block:'start' });
     });
 
     document.getElementById('find-deductions-btn').addEventListener('click', async () => {
-      const btn   = document.getElementById('find-deductions-btn');
-      const input = document.getElementById('job-title');
-      const err   = document.getElementById('deduction-error');
-      const tips  = document.getElementById('deduction-tips');
-      const job   = input.value.trim();
+      const btn = document.getElementById('find-deductions-btn'), input = document.getElementById('job-title');
+      const err = document.getElementById('deduction-error'), tips = document.getElementById('deduction-tips');
+      const job = input.value.trim();
       if (!job) { err.textContent = 'Please enter a job title.'; err.classList.remove('hidden'); return; }
-      err.classList.add('hidden'); tips.classList.add('hidden');
-      btn.disabled = true; btn.textContent = 'Finding…';
+      err.classList.add('hidden'); tips.classList.add('hidden'); btn.disabled = true; btn.textContent = 'Finding…';
       try {
         const session = await getSession();
         const headers = { 'Content-Type': 'application/json' };
         if (session) headers['Authorization'] = `Bearer ${session.access_token}`;
-        const res  = await fetch(`${window.SUPABASE_URL}/functions/v1/suggest-deductions`, { method: 'POST', headers, body: JSON.stringify({ job }) });
+        const res = await fetch(`${window.SUPABASE_URL}/functions/v1/suggest-deductions`, { method:'POST', headers, body:JSON.stringify({ job }) });
         const body = await res.json();
         if (!res.ok || body.error) throw new Error(body.error ?? 'Request failed');
         const deductions = body.deductions ?? [];
         if (deductions.length === 0) throw new Error('No deductions found for this role.');
-        tips.innerHTML = deductions.map(d => `
-          <div class="px-4 py-3"><div class="flex items-start justify-between gap-3"><div>
-            <p class="text-sm font-semibold text-gray-800">${esc(d.category)}</p>
-            <p class="text-xs text-gray-500 mt-0.5">${esc(d.description)}</p>
-          </div><span class="shrink-0 text-xs bg-brand-50 text-brand-700 font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">${esc(d.typical_range_aud)}</span></div></div>`).join('');
+        tips.innerHTML = deductions.map(d => `<div class="px-4 py-3"><div class="flex items-start justify-between gap-3"><div><p class="text-sm font-semibold text-gray-800">${esc(d.category)}</p><p class="text-xs text-gray-500 mt-0.5">${esc(d.description)}</p></div><span class="shrink-0 text-xs bg-brand-50 text-brand-700 font-semibold px-2 py-0.5 rounded-full whitespace-nowrap">${esc(d.typical_range_aud)}</span></div></div>`).join('');
         tips.classList.remove('hidden');
-      } catch (e) { err.textContent = e.message; err.classList.remove('hidden'); }
+      } catch(e) { err.textContent = e.message; err.classList.remove('hidden'); }
       finally { btn.disabled = false; btn.textContent = 'Find deductions'; }
     });
 
     document.getElementById('results-panel').addEventListener('click', (e) => {
-      const btn = e.target.closest('.copy-btn');
-      if (!btn) return;
-      const text = document.getElementById(btn.dataset.target)?.textContent?.trim() ?? '';
-      if (!text) return;
-      const finish = () => { btn.textContent = 'Copied!'; btn.classList.add('copied'); showCopyToast(); setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000); };
+      const btn = e.target.closest('.copy-btn'); if (!btn) return;
+      const text = document.getElementById(btn.dataset.target)?.textContent?.trim() ?? ''; if (!text) return;
+      const finish = () => { btn.textContent='Copied!'; btn.classList.add('copied'); showCopyToast(); setTimeout(()=>{ btn.textContent='Copy'; btn.classList.remove('copied'); },2000); };
       if (navigator.clipboard?.writeText) { navigator.clipboard.writeText(text).then(finish).catch(finish); }
-      else {
-        const ta = Object.assign(document.createElement('textarea'), { value: text, style: 'position:fixed;opacity:0' });
-        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); finish();
-      }
+      else { const ta = Object.assign(document.createElement('textarea'),{value:text,style:'position:fixed;opacity:0'}); document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); finish(); }
     });
 
     let _toastTimer;
     function showCopyToast() {
-      const t = document.getElementById('copy-toast');
-      t.classList.remove('opacity-0'); t.classList.add('opacity-100');
-      clearTimeout(_toastTimer);
-      _toastTimer = setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2000);
+      const t = document.getElementById('copy-toast'); t.classList.remove('opacity-0'); t.classList.add('opacity-100');
+      clearTimeout(_toastTimer); _toastTimer = setTimeout(()=>{ t.classList.remove('opacity-100'); t.classList.add('opacity-0'); },2000);
     }
 
     document.getElementById('tax-return-btn').addEventListener('click', () => {
-      window.open('https://my.gov.au', '_blank', 'noopener,noreferrer');
+      window.open('https://my.gov.au','_blank','noopener,noreferrer');
       document.getElementById('breakdown-section').classList.remove('hidden');
       document.getElementById('next-steps-panel').classList.remove('hidden');
-      document.getElementById('breakdown-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('breakdown-section').scrollIntoView({ behavior:'smooth', block:'start' });
     });
 
-    document.querySelectorAll('details').forEach(d => {
-      d.addEventListener('toggle', () => { d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open); });
-    });
+    document.querySelectorAll('details').forEach(d => { d.addEventListener('toggle', () => { d.querySelector('.details-arrow')?.classList.toggle('rotate-180', d.open); }); });
 
     const UPLOAD_TRANS = {
-      fr: { heading: '📄 Téléverser vos bulletins de paie', sub: 'Déposez vos bulletins de paie et nous remplirons automatiquement vos revenus et impôts.', dropzone: 'Déposez les bulletins ici ou cliquez pour parcourir' },
-      es: { heading: '📄 Subir sus recibos de sueldo', sub: 'Suba sus recibos y rellenaremos sus ingresos e impuestos automáticamente.', dropzone: 'Suelte los recibos aquí o haga clic para buscar' },
-      it: { heading: '📄 Carica le tue buste paga', sub: 'Carica le buste paga e compileremo automaticamente i tuoi redditi e imposte.', dropzone: 'Trascina le buste paga qui o clicca per sfogliare' },
-      en: { heading: '📄 Upload Your Payslips', sub: 'Drop your payslips and we\'ll fill in your income and tax automatically.', dropzone: 'Drop payslips here or click to browse' },
+      fr:{ heading:'📄 Téléverser vos bulletins de paie', sub:'Déposez vos bulletins de paie et nous remplirons automatiquement vos revenus et impôts.', dropzone:'Déposez les bulletins ici ou cliquez pour parcourir' },
+      es:{ heading:'📄 Subir sus recibos de sueldo', sub:'Suba sus recibos y rellenaremos sus ingresos e impuestos automáticamente.', dropzone:'Suelte los recibos aquí o haga clic para buscar' },
+      it:{ heading:'📄 Carica le tue buste paga', sub:'Carica le buste paga e compileremo automaticamente i tuoi redditi e imposte.', dropzone:'Trascina le buste paga qui o clicca per sfogliare' },
+      en:{ heading:'📄 Upload Your Payslips', sub:'Drop your payslips and we\'ll fill in your income and tax automatically.', dropzone:'Drop payslips here or click to browse' },
     };
-    (function applyUploadLang() {
-      const lang = localStorage.getItem('lang') || 'en';
-      const t = UPLOAD_TRANS[lang] || UPLOAD_TRANS.en;
-      const h = document.getElementById('upload-heading'); if (h) h.textContent = t.heading;
-      const s = document.getElementById('upload-sub');     if (s) s.textContent = t.sub;
-      const dz = document.getElementById('upload-dropzone-label'); if (dz) dz.textContent = t.dropzone;
+    (function applyUploadLang(){
+      const lang=localStorage.getItem('lang')||'en', t=UPLOAD_TRANS[lang]||UPLOAD_TRANS.en;
+      const h=document.getElementById('upload-heading'); if(h) h.textContent=t.heading;
+      const s=document.getElementById('upload-sub'); if(s) s.textContent=t.sub;
+      const dz=document.getElementById('upload-dropzone-label'); if(dz) dz.textContent=t.dropzone;
     })();
 
     window.uploadedPayslips = [];
 
-    window.removeFile = function(index) {
-      window.uploadedPayslips.splice(index, 1);
-      renderPayslipList();
-      recalcUploadTotals();
-    };
+    window.removeFile = function(index) { window.uploadedPayslips.splice(index,1); renderPayslipList(); recalcUploadTotals(); };
 
     window.previewFile = function(index) {
-      var slip = window.uploadedPayslips[index];
-      if (!slip || !slip.file) return;
-      var url = URL.createObjectURL(slip.file);
-      var modal = document.getElementById('preview-modal');
-      var content = document.getElementById('preview-content');
-      if (!modal || !content) return;
+      var slip=window.uploadedPayslips[index]; if(!slip||!slip.file) return;
+      var url=URL.createObjectURL(slip.file);
+      var modal=document.getElementById('preview-modal'), content=document.getElementById('preview-content');
+      if(!modal||!content) return;
       content.innerHTML = slip.file.type.startsWith('image/')
-        ? '<img src="' + url + '" style="width:100%;height:auto;display:block" />'
-        : '<object data="' + url + '" type="application/pdf" style="width:100%;min-height:70vh;display:block">'
-          + '<p style="padding:24px;font-size:13px;color:#6b7280">PDF preview unavailable — '
-          + '<a href="' + url + '" download style="color:#009960;text-decoration:underline">Download file</a></p></object>';
-      document.getElementById('preview-filename').textContent = slip.file.name;
-      modal._revokeUrl = function() { URL.revokeObjectURL(url); };
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
+        ? '<img src="'+url+'" style="width:100%;height:auto;display:block" />'
+        : '<object data="'+url+'" type="application/pdf" style="width:100%;min-height:70vh;display:block"><p style="padding:24px;font-size:13px;color:#6b7280">PDF preview unavailable — <a href="'+url+'" download style="color:#009960;text-decoration:underline">Download file</a></p></object>';
+      document.getElementById('preview-filename').textContent=slip.file.name;
+      modal._revokeUrl=function(){ URL.revokeObjectURL(url); };
+      modal.classList.remove('hidden'); document.body.style.overflow='hidden';
     };
 
     function renderPayslipList() {
-      var list = document.getElementById('upload-file-list');
-      if (!list) return;
-      if (window.uploadedPayslips.length === 0) { list.innerHTML = ''; return; }
-      list.innerHTML = window.uploadedPayslips.map(function(slip, index) {
-        var name = slip.file.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        var bg   = slip.status === 'done' ? '#f0faf6' : slip.status === 'error' ? '#fef2f2' : '#f9fafb';
-        var icon = slip.status === 'processing' ? '<span class="spinner" style="flex-shrink:0"></span>'
-                 : slip.status === 'done' ? '<span style="flex-shrink:0">&#x2705;</span>' : '<span style="flex-shrink:0">&#x274C;</span>';
-        var label = slip.status === 'processing'
-          ? '<span style="font-size:11px;color:#9ca3af;white-space:nowrap;flex-shrink:0">Reading&hellip;</span>'
-          : slip.status === 'done'
-          ? '<span style="font-size:11px;color:#009960;font-weight:600;white-space:nowrap;flex-shrink:0">&#x2705; Filled by AI</span>'
-          : '<span style="font-size:11px;color:#ef4444;white-space:nowrap;flex-shrink:0">' + (slip.err || 'Error') + '</span>';
-        return '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:6px;background:' + bg + ';font-size:13px">'
-          + icon
-          + '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">' + name + '</span>'
-          + label
-          + '<button onclick="previewFile(' + index + ')" type="button" title="Preview" style="display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;border:2px solid #d1d5db;background:white;border-radius:8px;cursor:pointer;font-size:18px;flex-shrink:0">&#128065;</button>'
-          + '<button onclick="removeFile(' + index + ')" type="button" title="Remove" style="display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;border:2px solid #fca5a5;background:white;border-radius:8px;cursor:pointer;font-size:18px;font-weight:700;color:#ef4444;flex-shrink:0">&#10005;</button>'
-          + '</div>';
+      var list=document.getElementById('upload-file-list'); if(!list) return;
+      if(window.uploadedPayslips.length===0){ list.innerHTML=''; return; }
+      list.innerHTML=window.uploadedPayslips.map(function(slip,index){
+        var name=slip.file.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        var bg=slip.status==='done'?'#f0faf6':slip.status==='error'?'#fef2f2':'#f9fafb';
+        var icon=slip.status==='processing'?'<span class="spinner" style="flex-shrink:0"></span>':slip.status==='done'?'<span style="flex-shrink:0">&#x2705;</span>':'<span style="flex-shrink:0">&#x274C;</span>';
+        var label=slip.status==='processing'?'<span style="font-size:11px;color:#9ca3af;white-space:nowrap;flex-shrink:0">Reading&hellip;</span>':slip.status==='done'?'<span style="font-size:11px;color:#009960;font-weight:600;white-space:nowrap;flex-shrink:0">&#x2705; Filled by AI</span>':'<span style="font-size:11px;color:#ef4444;white-space:nowrap;flex-shrink:0">'+(slip.err||'Error')+'</span>';
+        return '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:8px;margin-bottom:6px;background:'+bg+';font-size:13px">'
+          +icon+'<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500">'+name+'</span>'+label
+          +'<button onclick="previewFile('+index+')" type="button" title="Preview" style="display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;border:2px solid #d1d5db;background:white;border-radius:8px;cursor:pointer;font-size:18px;flex-shrink:0">&#128065;</button>'
+          +'<button onclick="removeFile('+index+')" type="button" title="Remove" style="display:inline-flex;align-items:center;justify-content:center;min-width:40px;min-height:40px;border:2px solid #fca5a5;background:white;border-radius:8px;cursor:pointer;font-size:18px;font-weight:700;color:#ef4444;flex-shrink:0">&#10005;</button>'
+          +'</div>';
       }).join('');
     }
 
     function recalcUploadTotals() {
-      var summary = document.getElementById('upload-summary');
-      if (!summary) return;
-      var done = window.uploadedPayslips.filter(function(s) { return s.status === 'done'; });
-      if (done.length === 0) { summary.classList.add('hidden'); return; }
-      var totalGross = 0, totalTax = 0, totalSuper = 0;
-      done.forEach(function(s) { totalGross += s.gross; totalTax += s.tax; totalSuper += s.sup; });
-      document.getElementById('gross-income').value  = totalGross.toFixed(2);
-      document.getElementById('payg-withheld').value = totalTax.toFixed(2);
-      superFromPayslips = totalSuper;
+      var summary=document.getElementById('upload-summary'); if(!summary) return;
+      var done=window.uploadedPayslips.filter(function(s){ return s.status==='done'; });
+      if(done.length===0){ summary.classList.add('hidden'); return; }
+      var totalGross=0,totalTax=0,totalSuper=0;
+      done.forEach(function(s){ totalGross+=s.gross; totalTax+=s.tax; totalSuper+=s.sup; });
+      document.getElementById('gross-income').value=totalGross.toFixed(2);
+      document.getElementById('payg-withheld').value=totalTax.toFixed(2);
+      superFromPayslips=totalSuper;
       var el;
-      el = document.getElementById('gross-income-badge');  if (el) el.classList.remove('hidden');
-      el = document.getElementById('payg-withheld-badge'); if (el) el.classList.remove('hidden');
-      el = document.getElementById('badge-gross'); if (el) { el.textContent = '✅ Filled by AI'; el.classList.remove('hidden'); }
-      el = document.getElementById('badge-payg');  if (el) { el.textContent = '✅ Filled by AI'; el.classList.remove('hidden'); }
-      document.getElementById('sum-gross').textContent = fmt(totalGross);
-      document.getElementById('sum-tax').textContent   = fmt(totalTax);
-      var superLabel = document.getElementById('sum-super-label');
-      var superVal   = document.getElementById('sum-super');
-      if (totalSuper > 0) {
-        if (superVal) superVal.textContent = fmt(totalSuper);
-        if (superLabel) superLabel.classList.remove('hidden');
-        if (superVal) superVal.classList.remove('hidden');
-      } else {
-        if (superLabel) superLabel.classList.add('hidden');
-        if (superVal) superVal.classList.add('hidden');
-      }
+      el=document.getElementById('gross-income-badge'); if(el) el.classList.remove('hidden');
+      el=document.getElementById('payg-withheld-badge'); if(el) el.classList.remove('hidden');
+      el=document.getElementById('badge-gross'); if(el){ el.textContent='✅ Filled by AI'; el.classList.remove('hidden'); }
+      el=document.getElementById('badge-payg');  if(el){ el.textContent='✅ Filled by AI'; el.classList.remove('hidden'); }
+      document.getElementById('sum-gross').textContent=fmt(totalGross);
+      document.getElementById('sum-tax').textContent=fmt(totalTax);
+      var superLabel=document.getElementById('sum-super-label'), superVal=document.getElementById('sum-super');
+      if(totalSuper>0){ if(superVal) superVal.textContent=fmt(totalSuper); if(superLabel) superLabel.classList.remove('hidden'); if(superVal) superVal.classList.remove('hidden'); }
+      else { if(superLabel) superLabel.classList.add('hidden'); if(superVal) superVal.classList.add('hidden'); }
       summary.classList.remove('hidden');
-      document.getElementById('gross-income').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('gross-income').scrollIntoView({ behavior:'smooth', block:'center' });
     }
 
-    (function setupUpload() {
-      var dz  = document.getElementById('upload-dropzone');
-      var inp = document.getElementById('upload-input');
-      if (!dz || !inp) return;
-      dz.addEventListener('click', function() { inp.click(); });
-      inp.addEventListener('change', function() { var files = Array.from(inp.files); inp.value = ''; addFiles(files); });
-      dz.addEventListener('dragover',  function(e) { e.preventDefault(); dz.classList.add('dz-over'); });
-      dz.addEventListener('dragleave', function(e) { if (!dz.contains(e.relatedTarget)) dz.classList.remove('dz-over'); });
-      dz.addEventListener('drop',      function(e) { e.preventDefault(); dz.classList.remove('dz-over'); addFiles(Array.from(e.dataTransfer.files)); });
-      function addFiles(files) {
-        files.forEach(function(file) {
-          if (file.size > 10 * 1024 * 1024) { alert(file.name + ' exceeds 10 MB — skipped.'); return; }
-          var slip = { file: file, status: 'processing', gross: 0, tax: 0, sup: 0, err: '' };
-          window.uploadedPayslips.push(slip);
-          renderPayslipList();
-          runOcrForSlip(slip);
+    (function setupUpload(){
+      var dz=document.getElementById('upload-dropzone'), inp=document.getElementById('upload-input');
+      if(!dz||!inp) return;
+      dz.addEventListener('click',function(){ inp.click(); });
+      inp.addEventListener('change',function(){ var files=Array.from(inp.files); inp.value=''; addFiles(files); });
+      dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('dz-over'); });
+      dz.addEventListener('dragleave',function(e){ if(!dz.contains(e.relatedTarget)) dz.classList.remove('dz-over'); });
+      dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('dz-over'); addFiles(Array.from(e.dataTransfer.files)); });
+      function addFiles(files){
+        files.forEach(function(file){
+          if(file.size>10*1024*1024){ alert(file.name+' exceeds 10 MB — skipped.'); return; }
+          var slip={file:file,status:'processing',gross:0,tax:0,sup:0,err:''};
+          window.uploadedPayslips.push(slip); renderPayslipList(); runOcrForSlip(slip);
         });
       }
-      function runOcrForSlip(slip) {
-        var reader = new FileReader();
-        reader.onload = function() {
-          var b64 = reader.result.split(',')[1];
-          fetch('/api/ocr', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ base64: b64, mediaType: slip.file.type || 'image/jpeg' }) })
-          .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, d: d }; }); })
-          .then(function(r) {
-            if (!r.ok || r.d.error) throw new Error(r.d.error || 'OCR failed');
-            slip.status = 'done'; slip.gross = parseFloat(r.d.gross_income) || 0; slip.tax = parseFloat(r.d.tax_withheld) || 0; slip.sup = parseFloat(r.d.super) || 0;
+      function runOcrForSlip(slip){
+        var reader=new FileReader();
+        reader.onload=function(){
+          var b64=reader.result.split(',')[1];
+          fetch('/api/ocr',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:b64,mediaType:slip.file.type||'image/jpeg'})})
+          .then(function(res){ return res.json().then(function(d){ return {ok:res.ok,d:d}; }); })
+          .then(function(r){
+            if(!r.ok||r.d.error) throw new Error(r.d.error||'OCR failed');
+            slip.status='done'; slip.gross=parseFloat(r.d.gross_income)||0; slip.tax=parseFloat(r.d.tax_withheld)||0; slip.sup=parseFloat(r.d.super)||0;
             renderPayslipList(); recalcUploadTotals();
           })
-          .catch(function(err) { slip.status = 'error'; slip.err = err.message || 'Could not read'; renderPayslipList(); });
+          .catch(function(err){ slip.status='error'; slip.err=err.message||'Could not read'; renderPayslipList(); });
         };
-        reader.onerror = function() { slip.status = 'error'; slip.err = 'File read failed'; renderPayslipList(); };
+        reader.onerror=function(){ slip.status='error'; slip.err='File read failed'; renderPayslipList(); };
         reader.readAsDataURL(slip.file);
       }
-      var previewClose = document.getElementById('preview-close');
-      var previewModal = document.getElementById('preview-modal');
-      if (previewClose) previewClose.addEventListener('click', closePreviewModal);
-      if (previewModal) previewModal.addEventListener('click', function(e) { if (e.target === previewModal) closePreviewModal(); });
-      document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closePreviewModal(); });
+      var previewClose=document.getElementById('preview-close'), previewModal=document.getElementById('preview-modal');
+      if(previewClose) previewClose.addEventListener('click',closePreviewModal);
+      if(previewModal) previewModal.addEventListener('click',function(e){ if(e.target===previewModal) closePreviewModal(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape') closePreviewModal(); });
     })();
 
-    function closePreviewModal() {
-      var modal = document.getElementById('preview-modal');
-      if (!modal) return;
+    function closePreviewModal(){
+      var modal=document.getElementById('preview-modal'); if(!modal) return;
       modal.classList.add('hidden');
-      var c = document.getElementById('preview-content'); if (c) c.innerHTML = '';
-      document.body.style.overflow = '';
-      if (modal._revokeUrl) { modal._revokeUrl(); modal._revokeUrl = null; }
+      var c=document.getElementById('preview-content'); if(c) c.innerHTML='';
+      document.body.style.overflow='';
+      if(modal._revokeUrl){ modal._revokeUrl(); modal._revokeUrl=null; }
     }
 
-    function toggleAtoStep(id) {
-      var step = document.getElementById(id);
-      if (!step) return;
-      var isOpen = step.classList.contains('open');
-      document.querySelectorAll('.ato-step.open').forEach(function(s) { s.classList.remove('open'); });
-      if (!isOpen) step.classList.add('open');
+    function toggleAtoStep(id){
+      var step=document.getElementById(id); if(!step) return;
+      var isOpen=step.classList.contains('open');
+      document.querySelectorAll('.ato-step.open').forEach(function(s){ s.classList.remove('open'); });
+      if(!isOpen) step.classList.add('open');
     }
 
     var TIP_DATA = {
-      'tip-work': {
-        en: { title: 'Work-related Expenses', body: 'Vehicles: claim 88c/km up to 5,000 km/year without a logbook (cents-per-kilometre method). Home office: 67c/hour using the fixed rate method (covers electricity, internet, phone). Uniforms with employer logo, protective gear, tools under $300, and union fees are all deductible. Commuting from home to your regular workplace is NOT deductible. Keep all receipts for 5 years.' },
-        fr: { title: 'Frais Professionnels', body: 'Véhicule : 88 cents/km jusqu\'à 5 000 km/an sans carnet de bord. Bureau à domicile : 67 cents/heure. Uniformes avec logo employeur, équipements de sécurité, outils < 300 $, cotisations syndicales sont déductibles. Trajets domicile-travail NON déductibles. Conservez vos reçus 5 ans.' },
-        es: { title: 'Gastos de Trabajo', body: 'Vehículo: 88 centavos/km hasta 5.000 km/año sin libro de registro. Oficina en casa: 67 centavos/hora. Uniformes con logo del empleador, equipos de seguridad, herramientas < $300 y cuotas sindicales son deducibles. Los viajes hogar-trabajo NO son deducibles. Guarda los recibos 5 años.' },
-        it: { title: 'Spese Lavorative', body: 'Veicolo: 88 centesimi/km fino a 5.000 km/anno senza libretto. Ufficio a casa: 67 centesimi/ora. Uniformi con logo datore, dispositivi di sicurezza, attrezzi < $300 e quote sindacali sono deducibili. Tragitti casa-lavoro NON deducibili. Conserva le ricevute 5 anni.' }
+      'tip-work':{
+        en:{title:'Work-related Expenses',body:'Vehicles: claim 88c/km up to 5,000 km/year without a logbook. Home office: 67c/hour (covers electricity, internet, phone). Uniforms with employer logo, protective gear, tools under $300, and union fees are all deductible. Commuting from home to your regular workplace is NOT deductible. Keep all receipts for 5 years.'},
+        fr:{title:'Frais Professionnels',body:'Véhicule : 88 cents/km jusqu\'à 5 000 km/an sans carnet de bord. Bureau à domicile : 67 cents/heure. Uniformes avec logo employeur, équipements de sécurité, outils < 300 $, cotisations syndicales sont déductibles. Trajets domicile-travail NON déductibles. Conservez vos reçus 5 ans.'},
+        es:{title:'Gastos de Trabajo',body:'Vehículo: 88 centavos/km hasta 5.000 km/año sin libro de registro. Oficina en casa: 67 centavos/hora. Uniformes con logo del empleador, equipos de seguridad, herramientas < $300 y cuotas sindicales son deducibles. Los viajes hogar-trabajo NO son deducibles.'},
+        it:{title:'Spese Lavorative',body:'Veicolo: 88 centesimi/km fino a 5.000 km/anno senza libretto. Ufficio a casa: 67 centesimi/ora. Uniformi con logo datore, dispositivi di sicurezza, attrezzi < $300 e quote sindacali sono deducibili. Tragitti casa-lavoro NON deducibili.'}
       },
-      'tip-donations': {
-        en: { title: 'Charitable Donations', body: 'Only donations to Deductible Gift Recipient (DGR)-registered organisations qualify. The donation must be $2 or more and you must have a receipt. You cannot claim the value of time, labour, or items you donated — only cash. Check if an organisation is DGR-registered at abr.business.gov.au. Crowd-funding donations are generally NOT deductible unless the platform is DGR-registered.' },
-        fr: { title: 'Dons Caritatifs (DGR)', body: 'Uniquement les dons à des organisations enregistrées DGR. Montant minimum : 2 $, avec reçu. Vous ne pouvez pas déduire la valeur de votre temps ou d\'objets donnés — uniquement les dons en espèces. Vérifiez sur abr.business.gov.au.' },
-        es: { title: 'Donaciones Caritativas (DGR)', body: 'Solo donativos a organizaciones registradas como DGR. Mínimo $2 con recibo. No puedes deducir el valor de tu tiempo u objetos donados — solo efectivo. Verifica en abr.business.gov.au.' },
-        it: { title: 'Donazioni Benefiche (DGR)', body: 'Solo donazioni a organizzazioni registrate DGR. Minimo $2 con ricevuta. Non puoi dedurre il valore del tuo tempo o oggetti donati — solo contanti. Verifica su abr.business.gov.au.' }
+      'tip-donations':{
+        en:{title:'Charitable Donations',body:'Only donations to Deductible Gift Recipient (DGR)-registered organisations qualify. The donation must be $2 or more and you must have a receipt. You cannot claim the value of time, labour, or items donated — only cash. Check DGR status at abr.business.gov.au. Crowd-funding donations are generally NOT deductible unless the platform is DGR-registered.'},
+        fr:{title:'Dons Caritatifs (DGR)',body:'Uniquement les dons à des organisations enregistrées DGR. Montant minimum : 2 $, avec reçu. Vous ne pouvez pas déduire la valeur de votre temps ou d\'objets donnés — uniquement les dons en espèces. Vérifiez sur abr.business.gov.au.'},
+        es:{title:'Donaciones Caritativas (DGR)',body:'Solo donativos a organizaciones registradas como DGR. Mínimo $2 con recibo. No puedes deducir el valor de tu tiempo u objetos donados — solo efectivo. Verifica en abr.business.gov.au.'},
+        it:{title:'Donazioni Benefiche (DGR)',body:'Solo donazioni a organizzazioni registrate DGR. Minimo $2 con ricevuta. Non puoi dedurre il valore del tuo tempo o oggetti donati — solo contanti. Verifica su abr.business.gov.au.'}
       },
-      'tip-education': {
-        en: { title: 'Self-Education Expenses', body: 'Deductible ONLY if the course directly relates to your current job and maintains or improves your skills for that job. NOT deductible if studying for a new career. Claimable items: tuition fees, textbooks, stationery, internet costs (work-study portion), travel to classes. A $250 threshold applies — the first $250 of combined self-education expenses is not deductible. HECS/HELP repayments are NOT a deduction.' },
-        fr: { title: 'Frais de Formation', body: 'Déductible UNIQUEMENT si la formation est directement liée à votre emploi actuel. NON déductible si vous vous formez pour un nouveau métier. Un seuil de 250 $ s\'applique — les 250 premiers $ ne sont pas déductibles.' },
-        es: { title: 'Gastos de Autoformación', body: 'Deducible SOLO si el curso está directamente relacionado con tu trabajo actual. NO deducible si estudias para una nueva carrera. Se aplica un umbral de $250 — los primeros $250 no son deducibles.' },
-        it: { title: 'Spese di Autoformazione', body: 'Deducibile SOLO se il corso è direttamente correlato al tuo lavoro attuale. NON deducibile se studi per una nuova carriera. Si applica una soglia di $250 — i primi $250 non sono deducibili.' }
+      'tip-education':{
+        en:{title:'Self-Education Expenses',body:'Deductible ONLY if the course directly relates to your current job. NOT deductible if studying for a new career. Claimable: tuition fees, textbooks, stationery, internet (work-study portion), travel to classes. A $250 threshold applies — the first $250 is not deductible. HECS/HELP repayments are NOT a deduction.'},
+        fr:{title:'Frais de Formation',body:'Déductible UNIQUEMENT si la formation est directement liée à votre emploi actuel. NON déductible si vous vous formez pour un nouveau métier. Un seuil de 250 $ s\'applique — les 250 premiers $ ne sont pas déductibles.'},
+        es:{title:'Gastos de Autoformación',body:'Deducible SOLO si el curso está directamente relacionado con tu trabajo actual. NO deducible si estudias para una nueva carrera. Se aplica un umbral de $250 — los primeros $250 no son deducibles.'},
+        it:{title:'Spese di Autoformazione',body:'Deducibile SOLO se il corso è direttamente correlato al tuo lavoro attuale. NON deducibile se studi per una nuova carriera. Si applica una soglia di $250 — i primi $250 non sono deducibili.'}
       },
-      'tip-other': {
-        en: { title: 'Other Deductions', body: 'Income protection insurance: 100% deductible (NOT life insurance or total/permanent disability). Union fees and professional association memberships: 100% deductible. Tools and equipment under $300: fully deductible in the year of purchase; over $300: depreciated over time. Tax agent fees from last year\'s return are deductible this year.' },
-        fr: { title: 'Autres Déductions', body: 'Assurance protection des revenus : 100% déductible. Cotisations syndicales : 100% déductibles. Outils < 300 $ : déductibles en totalité l\'année d\'achat. Honoraires d\'agent fiscal de l\'année précédente : déductibles cette année.' },
-        es: { title: 'Otras Deducciones', body: 'Seguro de protección de ingresos: 100% deducible. Cuotas sindicales: 100% deducibles. Herramientas < $300: deducibles el año de compra. Honorarios del agente fiscal del año pasado: deducibles este año.' },
-        it: { title: 'Altre Deduzioni', body: 'Assicurazione protezione reddito: 100% deducibile. Quote sindacali: 100% deducibili. Attrezzi < $300: deducibili nell\'anno di acquisto. Onorari agente fiscale dell\'anno scorso: deducibili quest\'anno.' }
+      'tip-other':{
+        en:{title:'Other Deductions',body:'Income protection insurance: 100% deductible (NOT life insurance or total/permanent disability). Union fees and professional memberships: 100% deductible. Tools under $300: fully deductible in year of purchase; over $300: depreciated. Tax agent fees from last year are deductible this year. Home office phone/internet: work-related percentage only.'},
+        fr:{title:'Autres Déductions',body:'Assurance protection des revenus : 100% déductible. Cotisations syndicales : 100% déductibles. Outils < 300 $ : déductibles l\'année d\'achat. Honoraires d\'agent fiscal de l\'année précédente : déductibles cette année.'},
+        es:{title:'Otras Deducciones',body:'Seguro de protección de ingresos: 100% deducible. Cuotas sindicales: 100% deducibles. Herramientas < $300: deducibles el año de compra. Honorarios del agente fiscal del año pasado: deducibles este año.'},
+        it:{title:'Altre Deduzioni',body:'Assicurazione protezione reddito: 100% deducibile. Quote sindacali: 100% deducibili. Attrezzi < $300: deducibili nell\'anno di acquisto. Onorari agente fiscale dell\'anno scorso: deducibili quest\'anno.'}
       }
     };
 
-    function showTip(key) {
-      var lang = localStorage.getItem('lang') || 'en';
-      var data = (TIP_DATA[key] && (TIP_DATA[key][lang] || TIP_DATA[key]['en'])) || null;
-      if (!data) return;
-      document.getElementById('tip-title').textContent = data.title;
-      document.getElementById('tip-body').textContent  = data.body;
+    function showTip(key){
+      var lang=localStorage.getItem('lang')||'en';
+      var data=(TIP_DATA[key]&&(TIP_DATA[key][lang]||TIP_DATA[key]['en']))||null;
+      if(!data) return;
+      document.getElementById('tip-title').textContent=data.title;
+      document.getElementById('tip-body').textContent=data.body;
       document.getElementById('tip-popup').classList.add('show');
       document.getElementById('tip-backdrop').classList.add('show');
     }
-
-    function hideTip() {
+    function hideTip(){
       document.getElementById('tip-popup').classList.remove('show');
       document.getElementById('tip-backdrop').classList.remove('show');
     }
 
-    var ATO_I18N = {
-      en: { heading: 'How to Lodge Your Tax Return', sub: '7 steps to lodge via ATO myTax — takes about 20 minutes.',
-        steps: ['1️⃣ Create or log in to myGov','2️⃣ Link the ATO to your myGov account','3️⃣ Open myTax','4️⃣ Check pre-filled data','5️⃣ Add your deductions','6️⃣ Review your return and submit','⚠️ Lodge before 31 October'] },
-      fr: { heading: 'Comment Déposer Votre Déclaration', sub: '7 étapes pour déposer via ATO myTax — environ 20 minutes.',
-        steps: ['1️⃣ Créer ou se connecter à myGov','2️⃣ Lier l\'ATO à votre compte myGov','3️⃣ Ouvrir myTax','4️⃣ Vérifier les données pré-remplies','5️⃣ Ajouter vos déductions','6️⃣ Vérifier et soumettre','⚠️ Déposer avant le 31 octobre'] },
-      es: { heading: 'Cómo Presentar su Declaración', sub: '7 pasos para presentar via ATO myTax — unos 20 minutos.',
-        steps: ['1️⃣ Crear o iniciar sesión en myGov','2️⃣ Vincular ATO a tu cuenta myGov','3️⃣ Abrir myTax','4️⃣ Verificar los datos prellenados','5️⃣ Añadir tus deducciones','6️⃣ Revisar y enviar','⚠️ Presentar antes del 31 de octubre'] },
-      it: { heading: 'Come Presentare la Dichiarazione', sub: '7 passi per presentare tramite ATO myTax — circa 20 minuti.',
-        steps: ['1️⃣ Creare o accedere a myGov','2️⃣ Collegare ATO al tuo account myGov','3️⃣ Aprire myTax','4️⃣ Verificare i dati precompilati','5️⃣ Aggiungere le deduzioni','6️⃣ Rivedere e inviare','⚠️ Presentare entro il 31 ottobre'] }
+    var ATO_I18N={
+      en:{heading:'How to Lodge Your Tax Return',sub:'7 steps to lodge via ATO myTax — takes about 20 minutes.',steps:['1️⃣ Create or log in to myGov','2️⃣ Link the ATO to your myGov account','3️⃣ Open myTax','4️⃣ Check pre-filled data','5️⃣ Add your deductions','6️⃣ Review your return and submit','⚠️ Lodge before 31 October']},
+      fr:{heading:'Comment Déposer Votre Déclaration',sub:'7 étapes pour déposer via ATO myTax — environ 20 minutes.',steps:['1️⃣ Créer ou se connecter à myGov','2️⃣ Lier l\'ATO à votre compte myGov','3️⃣ Ouvrir myTax','4️⃣ Vérifier les données pré-remplies','5️⃣ Ajouter vos déductions','6️⃣ Vérifier et soumettre','⚠️ Déposer avant le 31 octobre']},
+      es:{heading:'Cómo Presentar su Declaración',sub:'7 pasos para presentar via ATO myTax — unos 20 minutos.',steps:['1️⃣ Crear o iniciar sesión en myGov','2️⃣ Vincular ATO a tu cuenta myGov','3️⃣ Abrir myTax','4️⃣ Verificar los datos prellenados','5️⃣ Añadir tus deducciones','6️⃣ Revisar y enviar','⚠️ Presentar antes del 31 de octubre']},
+      it:{heading:'Come Presentare la Dichiarazione',sub:'7 passi per presentare tramite ATO myTax — circa 20 minuti.',steps:['1️⃣ Creare o accedere a myGov','2️⃣ Collegare ATO al tuo account myGov','3️⃣ Aprire myTax','4️⃣ Verificare i dati precompilati','5️⃣ Aggiungere le deduzioni','6️⃣ Rivedere e inviare','⚠️ Presentare entro il 31 ottobre']}
     };
-
-    function applyAtoLang() {
-      var lang = localStorage.getItem('lang') || 'en';
-      var d = ATO_I18N[lang] || ATO_I18N.en;
-      var h = document.getElementById('ato-guide-heading'); if (h) h.textContent = d.heading;
-      var s = document.getElementById('ato-guide-sub');     if (s) s.textContent = d.sub;
-      ['s1','s2','s3','s4','s5','s6','s7'].forEach(function(k, i) {
-        var el = document.getElementById('ato-' + k + '-title'); if (el) el.textContent = d.steps[i];
-      });
+    function applyAtoLang(){
+      var lang=localStorage.getItem('lang')||'en', d=ATO_I18N[lang]||ATO_I18N.en;
+      var h=document.getElementById('ato-guide-heading'); if(h) h.textContent=d.heading;
+      var s=document.getElementById('ato-guide-sub'); if(s) s.textContent=d.sub;
+      ['s1','s2','s3','s4','s5','s6','s7'].forEach(function(k,i){ var el=document.getElementById('ato-'+k+'-title'); if(el) el.textContent=d.steps[i]; });
     }
     applyAtoLang();
   </script>
